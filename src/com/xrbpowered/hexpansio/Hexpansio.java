@@ -72,14 +72,28 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		super.layout();
 	}
 	
+	public void nextTurn() {
+		world.nextTurn();
+		world.save.write();
+		repaint();
+	}
+	
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
 		switch(code) {
 			case KeyEvent.VK_ENTER:
-				world.nextTurn();
-				world.save.write();
+				nextTurn();
+				return true;
+			case KeyEvent.VK_UP: {
+				view.scale(view.getMinScale()/view.getScale(), 0f, 0f);
 				repaint();
 				return true;
+			}
+			case KeyEvent.VK_DOWN: {
+				view.scale(view.getMaxScale()/view.getScale(), 0f, 0f);
+				repaint();
+				return true;
+			}
 			case KeyEvent.VK_LEFT: {
 				int index = world.cities.indexOf(view.view.selectedCity) - 1;
 				if(index<=0)
@@ -141,6 +155,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	@Override
 	public void paint(GraphAssist g) {
 		g.graph.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.graph.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		super.paint(g);
 	}
 

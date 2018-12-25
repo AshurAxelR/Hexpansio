@@ -12,7 +12,6 @@ import com.xrbpowered.utils.RandomUtils;
 
 public class Tile {
 
-	// game state
 	public TerrainType terrain;
 	public boolean discovered = false;
 
@@ -21,11 +20,10 @@ public class Tile {
 	public Improvement improvement = null;
 	public int workers = 0;
 
-	// aux
-	public final Region region; // init/load
-	public final int x, y, wx, wy; // init/load
+	public final Region region;
+	public final int x, y, wx, wy;
 
-	public boolean areaDiscovered = false; // isAreaDiscovered
+	public boolean areaDiscovered = false;
 	
 	public final Yield yield = new Yield() {
 		@Override

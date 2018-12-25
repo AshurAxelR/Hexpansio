@@ -140,6 +140,17 @@ public class TileMode extends MapMode {
 			else
 				return false;
 		}
+		else if(code==KeyEvent.VK_INSERT) {
+			if(view.selectedCity.buildingProgress!=null) {
+				int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
+				if(cost >0 && view.world.goods>=cost) {
+					view.selectedCity.buildingProgress.progress += cost;
+					view.world.goods -= cost;
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		Improvement imp = Improvement.buildFromHotkey(code);
 		if(imp!=null && canBuild(tile) && imp.canBuildOn(tile)) {

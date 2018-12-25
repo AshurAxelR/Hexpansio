@@ -9,14 +9,12 @@ public class Region {
 	public static final int size = 64;
 	public static final int sized = 6;
 
-	// game state
 	public final Tile[][] tiles = new Tile[size+1][size+1];
 
-	// data
-	public final World world; // init/load
-	public final int rx, ry; // init/load
+	public final World world;
+	public final int rx, ry;
 	
-	public final ArrayList<City> cities = new ArrayList<>(); // new/load City
+	public final ArrayList<City> cities = new ArrayList<>();
 	
 	public Region(World world, int rx, int ry) {
 		this.world = world;

@@ -234,7 +234,6 @@ public class MapView extends UIElement {
 
 					// TODO token resources
 					// TODO show hapiness
-					
 					if(tile.isCityCenter()) {
 						if(tile.city.unemployed>0)
 							TileMode.paintWorkerBubble(g, new Color(0xdd0000), new Color(0xeeaaaa));
@@ -290,52 +289,74 @@ public class MapView extends UIElement {
 	}
 	
 	private void paintCity(GraphAssist g, City city) {
-		if(getScale()>0.75f) {
+		if(getScale()>0.5f) {
 			g.pushAntialiasing(true);
 			g.pushTx();
 			int x0 = city.tile.wx*(w+a);
 			int y0 = (-city.tile.wx+2*city.tile.wy)*h;
 			g.translate(x0, y0);
 			
-			g.setFont(Res.font);
-			String str = String.format("%d. %s", city.population, city.name.toUpperCase());
-			
-			FontMetrics fm = g.graph.getFontMetrics();
-			float tw = fm.stringWidth(str);
-			if(city.buildingProgress==null)
-				tw += 12;
-			float th = fm.getAscent() - fm.getDescent();
-			float tx = -tw/2f;
-			float ty = h*0.75f + th - th/2f;
-			
-			g.setColor(city==selectedCity ? Color.WHITE : playerColor);
-			g.graph.fillRect((int)(tx-5), (int)(ty-th-3), (int)(tw+10), (int)(th+6));
-			g.setColor(city==selectedCity ? playerColor : Color.WHITE);
-			g.graph.drawString(str, tx, ty);
-			Res.paintProgress(g, YieldResource.food, city.growth, city.getTargetGrowth(), city.getFoodGrowth(),
-					0, (int)(ty+3), (int)(tw+10), 3, GraphAssist.CENTER);
-			if(city.buildingProgress==null) {
-				g.pushPureStroke(true);
-				g.setColor(city.getExcess(city.getProduction())>0 ? YieldResource.production.fill : Color.BLACK);
-				g.graph.fillOval((int)(tx+tw-8), (int)(ty-th/2-5), 10, 10);
-				g.popPureStroke();
+			int i = city.happiness.ordinal();
+			g.pushPureStroke(true);
+			g.setColor(Color.DARK_GRAY);
+			if(getScale()>1.25f) {
+				g.resetStroke();
+				g.fillRect(-w+a, -h+5, 10, 10);
+				g.drawRect(-w+a, -h+5, 10, 10);
+				g.graph.drawImage(Res.imgHappiness, -w+a-10, -h-5, -w+a+10, -h+15, i*Res.imgSize, 0, (i+1)*Res.imgSize, Res.imgSize, null);
+				g.graph.drawOval(-w+a-10, -h-5, 20, 20);
 			}
-			g.resetStroke();
-			g.setColor(Color.BLACK);
-			g.graph.drawRect((int)(tx-5), (int)(ty-th-3), (int)(tw+10), (int)(th+9));
+			else {
+				g.setStroke(2f);
+				g.graph.drawImage(Res.imgHappiness, -h+5, -h+5, h-5, h-5, i*Res.imgSize, 0, (i+1)*Res.imgSize, Res.imgSize, null);
+				g.graph.drawOval(-h+5, -h+5, h*2-10, h*2-10);
+			}
+			g.popPureStroke();
 			
-			g.popAntialiasing();
-			g.popTx();
-			
-			if(city.buildingProgress!=null) {
-				g.pushTx();
-				x0 = city.buildingProgress.tile.wx*(w+a);
-				y0 = (-city.buildingProgress.tile.wx+2*city.buildingProgress.tile.wy)*h;
-				g.translate(x0, y0);
+			if(getScale()>0.75f) {
+				g.setFont(Res.font);
+				String str = String.format("%d. %s", city.population, city.name.toUpperCase());
 				
-				Res.paintProgress(g, YieldResource.production, city.buildingProgress.progress, city.buildingProgress.getCost(), city.getProduction(),
-						0, h-6, w+a, 3, GraphAssist.CENTER);
+				FontMetrics fm = g.graph.getFontMetrics();
+				float tw = fm.stringWidth(str);
+				if(city.buildingProgress==null)
+					tw += 12;
+				float th = fm.getAscent() - fm.getDescent();
+				float tx = -tw/2f;
+				float ty = h*0.75f + th - th/2f;
 				
+				g.setColor(city==selectedCity ? Color.WHITE : playerColor);
+				g.graph.fillRect((int)(tx-5), (int)(ty-th-3), (int)(tw+10), (int)(th+6));
+				g.setColor(city==selectedCity ? playerColor : Color.WHITE);
+				g.graph.drawString(str, tx, ty);
+				Res.paintProgress(g, YieldResource.food, city.growth, city.getTargetGrowth(), city.getFoodGrowth(),
+						0, (int)(ty+3), (int)(tw+10), 3, GraphAssist.CENTER);
+				if(city.buildingProgress==null) {
+					g.pushPureStroke(true);
+					g.setColor(city.getExcess(city.getProduction())>0 ? YieldResource.production.fill : Color.BLACK);
+					g.graph.fillOval((int)(tx+tw-8), (int)(ty-th/2-5), 10, 10);
+					g.popPureStroke();
+				}
+				g.resetStroke();
+				g.setColor(Color.BLACK);
+				g.graph.drawRect((int)(tx-5), (int)(ty-th-3), (int)(tw+10), (int)(th+9));
+				
+				g.popAntialiasing();
+				g.popTx();
+				
+				if(city.buildingProgress!=null) {
+					g.pushTx();
+					x0 = city.buildingProgress.tile.wx*(w+a);
+					y0 = (-city.buildingProgress.tile.wx+2*city.buildingProgress.tile.wy)*h;
+					g.translate(x0, y0);
+					
+					Res.paintProgress(g, YieldResource.production, city.buildingProgress.progress, city.buildingProgress.getCost(), city.getProduction(),
+							0, h-6, w+a, 3, GraphAssist.CENTER);
+					
+					g.popTx();
+				}
+			}
+			else {
 				g.popTx();
 			}
 		}

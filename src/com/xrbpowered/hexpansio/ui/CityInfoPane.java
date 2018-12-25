@@ -156,7 +156,6 @@ public class CityInfoPane extends UIContainer {
 			g.setColor(goods>0 ? YieldResource.production.fill : Color.RED);
 			g.drawString(String.format("%+d Goods", goods), x, y);
 			g.setFont(Res.font);
-			y += 20;
 		}
 		else {
 			BuildingProgress bp = city.buildingProgress;
@@ -172,9 +171,13 @@ public class CityInfoPane extends UIContainer {
 			
 			Res.paintProgress(g, YieldResource.production, bp.progress, bp.getCost(), city.getProduction(),
 					x, y+5, getWidth()-x*2, 6, GraphAssist.LEFT);
+			
+			y += 30;
+			g.setColor(Color.WHITE);
+			Res.paintCost(g, YieldResource.production, "(Ins) Hurry: ", bp.getCost()-bp.progress, null, city.world, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
 		}
 
-		y += 25;
+		y += 15;
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
 

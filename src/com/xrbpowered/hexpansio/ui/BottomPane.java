@@ -2,33 +2,47 @@ package com.xrbpowered.hexpansio.ui;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
-import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIHoverElement;
 
 public class BottomPane extends UIContainer {
 
 	private static final int buttonWidth = 70;
 	private static final int buttonFrameSize = 50;
 	
-	public class ModeButton extends UIHoverElement {
+	public class ModeButton extends FrameButton {
 		public final MapMode mode;
 		
 		public ModeButton(MapMode mode) {
-			super(BottomPane.this);
+			super(BottomPane.this, mode.keyName(), buttonWidth, (int)BottomPane.this.getHeight(), Res.fontHuge);
 			this.mode = mode;
-			setSize(buttonWidth, getParent().getHeight());
+			setFrameSize(buttonFrameSize, buttonFrameSize);
 		}
-
+		
 		@Override
-		public void paint(GraphAssist g) {
-			g.pushAntialiasing(true);
-
+		public boolean isModeActive() {
+			return mode.isActive();
+		}
+		
+		@Override
+		public boolean isEnabled() {
+			return mode.isEnabled();
+		}
+		
+		@Override
+		public boolean isHot() {
+			return mode.isHighlighted();
+		}
+		
+		@Override
+		protected void paintFrame(GraphAssist g, boolean enabled, boolean hot) {
 			float d = (getHeight()-buttonFrameSize)/4f;
 			g.setColor(Color.WHITE);
 			g.setFont(Res.font);
@@ -37,44 +51,41 @@ public class BottomPane extends UIContainer {
 			if(status!=null)
 				g.drawString(status, getWidth()/2f, getHeight()-d, GraphAssist.CENTER, GraphAssist.CENTER);
 			
-			g.setColor(Color.WHITE);
-			if(mode.isActive()) {
-				g.setStroke(6f);
-				g.graph.drawRoundRect((int)getWidth()/2-buttonFrameSize/2, (int)getHeight()/2-buttonFrameSize/2, buttonFrameSize, buttonFrameSize, 5, 5);
-			}
-			boolean enabled = mode.isEnabled();
-			boolean hot = mode.isHighlighted();
-			if(!enabled)
-				g.setColor(Color.BLACK);
-			else if(hot)
-				g.setPaint(new GradientPaint(0, getHeight()/2f-buttonFrameSize/2f, new Color(0xffbb33), 0, getHeight()/2f+buttonFrameSize/2f, new Color(0x996600)));
-			else
-				g.setPaint(new GradientPaint(0, getHeight()/2f-buttonFrameSize/2f, new Color(0x77bbff), 0, getHeight()/2f+buttonFrameSize/2f, new Color(0x336699)));
-			g.graph.fillRoundRect((int)getWidth()/2-buttonFrameSize/2, (int)getHeight()/2-buttonFrameSize/2, buttonFrameSize, buttonFrameSize, 5, 5);
-			g.setColor(hover ? Color.WHITE : hot ? new Color(0xffdd99) : new Color(0xbbddff));
-			g.resetStroke();
-			g.graph.drawRoundRect((int)getWidth()/2-buttonFrameSize/2, (int)getHeight()/2-buttonFrameSize/2, buttonFrameSize, buttonFrameSize, 5, 5);
-			
-			g.setColor(enabled ? Color.WHITE : Color.GRAY);
-			g.setFont(Res.fontHuge);
-			g.drawString(mode.keyName(), getWidth()/2f, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);
-			
-			g.popAntialiasing();
+			super.paintFrame(g, enabled, hot);
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left && mods==UIElement.modNone) {
-				mode.activate();
-				repaint();
-				return true;
-			}
-			else
-				return false;
+		public void onClick() {
+			mode.activate();
+			repaint();
 		}
 	};
+	
+	public class NextTurnButton extends FrameButton {
+		public NextTurnButton() {
+			super(BottomPane.this, "NEXT TURN", 200, (int)BottomPane.this.getHeight(), Res.fontLarge);
+			setFrameSize(frameWidth-40, buttonFrameSize);
+		}
+		
+		@Override
+		protected void paintFrame(GraphAssist g, boolean enabled, boolean hot) {
+			float d = (getHeight()-buttonFrameSize)/4f;
+			g.setColor(Color.WHITE);
+			g.setFont(Res.font);
+			g.drawString(new SimpleDateFormat("HH:mm").format(new Date()),
+					getWidth()/2+frameWidth/2, getHeight()-d, GraphAssist.RIGHT, GraphAssist.CENTER);
+			
+			super.paintFrame(g, enabled, hot);
+		}
+		
+		@Override
+		public void onClick() {
+			Hexpansio.instance.nextTurn();
+		}
+	}
 
 	private ModeButton[] modeButtons;
+	private NextTurnButton nextTurnButton;
 	private MapView view;
 	
 	public BottomPane(UIContainer parent, final MapView view) {
@@ -90,6 +101,14 @@ public class BottomPane extends UIContainer {
 			b.setLocation(i*buttonWidth+10, 0);
 			modeButtons[i] = b;
 		}
+		
+		nextTurnButton = new NextTurnButton();
+	}
+	
+	@Override
+	public void layout() {
+		nextTurnButton.setLocation(getWidth()-nextTurnButton.getWidth(), 0);
+		super.layout();
 	}
 
 	@Override

@@ -21,22 +21,20 @@ public class World {
 	public int goods = 0;
 	public int poverty = 0;
 
-	// game state
 	private HashMap<Integer, Region> regions = new HashMap<>();
 	public ArrayList<City> cities = new ArrayList<>();
 
-	// data
 	public final Save save;
 	public final TerrainGenerator terrainGenerator;
 	public Tile origin;
 
-	public HashMap<String, City> citiesByName = new HashMap<>(); // new/load City
+	public HashMap<String, City> citiesByName = new HashMap<>();
 	
-	public int totalPopulation = 1; // updateWorldTotals ...
+	public int totalPopulation = 1;
 	public int totalGoldIn = 0;
 	public int totalGoodsIn = 0;
 	
-	public ArrayList<Tile> newCities = new ArrayList<>(); // nextTurn
+	public ArrayList<Tile> newCities = new ArrayList<>();
 
 	public World(Save save, long seed, TerrainGenerator terrain) {
 		this.save = save;

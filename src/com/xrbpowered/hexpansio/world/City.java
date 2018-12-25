@@ -12,23 +12,19 @@ public class City {
 	public static final int expandRange = 3;
 	public static final int growthCostFactor = 10;
 	
-	// game state
 	public String name;
 	public int population = 1;
 	public int growth = 0;
 	public BuildingProgress buildingProgress = null;
-	//public Tile settlement = null;
 
-	// intra-turn state
 	public int availDiscover = 1;
 	public int availExpand = 1;
 
-	// data
 	public final int index;
-	public final World world; // init/load ...
-	public Tile tile = null; // init vs load
+	public final World world;
+	public Tile tile = null;
 
-	public int numTiles = 0; // updateStats ...
+	public int numTiles = 0;
 	public int foodIn, prodIn, goldIn, happyIn;
 	public int foodOut, goldOut, happyOut;
 	public int unemployed, workplaces;
@@ -120,6 +116,17 @@ public class City {
 		updateStats();
 		
 		growth +=getFoodGrowth();
+		
+		if(buildingProgress!=null) {
+			if(buildingProgress.nextTurn(getProduction())) {
+				world.gold += getExcess(buildingProgress.progress);
+				buildingProgress = null;
+			}
+		}
+		else {
+			world.goods += getExcess(getProduction());
+		}
+
 		if(growth<0) {
 			if(isBuildingSettlement())
 				buildingProgress.cancel();
@@ -132,20 +139,12 @@ public class City {
 				growth = 0;
 			}
 		}
-		else if(growth>=getTargetGrowth()) {
-			growth -= getTargetGrowth();
-			population++;
-			// TODO auto assign
-		}
-		
-		if(buildingProgress!=null) {
-			if(buildingProgress.nextTurn(getProduction())) {
-				world.gold += getExcess(buildingProgress.progress);
-				buildingProgress = null;
-			}
-		}
 		else {
-			world.goods += getExcess(getProduction());
+			while(growth>=getTargetGrowth()) {
+				growth -= getTargetGrowth();
+				population++;
+				// TODO auto assign
+			}
 		}
 		
 		world.gold += goldIn-goldOut;

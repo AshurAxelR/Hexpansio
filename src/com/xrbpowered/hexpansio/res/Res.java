@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
@@ -31,7 +34,8 @@ public class Res {
 			in = ClassLoader.getSystemResourceAsStream(String.format(fontPathFormat, "Bold"));
 			fb = Font.createFont(Font.TRUETYPE_FONT, in);
 			in.close();
-		} catch (IOException | FontFormatException e) {
+		}
+		catch (IOException | FontFormatException e) {
 			e.printStackTrace();
 			f = new Font("Sans", Font.PLAIN, 15);
 			fb = new Font("Sans", Font.BOLD, 15);
@@ -45,6 +49,23 @@ public class Res {
 		fontHuge = f.deriveFont((float)GraphAssist.ptToPixels(24f));
 	}
 
+	public static final BufferedImage imgHappiness;
+	public static final int imgSize = 80;
+	static {
+		String imgPathFormat = "com/xrbpowered/hexpansio/res/img/%s.png";
+		BufferedImage img;
+		try {
+			InputStream in = ClassLoader.getSystemResourceAsStream(String.format(imgPathFormat, "happiness"));
+			img = ImageIO.read(in);
+			in.close();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+			img = null;
+		}
+		imgHappiness = img;
+	}
+	
 	public static final Color uiBgColor = new Color(0x001122);
 	public static final Color uiBorderDark = new Color(0x445566);
 
@@ -74,8 +95,8 @@ public class Res {
 		float wend = postfix==null ? 0 : fm.stringWidth(postfix);
 		float h = fm.getAscent() - fm.getDescent();
 		float w = wstart+ws+wend+h*1.5f;
-		float tx = x - GraphAssist.align(w, valign);
-		float ty = y + h - GraphAssist.align(h, halign);
+		float tx = x - GraphAssist.align(w, halign);
+		float ty = y + h - GraphAssist.align(h, valign);
 		
 		if(prefix!=null)
 			g.graph.drawString(prefix, tx, ty);
