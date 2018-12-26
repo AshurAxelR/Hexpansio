@@ -76,13 +76,7 @@ public abstract class MapMode {
 
 	public static MapMode active = null;
 	
-	public static final MapMode tile = new TileMode();
-	public static final MapMode expand = new ExpandMode();
-	public static final MapMode trade = new TradeMode();
-	public static final MapMode settle = new SettleMode();
-	public static final MapMode scout = new ScoutMode();
-	
-	public static final MapMode[] modes = {tile, expand, trade, settle, scout};
+	public static final MapMode[] modes = {TileMode.instance, ExpandMode.instance, TradeMode.instance, SettleMode.instance, ScoutMode.instance};
 	
 	public static boolean checkHotkey(int code) {
 		for(int i=0; i<modes.length; i++) {

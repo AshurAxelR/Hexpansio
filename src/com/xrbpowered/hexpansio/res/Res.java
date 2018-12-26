@@ -10,7 +10,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.MathUtils;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -86,7 +85,7 @@ public class Res {
 	}
 	
 	public static void paintCost(GraphAssist g, YieldResource res, String prefix, int cost, String postfix,
-			World world, float x, float y, int halign, int valign) {
+			int avail, float x, float y, int halign, int valign) {
 		String s = Integer.toString(cost);
 		
 		FontMetrics fm = g.graph.getFontMetrics();
@@ -102,7 +101,7 @@ public class Res {
 			g.graph.drawString(prefix, tx, ty);
 		if(postfix!=null)
 			g.graph.drawString(postfix, tx+wstart+ws+h*1.5f, ty);
-		g.setColor(cost>world.gold ? Color.RED : Color.WHITE);
+		g.setColor(cost>avail ? Color.RED : Color.WHITE);
 		g.graph.drawString(s, tx+wstart+h*1.5f, ty);
 		
 		g.setColor(res.fill);

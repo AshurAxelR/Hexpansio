@@ -35,6 +35,10 @@ public abstract class BuildingProgress {
 	
 	public void cancel() {
 	}
+	
+	public boolean canHurry() {
+		return true;
+	}
 
 	public static class BuildImprovement extends BuildingProgress {
 		public final Improvement improvement;
@@ -107,6 +111,11 @@ public abstract class BuildingProgress {
 		@Override
 		public int getCost() {
 			return 50;
+		}
+		
+		@Override
+		public boolean canHurry() {
+			return false;
 		}
 		
 		@Override

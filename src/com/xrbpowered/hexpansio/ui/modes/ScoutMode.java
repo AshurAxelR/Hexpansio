@@ -11,6 +11,8 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public class ScoutMode extends MapMode {
 
+	public static final ScoutMode instance = new ScoutMode();
+	
 	public static final int areaRange = 2;
 	public static final int cityRange = 10;
 	
@@ -50,7 +52,7 @@ public class ScoutMode extends MapMode {
 		else if(view.getScale()>1f && canDiscover(tile)) {
 			int cost = view.world.costDiscover(tile);
 			g.setFont(Res.fontTiny);
-			Res.paintCost(g, YieldResource.gold, null, cost, null, view.world,
+			Res.paintCost(g, YieldResource.gold, null, cost, null, view.world.gold,
 					0, -MapView.h*2/3, GraphAssist.CENTER, GraphAssist.CENTER);
 		}
 	}

@@ -5,6 +5,7 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GradientPaint;
 
+import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
@@ -12,6 +13,8 @@ import com.xrbpowered.zoomui.UIHoverElement;
 
 public class FrameButton extends UIHoverElement {
 
+	public static final int defaultHeight = 25;
+	
 	protected Font font;
 	protected int frameWidth, frameHeight;
 	protected String label;
@@ -23,7 +26,11 @@ public class FrameButton extends UIHoverElement {
 		setSize(w, h);
 		setFrameSize(w, h);
 	}
-	
+
+	public FrameButton(UIContainer parent, String label, int w) {
+		this(parent, label, w, defaultHeight, Res.font);
+	}
+
 	public FrameButton setFrameSize(int w, int h) {
 		this.frameWidth = w;
 		this.frameHeight = h;

@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 
 public class TradeMode extends MapMode {
 
+	public static final TradeMode instance = new TradeMode();
+	
 	public TradeMode() {
 		super("Trade", KeyEvent.VK_A);
 	}

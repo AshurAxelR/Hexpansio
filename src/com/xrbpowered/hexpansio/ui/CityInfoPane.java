@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
@@ -13,20 +14,60 @@ import com.xrbpowered.zoomui.UIContainer;
 
 public class CityInfoPane extends UIContainer {
 
+	private static final int margin = 10;
+	
+	private final FrameButton hurryButton;
+	private final FrameButton cancelButton;
+	
 	public CityInfoPane(Hexpansio parent) {
 		super(parent);
 		setSize(250, 400);
+		
+		hurryButton = new FrameButton(this, "Hurry", 140) {
+			@Override
+			public boolean isEnabled() {
+				City city = getMapView().selectedCity;
+				if(city.buildingProgress!=null && city.buildingProgress.canHurry()) {
+					int cost = city.buildingProgress.getCost() - city.buildingProgress.progress;
+					if(cost >0 && city.world.goods>=cost) {
+						return true;
+					}
+				}
+				return false;
+			}
+			@Override
+			public void onClick() {
+				TileMode.instance.hurryBuilding();
+				repaint();
+			}
+		};
+		hurryButton.setLocation(getWidth()-hurryButton.getWidth()-margin, 0);
+		hurryButton.setVisible(false);
+		
+		cancelButton = new FrameButton(this, "Cancel", (int)(getWidth()-hurryButton.getWidth()-margin*2-5)) {
+			@Override
+			public void onClick() {
+				TileMode.instance.cancelBuilding();
+				repaint();
+			}
+		};
+		cancelButton.setLocation(margin, 0);
+		cancelButton.setVisible(false);
+	}
+	
+	public MapView getMapView() {
+		return ((Hexpansio) getParent()).view.view;
 	}
 	
 	@Override
 	protected void paintSelf(GraphAssist g) {
 		g.fill(this, Res.uiBgColor);
 		
-		City city = ((Hexpansio) getParent()).view.view.selectedCity;
+		City city = getMapView().selectedCity;
 		if(city==null)
 			return;
 
-		int x = 10;
+		int x = margin;
 		int y = 40;
 		
 		g.setColor(Color.WHITE);
@@ -100,8 +141,9 @@ public class CityInfoPane extends UIContainer {
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
 
-		y += 40;
+		y += 10;
 		if(city.unemployed>0) {
+			y += 30;
 			g.pushPureStroke(true);
 			g.setStroke(1.25f);
 			Color fill = new Color(0xdd0000);
@@ -156,6 +198,8 @@ public class CityInfoPane extends UIContainer {
 			g.setColor(goods>0 ? YieldResource.production.fill : Color.RED);
 			g.drawString(String.format("%+d Goods", goods), x, y);
 			g.setFont(Res.font);
+			hurryButton.setVisible(false);
+			cancelButton.setVisible(false);
 		}
 		else {
 			BuildingProgress bp = city.buildingProgress;
@@ -172,9 +216,19 @@ public class CityInfoPane extends UIContainer {
 			Res.paintProgress(g, YieldResource.production, bp.progress, bp.getCost(), city.getProduction(),
 					x, y+5, getWidth()-x*2, 6, GraphAssist.LEFT);
 			
-			y += 30;
-			g.setColor(Color.WHITE);
-			Res.paintCost(g, YieldResource.production, "(Ins) Hurry: ", bp.getCost()-bp.progress, null, city.world, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+			y += 25;
+			hurryButton.setLocation(hurryButton.getX(), y);
+			hurryButton.setVisible(true);
+			cancelButton.setLocation(cancelButton.getX(), y);
+			cancelButton.setVisible(true);
+			y += hurryButton.getHeight();
+			
+			y += 15;
+			g.setColor(Color.LIGHT_GRAY);
+			if(bp.canHurry())
+				Res.paintCost(g, YieldResource.production, "Hurry cost: ", bp.getCost()-bp.progress, " goods", city.world.goods, getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+			else
+				g.drawString("Cannot hurry", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 		}
 
 		y += 15;

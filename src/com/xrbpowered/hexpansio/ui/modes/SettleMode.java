@@ -9,6 +9,8 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public class SettleMode extends MapMode {
 
+	public static final SettleMode instance = new SettleMode();
+	
 	public static final int cityRange = ScoutMode.cityRange;
 	public static final int minCityDist = 5;
 

@@ -11,6 +11,8 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public class TileMode extends MapMode {
 
+	public static final TileMode instance = new TileMode();
+	
 	public TileMode() {
 		super("Tile", KeyEvent.VK_Q);
 	}
@@ -125,12 +127,33 @@ public class TileMode extends MapMode {
 		return false;
 	}
 	
+	public boolean cancelBuilding() {
+		if(view.selectedCity.buildingProgress!=null) {
+			view.selectedCity.setBuilding(null);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public boolean hurryBuilding() {
+		if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.canHurry()) {
+			int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
+			if(cost >0 && view.world.goods>=cost) {
+				view.selectedCity.buildingProgress.progress += cost;
+				view.world.goods -= cost;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public boolean hotkeyAction(int code) {
 		Tile tile = view.selectedTile;
 		if(code==KeyEvent.VK_DELETE) {
 			if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.tile==tile) {
-				view.selectedCity.setBuilding(null);
+				cancelBuilding();
 				return true;
 			}
 			else if(tile.improvement!=null) {
@@ -141,15 +164,7 @@ public class TileMode extends MapMode {
 				return false;
 		}
 		else if(code==KeyEvent.VK_INSERT) {
-			if(view.selectedCity.buildingProgress!=null) {
-				int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
-				if(cost >0 && view.world.goods>=cost) {
-					view.selectedCity.buildingProgress.progress += cost;
-					view.world.goods -= cost;
-					return true;
-				}
-			}
-			return false;
+			return hurryBuilding();
 		}
 		
 		Improvement imp = Improvement.buildFromHotkey(code);

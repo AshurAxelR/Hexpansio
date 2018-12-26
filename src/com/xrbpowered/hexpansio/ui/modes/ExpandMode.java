@@ -12,6 +12,8 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public class ExpandMode extends MapMode {
 
+	public static final ExpandMode instance = new ExpandMode();
+	
 	public ExpandMode() {
 		super("Expand", KeyEvent.VK_E);
 	}
@@ -44,7 +46,7 @@ public class ExpandMode extends MapMode {
 			
 			int cost = view.world.costAddToCity(tile, view.selectedCity);
 			g.setFont(Res.fontTiny);
-			Res.paintCost(g, YieldResource.gold, null, cost, null, view.world,
+			Res.paintCost(g, YieldResource.gold, null, cost, null, view.world.gold,
 					0, -MapView.h*2/3, GraphAssist.CENTER, GraphAssist.CENTER);
 		}
 	}
@@ -98,7 +100,7 @@ public class ExpandMode extends MapMode {
 				view.world.addToCity(hoverTile.wx, hoverTile.wy, view.selectedCity);
 				view.selectedCity.updateStats();
 				view.selectedTile = hoverTile;
-				MapMode.tile.activate();
+				TileMode.instance.activate();
 				return true;
 			}
 		}
