@@ -63,8 +63,10 @@ public class World {
 				for(int x=0; x<Region.size; x++)
 					for(int y=0; y<Region.size; y++) {
 						Tile t = r.tiles[x][y];
-						t.discovered = true;
-						terrainGenerator.finaliseTile(t);
+						if(!t.discovered) {
+							t.discovered = true;
+							terrainGenerator.finaliseTile(t);
+						}
 					}
 			}
 	}
@@ -108,8 +110,10 @@ public class World {
 		int x = wx & (Region.size-1);
 		int y = wy & (Region.size-1);
 		Tile t = r.tiles[x][y];
-		terrainGenerator.finaliseTile(t);
-		t.discovered = true;
+		if(!t.discovered) {
+			terrainGenerator.finaliseTile(t);
+			t.discovered = true;
+		}
 		return t;
 	}
 

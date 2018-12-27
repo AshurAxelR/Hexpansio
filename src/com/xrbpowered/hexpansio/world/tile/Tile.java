@@ -6,6 +6,7 @@ import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.RandomUtils;
@@ -13,6 +14,7 @@ import com.xrbpowered.utils.RandomUtils;
 public class Tile {
 
 	public TerrainType terrain;
+	public TokenResource resource = null;
 	public boolean discovered = false;
 
 	public City city = null;
@@ -28,7 +30,14 @@ public class Tile {
 	public final Yield yield = new Yield() {
 		@Override
 		public int get(YieldResource res) {
-			return terrain.yield.get(res) + (improvement==null ? 0 : improvement.yield.get(res));
+			return terrainYield.get(res) + (improvement==null ? 0 : improvement.yield.get(res));
+		}
+	};
+	
+	public final Yield terrainYield = new Yield() {
+		@Override
+		public int get(YieldResource res) {
+			return terrain.yield.get(res) + (resource==null ? 0 : resource.terrainBonus.get(res));
 		}
 	};
 	

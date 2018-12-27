@@ -156,7 +156,7 @@ public class TileMode extends MapMode {
 				cancelBuilding();
 				return true;
 			}
-			else if(tile.improvement!=null) {
+			else if(tile.improvement!=null && !tile.improvement.isPermanenet()) {
 				view.selectedCity.setBuilding(new BuildingProgress.RemoveImprovement(tile));
 				return true;
 			}

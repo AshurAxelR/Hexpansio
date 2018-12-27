@@ -8,10 +8,10 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public enum YieldResource {
 
+	happiness("Happiness", new Color(0x33ccdd), new Color(0x115566)),
 	food("Food", new Color(0x99dd55), new Color(0x446622)),
-	production("Production", new Color(0xcb965d), new Color(0x554422)),
 	gold("Gold", new Color(0xddcc33), new Color(0x665511)),
-	happiness("Happiness", new Color(0x33ccdd), new Color(0x115566));
+	production("Production", new Color(0xcb965d), new Color(0x554422));
 	
 	public final String name;
 	public final Color fill;

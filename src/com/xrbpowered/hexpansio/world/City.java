@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.world;
 import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.resources.Happiness;
+import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -71,6 +72,8 @@ public class City {
 	
 	protected void setTile(Tile tile) {
 		this.tile = tile;
+		world.discoverTile(tile.wx, tile.wy);
+		tile.resource = null;
 		tile.region.cities.add(this);
 		tile.city = this;
 		tile.improvement = Improvement.city;
@@ -155,6 +158,13 @@ public class City {
 		world.totalPopulation += population;
 	}
 	
+	private void appendYield(Yield yield) {
+		foodIn += yield.get(YieldResource.food);
+		prodIn += yield.get(YieldResource.production);
+		goldIn += yield.get(YieldResource.gold);
+		happyIn += yield.get(YieldResource.happiness);
+	}
+	
 	public void updateStats() {
 		numTiles = 0;
 		foodIn = 0;
@@ -171,17 +181,14 @@ public class City {
 					numTiles++;
 					if(!t.isCityCenter())
 						workplaces++;
-					if(t.workers>0 || t.isCityCenter()) {
-						foodIn += t.yield.get(YieldResource.food);
-						prodIn += t.yield.get(YieldResource.production);
-						goldIn += t.yield.get(YieldResource.gold);
-						happyIn += t.yield.get(YieldResource.happiness);
-					}
-					if(t.workers>0) {
+					if(t.workers>0 || t.isCityCenter())
+						appendYield(t.yield);
+					if(t.workers>0)
 						workers += t.workers;
-					}
 					if(t.improvement!=null)
 						goldOut += t.improvement.maintenance;
+					if(t.resource!=null && t.improvement==t.resource.improvement)
+						appendYield(t.resource.yield);
 				}
 			}
 		if(isBuildingSettlement())

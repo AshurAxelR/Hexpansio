@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
@@ -21,8 +22,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	// game parameters
-	public static final int saveVersion = 1;
+	public static final int saveVersion = 2;
 	
 	public final String path;
 	public final File file;
@@ -31,6 +31,7 @@ public class Save {
 	
 	protected int version = 0;
 	protected ObjectIndex<TerrainType> convTerrainType = null;
+	protected ObjectIndex<TokenResource> convResources = null;
 	protected ObjectIndex<Improvement> convImprovement = null;
 	
 	public Save(String path) {
@@ -55,6 +56,7 @@ public class Save {
 
 	protected void writeTile(DataOutputStream out, Tile tile) throws IOException {
 		out.writeByte(convTerrainType.getIndex(tile.terrain.name));
+		out.writeByte(tile.resource==null ? -1 : convResources.getIndex(tile.resource.name));
 		out.writeByte(tile.workers);
 		out.writeShort(tile.city==null ? -1 : tile.city.index);
 		out.writeShort(tile.settlement==null ? -1 : tile.settlement.city.index);
@@ -63,6 +65,7 @@ public class Save {
 
 	protected void readTile(DataInputStream in, Tile tile) throws IOException {
 		tile.terrain = convTerrainType.get(in.readByte());
+		tile.resource = convResources.get(in.readByte());
 		tile.workers = in.readByte();
 		int cityIndex = in.readShort();
 		tile.city = cityIndex<0 ? null : tile.region.world.cities.get(cityIndex);
@@ -231,6 +234,7 @@ public class Save {
 			version = saveVersion;
 			out.writeInt(version);
 			convTerrainType = TerrainType.objectIndex.write(out);
+			convResources = TokenResource.objectIndex.write(out);
 			convImprovement = Improvement.objectIndex.write(out);
 			
 			out.writeLong(world.seed);
@@ -265,6 +269,7 @@ public class Save {
 			if(version!=saveVersion)
 				System.err.println("Save version is different");
 			convTerrainType = TerrainType.objectIndex.read(in);
+			convResources = TokenResource.objectIndex.read(in);
 			convImprovement = Improvement.objectIndex.read(in);
 			
 			long seed = in.readLong();

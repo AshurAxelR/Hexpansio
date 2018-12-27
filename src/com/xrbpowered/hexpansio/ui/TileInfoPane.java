@@ -36,25 +36,44 @@ public class TileInfoPane extends UIContainer {
 		g.setFont(Res.fontLarge);
 		g.drawString(tile.terrain.name, x, y);
 
-		y += 20;
+		y += 5;
 		g.setFont(Res.font);
 		float cx = getWidth()*0.4f;
-		g.setColor(YieldResource.happiness.fill);
-		g.drawString("Happiness:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d)", tile.terrain.yield.get(YieldResource.happiness), tile.yield.get(YieldResource.happiness)), cx, y);
-		y += 15;
-		g.setColor(YieldResource.food.fill);
-		g.drawString("Food:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d)", tile.terrain.yield.get(YieldResource.food), tile.yield.get(YieldResource.food)), cx, y);
-		y += 15;
-		g.setColor(YieldResource.gold.fill);
-		g.drawString("Gold:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d)", tile.terrain.yield.get(YieldResource.gold), tile.yield.get(YieldResource.gold)), cx, y);
-		y += 15;
-		g.setColor(YieldResource.production.fill);
-		g.drawString("Production:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d)", tile.terrain.yield.get(YieldResource.production), tile.yield.get(YieldResource.production)), cx, y);
+		for(YieldResource res : YieldResource.values()) {
+			y += 15;
+			g.setColor(res.fill);
+			g.drawString(res.name+":", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+			g.drawString(String.format("%+d (%+d / %+d)", tile.yield.get(res),
+					tile.terrainYield.get(res), tile.yield.get(res) - tile.terrainYield.get(res)), cx, y);
+		}
 
+		if(tile.resource!=null) {
+			y += 15;
+			tile.resource.paint(g, x, y);
+			cx = x+40;
+			g.setColor(Color.WHITE);
+			g.setFont(Res.fontBold);
+			g.drawString(tile.resource.name, cx, y+12, GraphAssist.LEFT, GraphAssist.BOTTOM);
+			g.setFont(Res.font);
+			if(tile.improvement!=tile.resource.improvement) {
+				g.setColor(Color.RED);
+				g.drawString("Requires "+tile.resource.improvement.name, cx, y+18, GraphAssist.LEFT, GraphAssist.TOP);
+			}
+			else {
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawString(tile.resource.improvement.name, cx, y+18, GraphAssist.LEFT, GraphAssist.TOP);
+			}
+			y += 30;
+			for(YieldResource res : YieldResource.values()) {
+				int yield = tile.resource.yield.get(res);
+				if(yield!=0) {
+					y += 15;
+					g.setColor(tile.improvement!=tile.resource.improvement ? Color.GRAY : res.fill);
+					g.drawString(String.format("%+d %s", yield, res.name), cx, y);
+				}
+			}
+		}
+		
 		y += 15;
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);

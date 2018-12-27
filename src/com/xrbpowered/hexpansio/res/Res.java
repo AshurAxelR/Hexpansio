@@ -10,6 +10,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.MathUtils;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -21,8 +22,6 @@ public class Res {
 	public static final Font fontBold;
 	public static final Font fontLarge;
 	public static final Font fontHuge;
-	public static final int fontHeight;
-	public static final int fontLargeHeight;
 	static {
 		String fontPathFormat = "com/xrbpowered/hexpansio/res/fonts/Montserrat-%s.ttf";
 		Font f, fb;
@@ -39,30 +38,29 @@ public class Res {
 			f = new Font("Sans", Font.PLAIN, 15);
 			fb = new Font("Sans", Font.BOLD, 15);
 		}
-		fontHeight = GraphAssist.ptToPixels(9f);
-		fontLargeHeight = GraphAssist.ptToPixels(14f);
-		font = f.deriveFont((float)fontHeight);
+		float fontHeight = GraphAssist.ptToPixels(9f);
+		float fontLargeHeight = GraphAssist.ptToPixels(14f);
+		font = f.deriveFont(fontHeight);
 		fontTiny = f.deriveFont(9f);
-		fontBold = fb.deriveFont((float)fontHeight);
-		fontLarge = f.deriveFont((float)fontLargeHeight);
+		fontBold = fb.deriveFont(fontHeight);
+		fontLarge = f.deriveFont(fontLargeHeight);
 		fontHuge = f.deriveFont((float)GraphAssist.ptToPixels(24f));
 	}
 
-	public static final BufferedImage imgHappiness;
 	public static final int imgSize = 80;
-	static {
+	public static final BufferedImage imgHappiness = loadImage("happiness");
+	public static final BufferedImage imgRes = loadImage("res");
+	
+	public static BufferedImage loadImage(String name) {
 		String imgPathFormat = "com/xrbpowered/hexpansio/res/img/%s.png";
-		BufferedImage img;
 		try {
-			InputStream in = ClassLoader.getSystemResourceAsStream(String.format(imgPathFormat, "happiness"));
-			img = ImageIO.read(in);
-			in.close();
+			InputStream in = ClassLoader.getSystemResourceAsStream(String.format(imgPathFormat, name));
+			return ImageIO.read(in);
 		}
 		catch(IOException e) {
 			e.printStackTrace();
-			img = null;
+			return null;
 		}
-		imgHappiness = img;
 	}
 	
 	public static final Color uiBgColor = new Color(0x001122);
@@ -106,6 +104,26 @@ public class Res {
 		
 		g.setColor(res.fill);
 		g.graph.fillOval((int)(tx+wstart+h*0.25f), (int)(ty-h), (int)h, (int)h);
+	}
+	
+	public static void paintToken(GraphAssist g, float scale, BufferedImage image, int subImage) {
+		g.pushPureStroke(true);
+		if(scale>1.25f) {
+			int x = -MapView.w+MapView.a;
+			int y = -MapView.h;
+			g.resetStroke();
+			g.fillRect(x, y+5, 10, 10);
+			g.drawRect(x, y+5, 10, 10);
+			g.graph.drawImage(image, x-10, y-5, x+10, y+15, subImage*imgSize, 0, (subImage+1)*imgSize, imgSize, null);
+			g.graph.drawOval(x-10, y-5, 20, 20);
+		}
+		else {
+			int r = MapView.h-5;
+			g.setStroke(2f);
+			g.graph.drawImage(image, -r, -r, r, r, subImage*imgSize, 0, (subImage+1)*imgSize, imgSize, null);
+			g.graph.drawOval(-r, -r, r*2, r*2);
+		}
+		g.popPureStroke();
 	}
 
 }

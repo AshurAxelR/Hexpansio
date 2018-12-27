@@ -186,8 +186,6 @@ public class MapView extends UIElement {
 				if(!tile.discovered)
 					continue;
 				
-				//int mx = x+(region.rx<<Region.sized);
-				//int my = y+(region.ry<<Region.sized);
 				int x0 = tile.wx*(w+a);
 				int y0 = (-tile.wx+2*tile.wy)*h;
 				if(x0+w/2+a<clip.x || x0-w/2-a>clip.x+clip.width || y0+h<clip.y || y0-h>clip.y+clip.height)
@@ -232,8 +230,6 @@ public class MapView extends UIElement {
 						}
 					}
 
-					// TODO token resources
-					// TODO show hapiness
 					if(tile.isCityCenter()) {
 						if(tile.city.unemployed>0)
 							TileMode.paintWorkerBubble(g, new Color(0xdd0000), new Color(0xeeaaaa));
@@ -283,6 +279,11 @@ public class MapView extends UIElement {
 
 				MapMode.active.paintTileOverlay(g, mx, my, tile);
 				
+				if(tile!=null && tile.resource!=null && getScale()>0.5f) {
+					g.setColor(tile.city==null ? Color.DARK_GRAY : tile.improvement==tile.resource.improvement ? Color.WHITE : Color.LIGHT_GRAY);
+					Res.paintToken(g, getScale(), tile.resource.image, tile.resource.subImage);
+				}
+
 				g.popTx();
 			}
 		g.popAntialiasing();
@@ -296,22 +297,8 @@ public class MapView extends UIElement {
 			int y0 = (-city.tile.wx+2*city.tile.wy)*h;
 			g.translate(x0, y0);
 			
-			int i = city.happiness.ordinal();
-			g.pushPureStroke(true);
 			g.setColor(Color.DARK_GRAY);
-			if(getScale()>1.25f) {
-				g.resetStroke();
-				g.fillRect(-w+a, -h+5, 10, 10);
-				g.drawRect(-w+a, -h+5, 10, 10);
-				g.graph.drawImage(Res.imgHappiness, -w+a-10, -h-5, -w+a+10, -h+15, i*Res.imgSize, 0, (i+1)*Res.imgSize, Res.imgSize, null);
-				g.graph.drawOval(-w+a-10, -h-5, 20, 20);
-			}
-			else {
-				g.setStroke(2f);
-				g.graph.drawImage(Res.imgHappiness, -h+5, -h+5, h-5, h-5, i*Res.imgSize, 0, (i+1)*Res.imgSize, Res.imgSize, null);
-				g.graph.drawOval(-h+5, -h+5, h*2-10, h*2-10);
-			}
-			g.popPureStroke();
+			Res.paintToken(g, getScale(), Res.imgHappiness, city.happiness.ordinal());
 			
 			if(getScale()>0.75f) {
 				g.setFont(Res.font);

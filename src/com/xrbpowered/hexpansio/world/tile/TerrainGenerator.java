@@ -239,6 +239,9 @@ public class TerrainGenerator {
 					tile.terrain = lagoon;
 			}
 		}
+		
+		random.setSeed(tile.getSeed(59836L));
+		tile.resource = tile.terrain.generateResource(random);
 	}
 	
 	private Biome selectMiddleBiome(Biome b1, Biome b2) {
