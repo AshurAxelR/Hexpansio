@@ -76,7 +76,7 @@ public class City {
 		tile.resource = null;
 		tile.region.cities.add(this);
 		tile.city = this;
-		tile.improvement = Improvement.city;
+		tile.improvement = Improvement.cityCenter;
 	}
 	
 	public void addTile(int wx, int wy) {

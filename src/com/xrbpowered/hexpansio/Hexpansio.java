@@ -3,11 +3,13 @@ package com.xrbpowered.hexpansio;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.BottomPane;
 import com.xrbpowered.hexpansio.ui.CityInfoPane;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.TileInfoPane;
 import com.xrbpowered.hexpansio.ui.TopPane;
+import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
 import com.xrbpowered.hexpansio.world.World;
@@ -72,15 +74,23 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		super.layout();
 	}
 	
+	public void saveGame() {
+		world.save.write();
+	}
+	
 	public void nextTurn() {
 		world.nextTurn();
-		world.save.write();
+		saveGame();
 		repaint();
 	}
 	
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
 		switch(code) {
+			case KeyEvent.VK_ESCAPE:
+				new QuickExitDialog();
+				repaint();
+				return true;
 			case KeyEvent.VK_ENTER:
 				nextTurn();
 				return true;
@@ -156,11 +166,25 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public void paint(GraphAssist g) {
 		g.graph.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.graph.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		super.paint(g);
+		try {
+			super.paint(g);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	public static void main(String[] args) {
-		SwingFrame frame = SwingWindowFactory.use().createFullscreen();
+		Res.restyleStdControls();
+		SwingFrame frame = new SwingFrame(SwingWindowFactory.use(), "Hexpansio", 800, 600, false, true) {
+			@Override
+			public boolean onClosing() {
+				new QuickExitDialog().repaint();
+				return false;
+			}
+		};
+		frame.maximize();
 		new Hexpansio(frame.getContainer());
 		frame.show();
 	}

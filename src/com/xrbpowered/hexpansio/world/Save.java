@@ -242,6 +242,8 @@ public class Save {
 			
 			zip.closeEntry();
 			zip.close();
+			
+			System.out.println("World saved");
 		}
 		catch(IOException e) {
 			e.printStackTrace();

@@ -60,9 +60,9 @@ public class FrameButton extends UIHoverElement {
 		else if(hot)
 			g.setPaint(new GradientPaint(0, getHeight()/2f-frameHeight/2f, new Color(0xffbb33), 0, getHeight()/2f+frameHeight/2f, new Color(0x996600)));
 		else
-			g.setPaint(new GradientPaint(0, getHeight()/2f-frameHeight/2f, new Color(0x77bbff), 0, getHeight()/2f+frameHeight/2f, new Color(0x336699)));
+			g.setPaint(new GradientPaint(0, getHeight()/2f-frameHeight/2f, Res.uiButtonTop, 0, getHeight()/2f+frameHeight/2f, Res.uiBgBright));
 		g.graph.fillRoundRect((int)getWidth()/2-frameWidth/2, (int)getHeight()/2-frameHeight/2, frameWidth, frameHeight, 5, 5);
-		g.setColor(hover ? Color.WHITE : hot ? new Color(0xffdd99) : new Color(0xbbddff));
+		g.setColor(hover ? Color.WHITE : hot ? new Color(0xffdd99) : Res.uiBorderLight);
 		g.resetStroke();
 		g.graph.drawRoundRect((int)getWidth()/2-frameWidth/2, (int)getHeight()/2-frameHeight/2, frameWidth, frameHeight, 5, 5);
 	}

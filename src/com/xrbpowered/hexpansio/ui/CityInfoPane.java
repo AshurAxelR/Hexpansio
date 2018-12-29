@@ -80,7 +80,7 @@ public class CityInfoPane extends UIContainer {
 		if(growth>0) {
 			g.setColor(YieldResource.food.fill);
 			g.drawString(String.format("Growth: %d/%d", city.growth, city.getTargetGrowth()), x, y);
-			g.drawString(String.format("(%d turns)", (int)Math.ceil((city.getTargetGrowth()-city.growth)/(float)growth)),
+			g.drawString(Res.calcTurnsStr(city.growth, city.getTargetGrowth(), growth, null),
 					getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 		}
 		else if(growth==0) {
@@ -209,7 +209,7 @@ public class CityInfoPane extends UIContainer {
 			g.setColor(YieldResource.production.fill);
 			g.drawString(String.format("%d/%d", bp.progress, bp.getCost()), x, y);
 			if(city.getProduction()>0) {
-				g.drawString(String.format("(%d turns)", (int)Math.ceil((bp.getCost()-bp.progress)/(float)city.getProduction())),
+				g.drawString(Res.calcTurnsStr(bp.progress, bp.getCost(), city.getProduction(), null),
 						getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 			}
 			

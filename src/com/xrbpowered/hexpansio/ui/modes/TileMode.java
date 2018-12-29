@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -148,6 +149,15 @@ public class TileMode extends MapMode {
 		return false;
 	}
 
+	public boolean removeBuilding() {
+		if(view.selectedTile.improvement!=null && !view.selectedTile.improvement.isPermanent()) {
+			view.selectedCity.setBuilding(new BuildingProgress.RemoveImprovement(view.selectedTile));
+			return true;
+		}
+		else
+			return false;
+	}
+
 	@Override
 	public boolean hotkeyAction(int code) {
 		Tile tile = view.selectedTile;
@@ -156,8 +166,8 @@ public class TileMode extends MapMode {
 				cancelBuilding();
 				return true;
 			}
-			else if(tile.improvement!=null && !tile.improvement.isPermanenet()) {
-				view.selectedCity.setBuilding(new BuildingProgress.RemoveImprovement(tile));
+			else if(tile.improvement!=null && !tile.improvement.isPermanent()) {
+				removeBuilding();
 				return true;
 			}
 			else
@@ -165,6 +175,20 @@ public class TileMode extends MapMode {
 		}
 		else if(code==KeyEvent.VK_INSERT) {
 			return hurryBuilding();
+		}
+		else if(code==KeyEvent.VK_SPACE) {
+			BuildingProgress bp = tile.city==null ? null : tile.city.buildingProgress==null || tile.city.buildingProgress.tile!=tile ? null : tile.city.buildingProgress;
+			if(tile.improvement==null && bp==null) {
+				new BuildDialog(tile);
+				return true;
+			}
+			else if(tile.improvement==null || bp!=null && bp instanceof BuildingProgress.RemoveImprovement) {
+				return false;
+			}
+			else {
+				// new UpgradeDialog(tile);
+				return true;
+			}
 		}
 		
 		Improvement imp = Improvement.buildFromHotkey(code);

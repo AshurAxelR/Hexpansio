@@ -50,8 +50,10 @@ public class TokenResource {
 		return this;
 	}
 	
-	public void paint(GraphAssist g, int x, int y) {
+	public void paint(GraphAssist g, int x, int y, String sub) {
 		g.graph.drawImage(image, x, y, x+30, y+30, subImage*Res.imgSize, 0, (subImage+1)*Res.imgSize, Res.imgSize, null);
+		if(sub!=null)
+			g.drawString(sub, x+15, y+35, GraphAssist.CENTER, GraphAssist.TOP);
 	}
 	
 	public static final TokenResource grain = new TokenResource(common, "Grain", Res.imgRes, 0)

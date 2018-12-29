@@ -61,7 +61,7 @@ public class Improvement {
 		return false;
 	}
 	
-	public boolean isPermanenet() {
+	public boolean isPermanent() {
 		return false;
 	}
 	
@@ -69,6 +69,39 @@ public class Improvement {
 		return (reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
 				(!reqResource || tile.resource!=null && tile.resource.improvement==this);
+	}
+	
+	public String requirementExplained(Tile tile) {
+		if(reqFeatures!=null && !tile.terrain.hasFeature(reqFeatures)) {
+			StringBuilder sb = new StringBuilder();
+			for(int i=0; i<reqFeatures.length; i++) {
+				if(i>0 && i==rejectFeatures.length-1)
+					sb.append(" or ");
+				else if(i>0)
+					sb.append(", ");
+				sb.append(reqFeatures[i].name());
+			}
+			return String.format("Requires %s terrain", sb.toString());
+		}
+		else if(tile.terrain.hasFeature(rejectFeatures)) {
+			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name());
+		}
+		else if(reqResource && (tile.resource==null || tile.resource.improvement!=this)) {
+			return "Requires appropriate resource";
+		}
+		else
+			return null;
+	}
+	
+	public boolean isRecommendedFor(Tile tile) {
+		return tile.resource!=null && tile.resource.improvement==this;
+	}
+	
+	public String recommendationExplained(Tile tile) {
+		if(tile.resource!=null && tile.resource.improvement==this)
+			return "Will produce "+tile.resource.name;
+		else
+			return null;
 	}
 	
 	public static class CityCenter extends Improvement {
@@ -81,12 +114,12 @@ public class Improvement {
 			return true;
 		}
 		@Override
-		public boolean isPermanenet() {
+		public boolean isPermanent() {
 			return true;
 		}
 	}
 	
-	public static final Improvement city = new CityCenter("City");
+	public static final Improvement cityCenter = new CityCenter("City");
 	public static final Improvement farm = new Improvement("Farm", 30).setGlyph("F").yield(2, 0, 0, 0).reject(Feature.values());
 	public static final Improvement mine = new Improvement("Mine", 40).setGlyph("M").maintenance(1).yield(0, 3, 0, 0).requireResource();
 	public static final Improvement lumberMill = new Improvement("Lumber mill", 60).setGlyph("L").yield(0, 2, 0, 0).require(Feature.forest);

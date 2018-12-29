@@ -14,6 +14,10 @@ import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.MathUtils;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.std.UIButton;
+import com.xrbpowered.zoomui.std.UIListBox;
+import com.xrbpowered.zoomui.std.UIScrollBar;
+import com.xrbpowered.zoomui.std.UIScrollContainer;
 
 public class Res {
 
@@ -64,8 +68,26 @@ public class Res {
 	}
 	
 	public static final Color uiBgColor = new Color(0x001122);
+	public static final Color uiBgMid = new Color(0x112233);
 	public static final Color uiBorderDark = new Color(0x445566);
+	public static final Color uiBgBright = new Color(0x336699);
+	public static final Color uiButtonTop = new Color(0x77bbff);
+	public static final Color uiBorderLight = new Color(0xbbddff);
 
+	public static void restyleStdControls() {
+		UIListBox.colorBackground = Color.BLACK;
+		UIScrollContainer.colorBorder = uiBorderDark;
+		UIScrollBar.colorArrow = Color.WHITE;
+		UIScrollBar.colorArrowDisabled = Color.GRAY;
+		UIScrollBar.colorBg = uiBgMid;
+		UIScrollBar.colorBorder = uiBorderDark;
+		UIButton.colorGradTop = uiButtonTop;
+		UIButton.colorGradBottom = uiBgBright;
+		UIButton.colorBorder = uiBorderDark;
+		UIButton.colorText = uiBorderDark;
+		UIButton.colorDown = uiBgBright;
+	}
+	
 	public static void paintProgress(GraphAssist g, YieldResource res, int prog, int total, int add, int x, int y, float w, float h, int halign) {
 		float wp = Math.round(w*prog/(float)total);
 		int next = MathUtils.snap(prog+add, 0, total);
@@ -124,6 +146,15 @@ public class Res {
 			g.graph.drawOval(-r, -r, r*2, r*2);
 		}
 		g.popPureStroke();
+	}
+	
+	public static int calcTurns(int prog, int total, int add) {
+		return add<=0 ? -1 : (int)Math.ceil((total-prog)/(float)add);
+	}
+
+	public static String calcTurnsStr(int prog, int total, int add, String stall) {
+		int n = calcTurns(prog, total, add);
+		return n<0 ? stall : n==1 ? "(1 turn)" : String.format("(%d turns)", n);
 	}
 
 }
