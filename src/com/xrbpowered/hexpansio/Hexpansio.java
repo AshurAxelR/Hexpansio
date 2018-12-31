@@ -24,6 +24,8 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 
 	public static Hexpansio instance = null;
 	
+	public static boolean saveOnExit = false;
+	
 	private World world = loadOrCreateWorld();
 	
 	public static World loadOrCreateWorld() {
@@ -75,13 +77,13 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	}
 	
 	public void saveGame() {
-		//world.save.write();
+		world.save.write();
 	}
 	
 	public void nextTurn() {
 		world.nextTurn();
 		System.out.printf("Turn %d\n", world.turn);
-		saveGame();
+		// saveGame();
 		repaint();
 	}
 	

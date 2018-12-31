@@ -9,6 +9,7 @@ import java.util.Comparator;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.FrameButton;
+import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
@@ -130,7 +131,7 @@ public class BuildDialog extends OverlayDialog {
 	public void onEnter() {
 		Improvement imp = selectedImprovement();
 		if(imp!=null && imp.canBuildOn(tile)) {
-			tile.city.setBuilding(new BuildingProgress.BuildImprovement(tile, imp));
+			TileMode.instance.switchBuildingProgress(new BuildingProgress.BuildImprovement(tile, imp));
 			dismiss();
 		}
 	}

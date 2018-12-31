@@ -5,7 +5,11 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
+import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
+import com.xrbpowered.hexpansio.ui.dlg.HurryDialog;
+import com.xrbpowered.hexpansio.ui.dlg.ProductionLossDialog;
 import com.xrbpowered.hexpansio.world.BuildingProgress;
+import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -128,9 +132,25 @@ public class TileMode extends MapMode {
 		return false;
 	}
 	
+	public void switchBuildingProgress(BuildingProgress bp) {
+		City city = view.selectedCity;
+		int loss = city.buildingProgress!=null ? city.buildingProgress.progress : 0;
+		if(loss>0) {
+			new ProductionLossDialog(city.buildingProgress, bp) {
+				@Override
+				public void onEnter() {
+					city.setBuilding(bp);
+					dismiss();
+				}
+			};
+		}
+		else
+			city.setBuilding(bp);
+	}
+	
 	public boolean cancelBuilding() {
 		if(view.selectedCity.buildingProgress!=null) {
-			view.selectedCity.setBuilding(null);
+			switchBuildingProgress(null);
 			return true;
 		}
 		else
@@ -141,8 +161,14 @@ public class TileMode extends MapMode {
 		if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.canHurry()) {
 			int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
 			if(cost >0 && view.world.goods>=cost) {
-				view.selectedCity.buildingProgress.progress += cost;
-				view.world.goods -= cost;
+				new HurryDialog(cost) {
+					@Override
+					public void onEnter() {
+						view.selectedCity.buildingProgress.progress += cost;
+						view.world.goods -= cost;
+						dismiss();
+					}
+				};
 				return true;
 			}
 		}
@@ -151,7 +177,14 @@ public class TileMode extends MapMode {
 
 	public boolean removeBuilding() {
 		if(view.selectedTile.improvement!=null && !view.selectedTile.improvement.isPermanent()) {
-			view.selectedCity.setBuilding(new BuildingProgress.RemoveImprovement(view.selectedTile));
+			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?", "REMOVE", "CANCEL") {
+				@Override
+				public void onEnter() {
+					dismiss();
+					switchBuildingProgress(new BuildingProgress.RemoveImprovement(view.selectedTile));
+					repaint();
+				}
+			};
 			return true;
 		}
 		else
@@ -166,7 +199,11 @@ public class TileMode extends MapMode {
 				cancelBuilding();
 				return true;
 			}
-			else if(tile.improvement!=null && !tile.improvement.isPermanent()) {
+			else
+				return false;
+		}
+		else if(code==KeyEvent.VK_BACK_SPACE) {
+			if(tile.improvement!=null && !tile.improvement.isPermanent()) {
 				removeBuilding();
 				return true;
 			}
@@ -193,7 +230,7 @@ public class TileMode extends MapMode {
 		
 		Improvement imp = Improvement.buildFromHotkey(code);
 		if(imp!=null && canBuild(tile) && imp.canBuildOn(tile)) {
-			view.selectedCity.setBuilding(new BuildingProgress.BuildImprovement(tile, imp));
+			switchBuildingProgress(new BuildingProgress.BuildImprovement(tile, imp));
 			return true;
 		}
 		else

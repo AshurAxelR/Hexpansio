@@ -72,6 +72,11 @@ public class SettleMode extends MapMode {
 	}
 	
 	@Override
+	public int showCityRange() {
+		return cityRange;
+	}
+	
+	@Override
 	public boolean action() {
 		Tile hoverTile = view.hoverTile;
 		if(hoverTile.isCityCenter()) {
@@ -79,7 +84,7 @@ public class SettleMode extends MapMode {
 			return true;
 		}
 		else if(view.selectedCity.population>1 && view.selectedCity.unemployed>0 && canSettle(hoverTile)) {
-			view.selectedCity.setBuilding(new BuildingProgress.BuiltSettlement(view.selectedCity, hoverTile));
+			TileMode.instance.switchBuildingProgress(new BuildingProgress.BuiltSettlement(view.selectedCity, hoverTile));
 			return true;
 		}
 		else if(hoverTile!=null && hoverTile.settlement!=null) {

@@ -90,6 +90,11 @@ public class ScoutMode extends MapMode {
 	}
 	
 	@Override
+	public int showCityRange() {
+		return cityRange;
+	}
+	
+	@Override
 	public boolean action() {
 		Tile hoverTile = view.hoverTile;
 		if(hoverTile.isCityCenter()) {

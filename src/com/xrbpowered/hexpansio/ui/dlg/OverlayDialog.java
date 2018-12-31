@@ -27,14 +27,12 @@ public class OverlayDialog extends UIContainer implements KeyInputHandler {
 	}
 	
 	protected final UIContainer box;
-	private final KeyInputHandler focus;
 	public String title;
 	
 	public OverlayDialog(UIContainer parent, float width, float height, String title) {
 		super(parent);
 		this.title = title;
-		focus = getBase().getFocus();
-		getBase().resetFocus();
+		getBase().setFocus(this);
 		
 		this.box = new Box();
 		box.setSize(width, height);
@@ -73,7 +71,7 @@ public class OverlayDialog extends UIContainer implements KeyInputHandler {
 	
 	public void dismiss() {
 		getParent().removeChild(this);
-		getBase().setFocus(focus);
+		getBase().resetFocus();
 		repaint();
 	}
 	

@@ -118,6 +118,11 @@ public class Tile {
 		return t!=null && t.city!=this.city;
 	}
 	
+	public boolean isRangeBorder(Dir d, Tile dst, int range) {
+		Tile t = getAdj(d);
+		return t!=null && (distTo(dst)<=range) != (t.distTo(dst)<=range);
+	}
+	
 	public static class DummyTile extends Tile {
 		public DummyTile(int wx, int wy) {
 			super(wx, wy);

@@ -66,6 +66,10 @@ public abstract class MapMode {
 		return y;
 	}
 	
+	public int showCityRange() {
+		return 0;
+	}
+	
 	public boolean action() {
 		return false;
 	}

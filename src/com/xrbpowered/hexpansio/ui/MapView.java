@@ -203,8 +203,21 @@ public class MapView extends UIElement {
 				if(getScale()>0.25f) {
 					g.graph.fill(hexagon);
 
-					g.graph.setStroke(borderStroke);
 					g.pushAntialiasing(true);
+
+					int range = MapMode.active.showCityRange();
+					if(range>0) {
+						g.resetStroke();
+						g.setColor(Color.WHITE);
+						if(tile.isRangeBorder(Dir.NW, selectedCity.tile, range))
+							g.line(-w/2-a, 0, -w/2, -h);
+						if(tile.isRangeBorder(Dir.N, selectedCity.tile, range))
+							g.line(-w/2, -h, w/2, -h);
+						if(tile.isRangeBorder(Dir.SW, selectedCity.tile, range))
+							g.line(-w/2-a, 0, -w/2, h);
+					}
+					
+					g.graph.setStroke(borderStroke);
 					g.setColor(playerColor);
 					if(tile.isCityBorder(Dir.NW))
 						g.line(-w/2-a, 0, -w/2, -h);
@@ -212,6 +225,8 @@ public class MapView extends UIElement {
 						g.line(-w/2, -h, w/2, -h);
 					if(tile.isCityBorder(Dir.SW))
 						g.line(-w/2-a, 0, -w/2, h);
+
+
 					g.popAntialiasing();
 				}
 				else
