@@ -172,7 +172,7 @@ public class BuildDialog extends OverlayDialog {
 			g.drawString(String.format("Build cost: %d  %s", imp.buildCost, Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), "")), x, y);
 			if(imp.maintenance>0) {
 				y += 15;
-				g.drawString(String.format("Maintenance: %d gold", imp.maintenance), x, y);
+				Res.paintIncome(g, YieldResource.gold, "Maintenance: ", -imp.maintenance, " gold", x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
 			}
 			for(YieldResource res : YieldResource.values()) {
 				int yield = imp.yield.get(res);

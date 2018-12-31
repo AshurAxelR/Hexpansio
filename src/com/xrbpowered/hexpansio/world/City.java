@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.world;
 import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.resources.Happiness;
+import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
@@ -12,6 +13,7 @@ public class City {
 
 	public static final int expandRange = 3;
 	public static final int growthCostFactor = 10;
+	public static final int baseHappiness = 3;
 	
 	public String name;
 	public int population = 1;
@@ -28,6 +30,8 @@ public class City {
 	public int numTiles = 0;
 	public int foodIn, prodIn, goldIn, happyIn;
 	public int foodOut, goldOut, happyOut;
+	
+	public ResourcePile resources = new ResourcePile();
 	public int unemployed, workplaces;
 	public Happiness happiness = Happiness.content;
 	
@@ -115,6 +119,49 @@ public class City {
 		return prod/4;
 	}
 	
+	public boolean unassignWorker() {
+		if(unemployed>0)
+			return true;
+		Tile minTile = null;
+		int minYield = 0;
+		for(int x=-expandRange; x<=expandRange; x++)
+			for(int y=-expandRange; y<=expandRange; y++) {
+				Tile t = world.getTile(tile.wx+x, tile.wy+y);
+				if(t!=null && t.city==this && t.workers>0 && !t.isCityCenter()) {
+					numTiles++;
+					int yield = 0;
+					yield += t.yield.total();
+					if(t.resource!=null && t.improvement==t.resource.improvement)
+						yield += t.resource.yield.total();
+					if(minTile==null || yield<minYield) {
+						minTile = t;
+						minYield = yield;
+					}
+				}
+			}
+		if(minTile!=null)
+			return minTile.unassignWorkers();
+		else
+			return false;
+	}
+	
+	private void reducePopulation() {
+		if(isBuildingSettlement())
+			buildingProgress.cancel();
+		if(population>1) {
+			population--;
+			if(unemployed>0)
+				unemployed--;
+			else
+				unassignWorker();
+			if(growth<0)
+				growth += getTargetGrowth();
+		}
+		else {
+			growth = 0;
+		}
+	}
+	
 	public void nextTurn() {
 		updateStats();
 		
@@ -122,7 +169,7 @@ public class City {
 		
 		if(buildingProgress!=null) {
 			if(buildingProgress.nextTurn(getProduction())) {
-				world.gold += getExcess(buildingProgress.progress);
+				world.goods += getExcess(buildingProgress.progress);
 				buildingProgress = null;
 			}
 		}
@@ -130,23 +177,15 @@ public class City {
 			world.goods += getExcess(getProduction());
 		}
 
+		if(happiness==Happiness.raging)
+			reducePopulation();
 		if(growth<0) {
-			if(isBuildingSettlement())
-				buildingProgress.cancel();
-			if(population>1) {
-				population--;
-				// FIXME unassign worker
-				growth += getTargetGrowth();
-			}
-			else {
-				growth = 0;
-			}
+			reducePopulation();
 		}
 		else {
 			while(growth>=getTargetGrowth()) {
 				growth -= getTargetGrowth();
 				population++;
-				// TODO auto assign
 			}
 		}
 		
@@ -166,11 +205,12 @@ public class City {
 	}
 	
 	public void updateStats() {
+		resources.clear();
 		numTiles = 0;
 		foodIn = 0;
 		prodIn = 0;
 		goldIn = 0;
-		happyIn = 3;
+		happyIn = baseHappiness;
 		workplaces = 0;
 		goldOut = 0;
 		int workers = 0;
@@ -187,8 +227,10 @@ public class City {
 						workers += t.workers;
 					if(t.improvement!=null)
 						goldOut += t.improvement.maintenance;
-					if(t.resource!=null && t.improvement==t.resource.improvement)
+					if(t.resource!=null && t.improvement==t.resource.improvement) {
+						resources.add(t.resource, 1);
 						appendYield(t.resource.yield);
+					}
 				}
 			}
 		if(isBuildingSettlement())

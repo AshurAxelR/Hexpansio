@@ -115,7 +115,7 @@ public class CityInfoPane extends UIContainer {
 		}
 		g.setColor(Color.WHITE);
 		y += 20; g.drawString("+3 base happiness", x, y);
-		y += 15; g.drawString(String.format("%+d from tiles", city.happyIn-3), x, y);
+		y += 15; g.drawString(String.format("%+d from tiles and resources", city.happyIn-3), x, y);
 		g.setColor(Color.GRAY);
 		if(city.population>1) {
 			y += 15; g.drawString(String.format("%d from population", -(city.population-1)), x, y);
@@ -183,6 +183,12 @@ public class CityInfoPane extends UIContainer {
 			g.drawString(String.format("%+d (%+d -%d%%)", city.getProduction(), city.prodIn, city.happiness.prodPenalty), cx, y);
 		else
 			g.drawString(String.format("%+d", city.prodIn), cx, y);
+		
+		if(!city.resources.isEmpty()) {
+			y += 15;
+			city.resources.paint(g, x, y, "%d");
+			y += 40;
+		}
 
 		y += 15;
 		g.resetStroke();

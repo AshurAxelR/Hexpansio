@@ -85,6 +85,26 @@ public class Tile {
 		return adj;
 	}
 	
+	public boolean assignWorker() {
+		if(city!=null && !isCityCenter() && workers==0 && city.unemployed>0) {
+			workers = 1;
+			city.unemployed--;
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public boolean unassignWorkers() {
+		if(city!=null && !isCityCenter() && workers>0) {
+			city.unemployed += workers;
+			workers = 0;
+			return true;
+		}
+		else
+			return false;
+	}
+
 	public int distTo(int wx, int wy) {
 		return World.dist(this.wx, this.wy, wx, wy);
 	}

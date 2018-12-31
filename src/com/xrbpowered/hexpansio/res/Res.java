@@ -104,13 +104,11 @@ public class Res {
 		}
 	}
 	
-	public static void paintCost(GraphAssist g, YieldResource res, String prefix, int cost, String postfix,
-			int avail, float x, float y, int halign, int valign) {
-		String s = Integer.toString(cost);
-		
+	public static void paintCost(GraphAssist g, YieldResource res, String prefix, String cost, String postfix,
+			Color costColor, float x, float y, int halign, int valign) {
 		FontMetrics fm = g.graph.getFontMetrics();
 		float wstart = prefix==null ? 0 : fm.stringWidth(prefix);
-		float ws = fm.stringWidth(s);
+		float ws = fm.stringWidth(cost);
 		float wend = postfix==null ? 0 : fm.stringWidth(postfix);
 		float h = fm.getAscent() - fm.getDescent();
 		float w = wstart+ws+wend+h*1.5f;
@@ -121,13 +119,23 @@ public class Res {
 			g.graph.drawString(prefix, tx, ty);
 		if(postfix!=null)
 			g.graph.drawString(postfix, tx+wstart+ws+h*1.5f, ty);
-		g.setColor(cost>avail ? Color.RED : Color.WHITE);
-		g.graph.drawString(s, tx+wstart+h*1.5f, ty);
+		g.setColor(costColor);
+		g.graph.drawString(cost, tx+wstart+h*1.5f, ty);
 		
 		g.setColor(res.fill);
 		g.graph.fillOval((int)(tx+wstart+h*0.25f), (int)(ty-h), (int)h, (int)h);
 	}
-	
+
+	public static void paintCost(GraphAssist g, YieldResource res, String prefix, int cost, String postfix,
+			int avail, float x, float y, int halign, int valign) {
+		paintCost(g, res, prefix, Integer.toString(cost), postfix, cost>avail ? Color.RED : Color.WHITE, x, y, halign, valign);
+	}
+
+	public static void paintIncome(GraphAssist g, YieldResource res, String prefix, int income, String postfix,
+			float x, float y, int halign, int valign) {
+		paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.GRAY : Color.WHITE, x, y, halign, valign);
+	}
+
 	public static void paintToken(GraphAssist g, float scale, BufferedImage image, int subImage) {
 		g.pushPureStroke(true);
 		if(scale>1.25f) {

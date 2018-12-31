@@ -110,19 +110,19 @@ public class TileMode extends MapMode {
 			return true;
 		}
 		else if(hoverTile.city==view.selectedCity && !hoverTile.isCityCenter()) {
-			if(hoverTile.workers==0 && view.selectedCity.unemployed>0) {
-				hoverTile.workers = 1;
-				view.selectedCity.unemployed--;
-				view.selectedCity.updateStats();
-				view.world.updateWorldTotals();
-				return true;
+			if(hoverTile.workers==0) {
+				if(hoverTile.assignWorker()) {
+					view.selectedCity.updateStats();
+					view.world.updateWorldTotals();
+					return true;
+				}
 			}
 			else if(hoverTile.workers>0) {
-				view.selectedCity.unemployed += hoverTile.workers;
-				hoverTile.workers = 0;
-				view.selectedCity.updateStats();
-				view.world.updateWorldTotals();
-				return true;
+				if(hoverTile.unassignWorkers()) {
+					view.selectedCity.updateStats();
+					view.world.updateWorldTotals();
+					return true;
+				}
 			}
 		}
 		return false;

@@ -75,11 +75,12 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	}
 	
 	public void saveGame() {
-		world.save.write();
+		//world.save.write();
 	}
 	
 	public void nextTurn() {
 		world.nextTurn();
+		System.out.printf("Turn %d\n", world.turn);
 		saveGame();
 		repaint();
 	}
