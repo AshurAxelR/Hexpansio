@@ -52,8 +52,8 @@ public class Res {
 	}
 
 	public static final int imgSize = 80;
-	public static final BufferedImage imgHappiness = loadImage("happiness");
-	public static final BufferedImage imgRes = loadImage("res");
+	public static final ImageAtlas imgHappiness = new ImageAtlas(loadImage("happiness"), imgSize);
+	public static final ImageAtlas imgRes = new ImageAtlas(loadImage("res"), imgSize);
 	
 	public static BufferedImage loadImage(String name) {
 		String imgPathFormat = "com/xrbpowered/hexpansio/res/img/%s.png";
@@ -136,7 +136,7 @@ public class Res {
 		paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.GRAY : Color.WHITE, x, y, halign, valign);
 	}
 
-	public static void paintToken(GraphAssist g, float scale, BufferedImage image, int subImage) {
+	public static void paintToken(GraphAssist g, float scale, ImageAtlas atlas, int subImage) {
 		g.pushPureStroke(true);
 		if(scale>1.25f) {
 			int x = -MapView.w+MapView.a;
@@ -144,13 +144,13 @@ public class Res {
 			g.resetStroke();
 			g.fillRect(x, y+5, 10, 10);
 			g.drawRect(x, y+5, 10, 10);
-			g.graph.drawImage(image, x-10, y-5, x+10, y+15, subImage*imgSize, 0, (subImage+1)*imgSize, imgSize, null);
+			atlas.draw(g, x-10, y-5, 20, subImage);
 			g.graph.drawOval(x-10, y-5, 20, 20);
 		}
 		else {
 			int r = MapView.h-5;
 			g.setStroke(2f);
-			g.graph.drawImage(image, -r, -r, r, r, subImage*imgSize, 0, (subImage+1)*imgSize, imgSize, null);
+			atlas.draw(g, -r, -r, r*2, subImage);
 			g.graph.drawOval(-r, -r, r*2, r*2);
 		}
 		g.popPureStroke();

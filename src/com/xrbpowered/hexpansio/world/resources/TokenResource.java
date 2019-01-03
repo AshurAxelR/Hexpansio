@@ -1,7 +1,6 @@
 package com.xrbpowered.hexpansio.world.resources;
 
-import java.awt.image.BufferedImage;
-
+import com.xrbpowered.hexpansio.res.ImageAtlas;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.world.ObjectIndex;
 import com.xrbpowered.hexpansio.world.tile.Improvement;
@@ -22,16 +21,16 @@ public class TokenResource {
 	public final Yield.Set yield = new Yield.Set();
 	public final Yield.Set terrainBonus = new Yield.Set();
 
-	public final BufferedImage image;
+	public final ImageAtlas atlas;
 	public final int subImage;
 	
 	public Improvement improvement = null;
 	
-	public TokenResource(int rarity, String name, BufferedImage image, int subImage) {
+	public TokenResource(int rarity, String name, ImageAtlas atlas, int subImage) {
 		objectIndex.put(name, this);
 		this.rarity = rarity;
 		this.name = name;
-		this.image = image;
+		this.atlas = atlas;
 		this.subImage = subImage;
 	}
 
@@ -51,7 +50,7 @@ public class TokenResource {
 	}
 	
 	public void paint(GraphAssist g, int x, int y, String sub) {
-		g.graph.drawImage(image, x, y, x+30, y+30, subImage*Res.imgSize, 0, (subImage+1)*Res.imgSize, Res.imgSize, null);
+		atlas.draw(g, x, y, 30, subImage);
 		if(sub!=null)
 			g.drawString(sub, x+15, y+35, GraphAssist.CENTER, GraphAssist.TOP);
 	}
@@ -78,5 +77,21 @@ public class TokenResource {
 			.requires(Improvement.mine).terrain(0, 0, 2, 0).yield(0, 0, 2, 0);
 	public static final TokenResource gems = new TokenResource(superRare, "Gems", Res.imgRes, 9)
 			.requires(Improvement.mine).terrain(0, 0, 2, 0).yield(0, 0, 1, 2);
+
+	public static final TokenResource stone = new TokenResource(common, "Stone", Res.imgRes, 10)
+			.requires(Improvement.quarry).terrain(0, 1, 0, 0).yield(0, 1, 0, 0);
+	public static final TokenResource clay = new TokenResource(common, "Clay", Res.imgRes, 11)
+			.requires(Improvement.quarry).terrain(0, 0, 1, 0).yield(0, 1, 0, 0);
+	public static final TokenResource sand = new TokenResource(common, "Sand", Res.imgRes, 12)
+			.requires(Improvement.quarry).terrain(0, 1, 0, 0).yield(0, 1, 0, 0);
+	public static final TokenResource cacti = new TokenResource(uncommon, "Cacti", Res.imgRes, 16)
+			.requires(Improvement.plantation).terrain(1, 0, 1, 0).yield(1, 0, 0, 0);
+
+	public static final TokenResource fish = new TokenResource(common, "Fish", Res.imgRes, 13)
+			.requires(Improvement.boat).terrain(1, 0, 0, 0).yield(1, 0, 0, 0);
+	public static final TokenResource pearls = new TokenResource(superRare, "Pearls", Res.imgRes, 14)
+			.requires(Improvement.boat).terrain(0, 0, 2, 0).yield(0, 0, 3, 0);
+	public static final TokenResource corals = new TokenResource(rare, "Corals", Res.imgRes, 15)
+			.requires(Improvement.boat).terrain(1, 0, 1, 0).yield(0, 0, 1, 1);
 
 }

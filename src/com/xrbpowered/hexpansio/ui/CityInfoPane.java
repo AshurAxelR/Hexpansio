@@ -120,8 +120,8 @@ public class CityInfoPane extends UIContainer {
 		if(city.population>1) {
 			y += 15; g.drawString(String.format("%d from population", -(city.population-1)), x, y);
 		}
-		if(city.world.cities.size()>=4) {
-			y += 15; g.drawString(String.format("%d from number of cities", -city.world.cities.size()/4), x, y);
+		if(city.world.cities.size()>1) {
+			y += 15; g.drawString(String.format("%d from number of cities", -city.world.cities.size()+1), x, y);
 		}
 		g.setColor(Color.RED);
 		if(city.unemployed>0) {

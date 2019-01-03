@@ -60,7 +60,7 @@ public class City {
 			if(i>=5) world.cityNameBaseLength++;
 			name = NameGen.generate(random, world.cityNameBaseLength, 3);
 			i++;
-		} while(world.citiesByName.containsKey(name));
+		} while(name.length()<4 || world.citiesByName.containsKey(name));
 		return name;
 	}
 	
@@ -239,7 +239,7 @@ public class City {
 		
 		foodOut = population;
 		
-		happyOut = (population-1) + unemployed*unemployed + world.cities.size()/4 + world.poverty;
+		happyOut = (population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty;
 		if(foodIn<foodOut)
 			happyOut += population;
 		happiness = Happiness.get(happyIn-happyOut, population);

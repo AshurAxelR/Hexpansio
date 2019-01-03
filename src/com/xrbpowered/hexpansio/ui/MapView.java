@@ -296,7 +296,7 @@ public class MapView extends UIElement {
 				
 				if(tile!=null && tile.resource!=null && getScale()>0.5f) {
 					g.setColor(tile.city==null ? Color.DARK_GRAY : tile.improvement==tile.resource.improvement ? Color.WHITE : Color.LIGHT_GRAY);
-					Res.paintToken(g, getScale(), tile.resource.image, tile.resource.subImage);
+					Res.paintToken(g, getScale(), tile.resource.atlas, tile.resource.subImage);
 				}
 
 				g.popTx();

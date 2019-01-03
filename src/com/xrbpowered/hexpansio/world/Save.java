@@ -251,6 +251,7 @@ public class Save {
 	}
 	
 	public World startNew(long seed) {
+		System.out.println("New world");
 		this.world = new World(this, seed, terrainGenerator()).create();
 		return this.world;
 	}

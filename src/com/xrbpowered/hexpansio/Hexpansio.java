@@ -9,6 +9,7 @@ import com.xrbpowered.hexpansio.ui.CityInfoPane;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.TileInfoPane;
 import com.xrbpowered.hexpansio.ui.TopPane;
+import com.xrbpowered.hexpansio.ui.dlg.GameMenu;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
@@ -76,8 +77,25 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		super.layout();
 	}
 	
+	public World getWorld() {
+		return world;
+	}
+	
+	public void newGame() {
+		world.save.delete();
+		world = world.save.startNew(System.currentTimeMillis());
+		view.view.setWorld(world);
+	}
+	
 	public void saveGame() {
 		world.save.write();
+	}
+	
+	public void loadGame() {
+		if(world.save.exists()) {
+			world = world.save.read();
+			view.view.setWorld(world);
+		}
 	}
 	
 	public void nextTurn() {
@@ -91,7 +109,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public boolean onKeyPressed(char c, int code, int mods) {
 		switch(code) {
 			case KeyEvent.VK_ESCAPE:
-				new QuickExitDialog();
+				new GameMenu();
 				repaint();
 				return true;
 			case KeyEvent.VK_ENTER:

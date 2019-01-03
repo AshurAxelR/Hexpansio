@@ -130,12 +130,14 @@ public class Improvement {
 			.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak);
 	public static final Improvement plantation = new Improvement("Plantation", 40).setGlyph("N").yield(1, 0, 1, 0)
 			.reject(Feature.water, Feature.peak).requireResource();
+	public static final Improvement quarry = new Improvement("Quarry", 30).setGlyph("Y").yield(0, 1, 1, 0).requireResource();
+	public static final Improvement boat = new Improvement("Fishing Boat", 20).setGlyph("B").reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
 
 	public static final Improvement[] buildMenu = {
-			farm, mine	, market, park, lumberMill, gatherer, pasture, plantation
+			farm, mine	, market, park, lumberMill, gatherer, pasture, plantation, quarry, boat
 		};
 	public static final Integer[] hotkeys = {
-			KeyEvent.VK_F, KeyEvent.VK_M, KeyEvent.VK_T, KeyEvent.VK_P, KeyEvent.VK_L, KeyEvent.VK_G, KeyEvent.VK_U, KeyEvent.VK_N 
+			KeyEvent.VK_F, KeyEvent.VK_M, KeyEvent.VK_T, KeyEvent.VK_P, KeyEvent.VK_L, KeyEvent.VK_G, KeyEvent.VK_U, KeyEvent.VK_N, KeyEvent.VK_Y, KeyEvent.VK_B
 		};
 	public static Improvement buildFromHotkey(int key) {
 		for(int i=0; i<hotkeys.length; i++)
