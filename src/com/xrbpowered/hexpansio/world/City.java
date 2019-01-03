@@ -6,14 +6,17 @@ import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
+import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
 public class City {
 
 	public static final int expandRange = 3;
 	public static final int growthCostFactor = 10;
-	public static final int baseHappiness = 3;
+	public static final int baseHappiness = 5;
 	
 	public String name;
 	public int population = 1;
@@ -80,7 +83,7 @@ public class City {
 		tile.resource = null;
 		tile.region.cities.add(this);
 		tile.city = this;
-		tile.improvement = Improvement.cityCenter;
+		tile.improvement = new ImprovementStack(Improvement.cityCenter);
 	}
 	
 	public void addTile(int wx, int wy) {
@@ -100,7 +103,7 @@ public class City {
 	}
 	
 	public boolean isBuildingSettlement() {
-		return buildingProgress!=null && (buildingProgress instanceof BuildingProgress.BuiltSettlement);
+		return buildingProgress!=null && (buildingProgress instanceof BuiltSettlement);
 	}
 	
 	public Tile getSettlement() {
@@ -131,7 +134,7 @@ public class City {
 					numTiles++;
 					int yield = 0;
 					yield += t.yield.total();
-					if(t.resource!=null && t.improvement==t.resource.improvement)
+					if(t.hasResourceImprovement())
 						yield += t.resource.yield.total();
 					if(minTile==null || yield<minYield) {
 						minTile = t;
@@ -226,8 +229,8 @@ public class City {
 					if(t.workers>0)
 						workers += t.workers;
 					if(t.improvement!=null)
-						goldOut += t.improvement.maintenance;
-					if(t.resource!=null && t.improvement==t.resource.improvement) {
+						goldOut += t.improvement.getMaintenance();
+					if(t.hasResourceImprovement()) {
 						resources.add(t.resource, 1);
 						appendYield(t.resource.yield);
 					}

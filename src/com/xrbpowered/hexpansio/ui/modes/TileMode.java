@@ -8,10 +8,12 @@ import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
 import com.xrbpowered.hexpansio.ui.dlg.HurryDialog;
 import com.xrbpowered.hexpansio.ui.dlg.ProductionLossDialog;
-import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.City;
-import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class TileMode extends MapMode {
@@ -24,8 +26,8 @@ public class TileMode extends MapMode {
 
 	@Override
 	public boolean isTileEnabled(Tile tile) {
-		return tile!=null && tile.city==view.selectedCity 
-				|| tile.isCityCenter() && tile.city!=view.selectedCity;
+		return tile!=null && tile.discovered; // && tile.city==view.selectedCity 
+				// || tile.isCityCenter() && tile.city!=view.selectedCity;
 	}
 	
 	@Override
@@ -105,12 +107,13 @@ public class TileMode extends MapMode {
 	@Override
 	public boolean action() {
 		Tile hoverTile = view.hoverTile;
-		if(hoverTile.isCityCenter()) {
-			view.selectCity(hoverTile.city);
-			return true;
-		}
-		else if(hoverTile!=null && hoverTile.city==view.selectedCity && hoverTile!=view.selectedTile) {
+		if(hoverTile==null || !hoverTile.discovered)
+			return false;
+		
+		if(hoverTile!=view.selectedTile) {
 			view.selectedTile = hoverTile;
+			if(hoverTile.city!=null)
+				view.selectedCity = hoverTile.city;
 			return true;
 		}
 		else if(hoverTile.city==view.selectedCity && !hoverTile.isCityCenter()) {
@@ -181,7 +184,7 @@ public class TileMode extends MapMode {
 				@Override
 				public void onEnter() {
 					dismiss();
-					switchBuildingProgress(new BuildingProgress.RemoveImprovement(view.selectedTile));
+					switchBuildingProgress(new RemoveImprovement(view.selectedTile));
 					repaint();
 				}
 			};
@@ -194,6 +197,9 @@ public class TileMode extends MapMode {
 	@Override
 	public boolean hotkeyAction(int code) {
 		Tile tile = view.selectedTile;
+		if(tile.city==null)
+			return false;
+		
 		if(code==KeyEvent.VK_DELETE) {
 			if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.tile==tile) {
 				cancelBuilding();
@@ -219,7 +225,7 @@ public class TileMode extends MapMode {
 				new BuildDialog(tile);
 				return true;
 			}
-			else if(tile.improvement==null || bp!=null && bp instanceof BuildingProgress.RemoveImprovement) {
+			else if(tile.improvement==null || bp!=null && bp instanceof RemoveImprovement) {
 				return false;
 			}
 			else {
@@ -228,9 +234,9 @@ public class TileMode extends MapMode {
 			}
 		}
 		
-		Improvement imp = Improvement.buildFromHotkey(code);
+		Improvement imp = Improvement.keyMap.get(code);
 		if(imp!=null && canBuild(tile) && imp.canBuildOn(tile)) {
-			switchBuildingProgress(new BuildingProgress.BuildImprovement(tile, imp));
+			switchBuildingProgress(new BuildImprovement(tile, imp));
 			return true;
 		}
 		else

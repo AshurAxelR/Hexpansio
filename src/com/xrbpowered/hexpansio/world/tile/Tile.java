@@ -1,7 +1,6 @@
 package com.xrbpowered.hexpansio.world.tile;
 
 import com.xrbpowered.hexpansio.ui.modes.ScoutMode;
-import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
@@ -9,6 +8,9 @@ import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.utils.RandomUtils;
 
 public class Tile {
@@ -18,8 +20,8 @@ public class Tile {
 	public boolean discovered = false;
 
 	public City city = null;
-	public BuildingProgress.BuiltSettlement settlement = null;
-	public Improvement improvement = null;
+	public BuiltSettlement settlement = null;
+	public ImprovementStack improvement = null;
 	public int workers = 0;
 
 	public final Region region;
@@ -30,7 +32,7 @@ public class Tile {
 	public final Yield yield = new Yield() {
 		@Override
 		public int get(YieldResource res) {
-			return terrainYield.get(res) + (improvement==null ? 0 : improvement.yield.get(res));
+			return terrainYield.get(res) + ImprovementStack.getYield(Tile.this, res);
 		}
 	};
 	
@@ -62,7 +64,11 @@ public class Tile {
 	}
 	
 	public boolean isCityCenter() {
-		return improvement!=null && improvement.isCityCenter();
+		return improvement!=null && improvement.base==Improvement.cityCenter;
+	}
+	
+	public boolean hasResourceImprovement() {
+		return improvement!=null && resource!=null && resource.improvement==improvement.base;
 	}
 	
 	public boolean isAreaDiscovered() {

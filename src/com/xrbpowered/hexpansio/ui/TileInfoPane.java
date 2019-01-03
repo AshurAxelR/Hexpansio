@@ -6,9 +6,10 @@ import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
-import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
+import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -103,26 +104,26 @@ public class TileInfoPane extends UIContainer {
 			
 			y += 15;
 			g.setColor(Color.WHITE);
-			tile.resource.paint(g, x+5, y, tile.improvement!=tile.resource.improvement ? null : "+1");
+			tile.resource.paint(g, x+5, y, tile.hasResourceImprovement() ? "+1" : null);
 			cx = x+45;
 			y += 10;
 			g.setFont(Res.fontBold);
 			g.drawString(tile.resource.name, cx, y);
 			g.setFont(Res.font);
 			y += 15;
-			if(tile.improvement!=tile.resource.improvement) {
-				g.setColor(Color.RED);
-				g.drawString("Requires "+tile.resource.improvement.name, cx, y);
-			}
-			else {
+			if(tile.hasResourceImprovement()) {
 				g.setColor(Color.LIGHT_GRAY);
 				g.drawString(tile.resource.improvement.name, cx, y);
+			}
+			else {
+				g.setColor(Color.RED);
+				g.drawString("Requires "+tile.resource.improvement.name, cx, y);
 			}
 			for(YieldResource res : YieldResource.values()) {
 				int yield = tile.resource.yield.get(res);
 				if(yield!=0) {
 					y += 15;
-					g.setColor(tile.improvement!=tile.resource.improvement ? Color.GRAY : res.fill);
+					g.setColor(tile.hasResourceImprovement() ? res.fill : Color.GRAY);
 					g.drawString(String.format("%+d %s", yield, res.name), cx, y);
 				}
 			}
@@ -131,9 +132,16 @@ public class TileInfoPane extends UIContainer {
 		y += 15;
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
+		
+		if(tile.city==null) {
+			buildButton.setVisible(false);
+			upgButton.setVisible(false);
+			removeButton.setVisible(false);
+			return;
+		}
 
 		y += 25;
-		BuildingProgress bp = tile.city==null ? null : tile.city.buildingProgress==null || tile.city.buildingProgress.tile!=tile ? null : tile.city.buildingProgress;
+		BuildingProgress bp = tile.city.buildingProgress==null || tile.city.buildingProgress.tile!=tile ? null : tile.city.buildingProgress;
 		if(tile.improvement==null && bp==null) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString("No improvement", x, y);
@@ -159,11 +167,11 @@ public class TileInfoPane extends UIContainer {
 			upgButton.setVisible(false);
 			removeButton.setVisible(false);
 		}
-		else if(bp!=null && bp instanceof BuildingProgress.RemoveImprovement) {
+		else if(bp!=null && bp instanceof RemoveImprovement) {
 			y += 5;
 			g.setColor(Color.WHITE);
 			g.setFont(Res.fontLarge);
-			g.drawString(tile.improvement.name, x, y);
+			g.drawString(tile.improvement.base.name, x, y);
 			g.setFont(Res.font);
 			g.setColor(Color.RED);
 			y += 20;
@@ -177,7 +185,7 @@ public class TileInfoPane extends UIContainer {
 			y += 5;
 			g.setColor(Color.WHITE);
 			g.setFont(Res.fontLarge);
-			g.drawString(tile.improvement.name, x, y);
+			g.drawString(tile.improvement.base.name, x, y);
 			g.setFont(Res.font);
 			
 			y += 20;

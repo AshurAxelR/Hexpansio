@@ -5,10 +5,10 @@ import java.awt.Color;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
-import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -114,7 +114,7 @@ public class CityInfoPane extends UIContainer {
 			g.drawString("1 population will leave", x, y);
 		}
 		g.setColor(Color.WHITE);
-		y += 20; g.drawString("+3 base happiness", x, y);
+		y += 20; g.drawString(String.format("%+d base happiness", City.baseHappiness), x, y);
 		y += 15; g.drawString(String.format("%+d from tiles and resources", city.happyIn-3), x, y);
 		g.setColor(Color.GRAY);
 		if(city.population>1) {

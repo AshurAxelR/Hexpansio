@@ -12,11 +12,16 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
-import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.Tile.DummyTile;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
+import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
+import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 
 public class Save {
 
@@ -60,7 +65,8 @@ public class Save {
 		out.writeByte(tile.workers);
 		out.writeShort(tile.city==null ? -1 : tile.city.index);
 		out.writeShort(tile.settlement==null ? -1 : tile.settlement.city.index);
-		out.writeShort(tile.improvement==null ? -1 : convImprovement.getIndex(tile.improvement.name));
+
+		ImprovementStack.write(tile, convImprovement, out);
 	}
 
 	protected void readTile(DataInputStream in, Tile tile) throws IOException {
@@ -70,8 +76,9 @@ public class Save {
 		int cityIndex = in.readShort();
 		tile.city = cityIndex<0 ? null : tile.region.world.cities.get(cityIndex);
 		cityIndex = in.readShort();
-		tile.settlement = cityIndex<0 ? null : (BuildingProgress.BuiltSettlement)tile.region.world.cities.get(cityIndex).buildingProgress;
-		tile.improvement = convImprovement.get(in.readShort());
+		tile.settlement = cityIndex<0 ? null : (BuiltSettlement)tile.region.world.cities.get(cityIndex).buildingProgress;
+		
+		ImprovementStack.read(tile, convImprovement, in);
 		if(tile.isCityCenter())
 			tile.city.setTile(tile);
 	}
@@ -110,12 +117,12 @@ public class Save {
 			out.writeShort(noBuildingProgress);
 		else {
 			int x;
-			if(bp instanceof BuildingProgress.BuiltSettlement)
+			if(bp instanceof BuiltSettlement)
 				x = buildSettlement;
-			else if(bp instanceof BuildingProgress.RemoveImprovement)
+			else if(bp instanceof RemoveImprovement)
 				x = removeImprovement;
 			else {
-				Improvement imp = ((BuildingProgress.BuildImprovement) bp).improvement;
+				Improvement imp = ((BuildImprovement) bp).improvement;
 				x = convImprovement.getIndex(imp.name);
 			}
 			out.writeShort(x);
@@ -132,12 +139,12 @@ public class Save {
 		if(x==noBuildingProgress)
 			return null;
 		else if(x==buildSettlement)
-			bp = new BuildingProgress.BuiltSettlement(city, null);
+			bp = new BuiltSettlement(city, null);
 		else if(x==removeImprovement)
-			bp = new BuildingProgress.RemoveImprovement(null);
+			bp = new RemoveImprovement(null);
 		else {
 			Improvement imp = convImprovement.get(x);
-			bp = new BuildingProgress.BuildImprovement(city, imp);
+			bp = new BuildImprovement(city, imp);
 		}
 		
 		bp.progress = in.readInt();

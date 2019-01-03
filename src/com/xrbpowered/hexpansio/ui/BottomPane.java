@@ -116,7 +116,6 @@ public class BottomPane extends UIContainer {
 		g.setPaint(new GradientPaint(0, 0, new Color(0x336699), 0, getHeight(), Color.BLACK));
 		g.fill(this);
 		g.resetStroke();
-		//g.setStroke(getPixelScale());
 		g.hborder(this, GraphAssist.TOP, Color.WHITE);
 		
 		MapMode mode = MapMode.active;
@@ -125,6 +124,8 @@ public class BottomPane extends UIContainer {
 		g.setColor(Color.WHITE);
 		g.setFont(Res.fontLarge);
 		g.drawString(mode.label.toUpperCase()+" MODE", getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
+		
+		// TODO change bottom pane hints, create hover tile tooltip
 		
 		y += 25;
 		g.setFont(Res.font);
@@ -136,7 +137,7 @@ public class BottomPane extends UIContainer {
 			else {
 				s = tile.terrain.name;
 				if(tile.improvement!=null)
-					s += ", "+tile.improvement.name;
+					s += ", "+tile.improvement.base.name;
 				if(tile.city!=null)
 					s += " worked by "+tile.city.name;
 			}

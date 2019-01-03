@@ -251,12 +251,8 @@ public class MapView extends UIElement {
 					}
 					if(tile.city==selectedCity && !tile.isCityCenter() && tile.improvement!=null) {
 						g.setColor(Color.WHITE);
-						if(tile.improvement.glyph==null)
-							g.graph.fillPolygon(new int[] {-5, 0, 5}, new int[] {h-1, h-7, h-1}, 3);
-						else {
-							g.setFont(Res.font);
-							g.drawString(tile.improvement.glyph, 0, h-1, GraphAssist.CENTER, GraphAssist.BOTTOM);
-						}
+						g.setFont(Res.font);
+						g.drawString(tile.improvement.getGlyph(), 0, h-1, GraphAssist.CENTER, GraphAssist.BOTTOM);
 					}
 					
 					g.popAntialiasing();
@@ -295,7 +291,7 @@ public class MapView extends UIElement {
 				MapMode.active.paintTileOverlay(g, mx, my, tile);
 				
 				if(tile!=null && tile.resource!=null && getScale()>0.5f) {
-					g.setColor(tile.city==null ? Color.DARK_GRAY : tile.improvement==tile.resource.improvement ? Color.WHITE : Color.LIGHT_GRAY);
+					g.setColor(tile.city==null ? Color.DARK_GRAY : tile.hasResourceImprovement() ? Color.WHITE : Color.LIGHT_GRAY);
 					Res.paintToken(g, getScale(), tile.resource.atlas, tile.resource.subImage);
 				}
 

@@ -4,16 +4,15 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.FrameButton;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
-import com.xrbpowered.hexpansio.world.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.Improvement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.std.UIListBox;
 import com.xrbpowered.zoomui.std.UIListItem;
@@ -71,21 +70,9 @@ public class BuildDialog extends OverlayDialog {
 		super(Hexpansio.instance.getBase(), 600, 400, "BUILD IMPROVEMENT");
 		this.tile = tile;
 		
-		ArrayList<Improvement> impList = new ArrayList<>();
-		for(int i=0; i<Improvement.objectIndex.size(); i++) {
-			Improvement imp = Improvement.objectIndex.get(i);
-			if(!imp.isCityCenter()) {
-				// TODO check pre-req
-				impList.add(imp);
-			}
-		}
-		impList.sort(new Comparator<Improvement>() {
-			@Override
-			public int compare(Improvement o1, Improvement o2) {
-				return o1.name.compareTo(o2.name);
-			}
-		});
-		
+		ArrayList<Improvement> impList = Improvement.createBuildList(tile);
+		impList.sort(null);
+
 		list = new UIListBox(box, impList.toArray(new Improvement[impList.size()])) {
 			@Override
 			protected UIListItem createItem(int index, Object object) {
@@ -131,7 +118,7 @@ public class BuildDialog extends OverlayDialog {
 	public void onEnter() {
 		Improvement imp = selectedImprovement();
 		if(imp!=null && imp.canBuildOn(tile)) {
-			TileMode.instance.switchBuildingProgress(new BuildingProgress.BuildImprovement(tile, imp));
+			TileMode.instance.switchBuildingProgress(new BuildImprovement(tile, imp));
 			dismiss();
 		}
 	}
@@ -183,23 +170,16 @@ public class BuildDialog extends OverlayDialog {
 					g.drawString(String.format("%+d %s", yield, res.name), x, y);
 				}
 			}
-			int key = 0;
-			for(int i=0; i<Improvement.buildMenu.length; i++) {
-				if(Improvement.buildMenu[i]==imp) {
-					key = Improvement.hotkeys[i];
-					break;
-				}
-			}
 			if(!imp.canBuildOn(tile)) {
 				y += 15;
 				g.setColor(Color.RED);
 				g.drawString(imp.requirementExplained(tile), x, y);
 			}
-			if(key!=0) {
+			if(imp.hotkey!=0) {
 				y += 25;
 				g.setFont(Res.fontBold);
 				g.setColor(Color.WHITE);
-				g.drawString(String.format("Hotkey: %s", KeyEvent.getKeyText(key)), x, y);
+				g.drawString(String.format("Hotkey: %s", KeyEvent.getKeyText(imp.hotkey)), x, y);
 			}
 		}
 
@@ -208,7 +188,7 @@ public class BuildDialog extends OverlayDialog {
 	
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
-		Improvement imp = Improvement.buildFromHotkey(code);
+		Improvement imp = Improvement.keyMap.get(code);
 		if(imp!=null) {
 			for(int i=0; i<list.getNumItems(); i++)
 				if(list.getItem(i).object==imp) {
