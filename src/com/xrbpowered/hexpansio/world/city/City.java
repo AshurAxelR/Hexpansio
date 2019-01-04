@@ -1,14 +1,19 @@
-package com.xrbpowered.hexpansio.world;
+package com.xrbpowered.hexpansio.world.city;
 
 import java.util.Random;
 
+import com.xrbpowered.hexpansio.world.Dir;
+import com.xrbpowered.hexpansio.world.NameGen;
+import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
+import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
-import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
@@ -22,6 +27,7 @@ public class City {
 	public int population = 1;
 	public int growth = 0;
 	public BuildingProgress buildingProgress = null;
+	public CityEffectStack effects = new CityEffectStack();
 
 	public int availDiscover = 1;
 	public int availExpand = 1;
@@ -33,6 +39,8 @@ public class City {
 	public int numTiles = 0;
 	public int foodIn, prodIn, goldIn, happyIn;
 	public int foodOut, goldOut, happyOut;
+	
+	public int upgPoints;
 	
 	public ResourcePile resources = new ResourcePile();
 	public int unemployed, workplaces;
@@ -77,7 +85,7 @@ public class City {
 		return true;
 	}
 	
-	protected void setTile(Tile tile) {
+	public void setTile(Tile tile) {
 		this.tile = tile;
 		world.discoverTile(tile.wx, tile.wy);
 		tile.resource = null;
@@ -131,7 +139,6 @@ public class City {
 			for(int y=-expandRange; y<=expandRange; y++) {
 				Tile t = world.getTile(tile.wx+x, tile.wy+y);
 				if(t!=null && t.city==this && t.workers>0 && !t.isCityCenter()) {
-					numTiles++;
 					int yield = 0;
 					yield += t.yield.total();
 					if(t.hasResourceImprovement())
@@ -207,7 +214,21 @@ public class City {
 		happyIn += yield.get(YieldResource.happiness);
 	}
 	
+	public void collectEffects() {
+		effects.effects.clear();
+		for(int x=-expandRange; x<=expandRange; x++)
+			for(int y=-expandRange; y<=expandRange; y++) {
+				Tile t = world.getTile(tile.wx+x, tile.wy+y);
+				if(t!=null && t.city==this && t.improvement!=null) {
+					t.improvement.collectEffects(effects);
+				}
+			}
+	}
+
 	public void updateStats() {
+		collectEffects();
+		upgPoints = effects.modifyCityValue(EffectTarget.upgPoints, 0);
+		
 		resources.clear();
 		numTiles = 0;
 		foodIn = 0;
@@ -229,7 +250,7 @@ public class City {
 					if(t.workers>0)
 						workers += t.workers;
 					if(t.improvement!=null)
-						goldOut += t.improvement.getMaintenance();
+						goldOut += t.improvement.maintenance;
 					if(t.hasResourceImprovement()) {
 						resources.add(t.resource, 1);
 						appendYield(t.resource.yield);

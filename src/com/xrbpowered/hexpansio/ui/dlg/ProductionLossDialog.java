@@ -1,8 +1,8 @@
 package com.xrbpowered.hexpansio.ui.dlg;
 
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class ProductionLossDialog extends ConfirmationDialog {

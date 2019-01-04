@@ -5,10 +5,10 @@ import java.awt.Color;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 

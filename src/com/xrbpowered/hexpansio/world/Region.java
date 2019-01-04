@@ -2,6 +2,7 @@ package com.xrbpowered.hexpansio.world;
 
 import java.util.ArrayList;
 
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class Region {

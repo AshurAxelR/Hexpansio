@@ -12,10 +12,10 @@ import java.awt.geom.AffineTransform;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
-import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -335,6 +335,12 @@ public class MapView extends UIElement {
 					g.graph.fillOval((int)(tx+tw-8), (int)(ty-th/2-5), 10, 10);
 					g.popPureStroke();
 				}
+				else if(city.buildingProgress.tile.isCityCenter()) {
+					Res.paintProgress(g, YieldResource.production, city.buildingProgress.progress, city.buildingProgress.getCost(), city.getProduction(),
+							0, (int)(ty+6), (int)(tw+10), 3, GraphAssist.CENTER);
+					th += 3;
+					ty += 3;
+				}
 				g.resetStroke();
 				g.setColor(Color.BLACK);
 				g.graph.drawRect((int)(tx-5), (int)(ty-th-3), (int)(tw+10), (int)(th+9));
@@ -342,7 +348,7 @@ public class MapView extends UIElement {
 				g.popAntialiasing();
 				g.popTx();
 				
-				if(city.buildingProgress!=null) {
+				if(city.buildingProgress!=null && !city.buildingProgress.tile.isCityCenter()) {
 					g.pushTx();
 					x0 = city.buildingProgress.tile.wx*(w+a);
 					y0 = (-city.buildingProgress.tile.wx+2*city.buildingProgress.tile.wy)*h;

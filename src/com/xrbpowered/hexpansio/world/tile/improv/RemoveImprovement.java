@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world.tile.improv;
 
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class RemoveImprovement extends BuildingProgress {

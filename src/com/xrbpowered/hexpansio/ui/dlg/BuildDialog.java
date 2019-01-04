@@ -9,9 +9,9 @@ import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.FrameButton;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
+import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.std.UIListBox;
@@ -67,20 +67,24 @@ public class BuildDialog extends OverlayDialog {
 	private final FrameButton closeButton;
 	
 	public BuildDialog(Tile tile) {
-		super(Hexpansio.instance.getBase(), 600, 400, "BUILD IMPROVEMENT");
+		super(Hexpansio.instance.getBase(), 600, 400, tile.improvement==null ? "BUILD IMPROVEMENT" : "ADD UPGRADE");
 		this.tile = tile;
 		
 		ArrayList<Improvement> impList = Improvement.createBuildList(tile);
 		impList.sort(null);
 
-		list = new UIListBox(box, impList.toArray(new Improvement[impList.size()])) {
-			@Override
-			protected UIListItem createItem(int index, Object object) {
-				return new BuildingListItem(this, index, object);
-			}
-		};
-		list.setSize(300, 400-60-60);
-		list.setLocation(10, 60);
+		if(impList.isEmpty())
+			list = null;
+		else {
+			list = new UIListBox(box, impList.toArray(new Improvement[impList.size()])) {
+				@Override
+				protected UIListItem createItem(int index, Object object) {
+					return new BuildingListItem(this, index, object);
+				}
+			};
+			list.setSize(300, 400-60-60);
+			list.setLocation(10, 60);
+		}
 		
 		buildButton = new FrameButton(box, "START", 140) {
 			@Override
@@ -111,7 +115,7 @@ public class BuildDialog extends OverlayDialog {
 	}
 	
 	private Improvement selectedImprovement() {
-		return list.getSelectedItem()==null ? null : (Improvement) list.getSelectedItem().object;
+		return list==null || list.getSelectedItem()==null ? null : (Improvement) list.getSelectedItem().object;
 	}
 
 	@Override
@@ -136,50 +140,61 @@ public class BuildDialog extends OverlayDialog {
 		int x = 20;
 		int y = 50;
 		g.setFont(Res.font);
-		g.setColor(Color.WHITE);
-		g.drawString("Select to build:", x, y);
-
-		Improvement imp = list.getSelectedItem()==null ? null : (Improvement) list.getSelectedItem().object;
-		
-		if(imp!=null) {
-			x = (int)(list.getX()+list.getWidth()+20);
-			y = (int)list.getY();
-			g.setFont(Res.fontLarge);
-			g.drawString(imp.name, x, y, GraphAssist.LEFT, GraphAssist.TOP);
-			y += 25;
-			g.setFont(Res.font);
-			if(imp.isRecommendedFor(tile)) {
-				g.setColor(Color.YELLOW);
-				y += 15;
-				g.drawString("Recommended:", x, y);
-				y += 15;
-				g.drawString(imp.recommendationExplained(tile), x, y);
-			}
-			y += 15;
+		if(list==null) {
+			g.setColor(Color.GRAY);
+			g.drawString("No upgrades available", box.getWidth()/2, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
+		}
+		else {
 			g.setColor(Color.WHITE);
-			g.drawString(String.format("Build cost: %d  %s", imp.buildCost, Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), "")), x, y);
-			if(imp.maintenance>0) {
-				y += 15;
-				Res.paintIncome(g, YieldResource.gold, "Maintenance: ", -imp.maintenance, " gold", x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
-			}
-			for(YieldResource res : YieldResource.values()) {
-				int yield = imp.yield.get(res);
-				if(yield!=0) {
-					y += 15;
-					g.setColor(res.fill);
-					g.drawString(String.format("%+d %s", yield, res.name), x, y);
-				}
-			}
-			if(!imp.canBuildOn(tile)) {
-				y += 15;
-				g.setColor(Color.RED);
-				g.drawString(imp.requirementExplained(tile), x, y);
-			}
-			if(imp.hotkey!=0) {
+			g.drawString("Select to build:", x, y);
+	
+			Improvement imp = list.getSelectedItem()==null ? null : (Improvement) list.getSelectedItem().object;
+			
+			if(imp!=null) {
+				x = (int)(list.getX()+list.getWidth()+20);
+				y = (int)list.getY();
+				g.setFont(Res.fontLarge);
+				g.drawString(imp.name, x, y, GraphAssist.LEFT, GraphAssist.TOP);
 				y += 25;
-				g.setFont(Res.fontBold);
+				g.setFont(Res.font);
+				if(imp.isRecommendedFor(tile)) {
+					g.setColor(Color.YELLOW);
+					y += 15;
+					g.drawString("Recommended:", x, y);
+					y += 15;
+					g.drawString(imp.recommendationExplained(tile), x, y);
+				}
+				y += 15;
 				g.setColor(Color.WHITE);
-				g.drawString(String.format("Hotkey: %s", KeyEvent.getKeyText(imp.hotkey)), x, y);
+				g.drawString(String.format("Build cost: %d  %s", imp.buildCost, Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), "")), x, y);
+				if(imp.maintenance>0) {
+					y += 15;
+					Res.paintIncome(g, YieldResource.gold, "Maintenance: ", -imp.maintenance, " gold", x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+				}
+				for(YieldResource res : YieldResource.values()) {
+					int yield = imp.yield.get(res);
+					if(yield!=0) {
+						y += 15;
+						g.setColor(res.fill);
+						g.drawString(String.format("%+d %s", yield, res.name), x, y);
+					}
+				}
+				if(imp.effect!=null) {
+					y += 15;
+					g.setColor(Color.WHITE);
+					g.drawString(imp.effect.getDescription(), x, y);
+				}
+				if(!imp.canBuildOn(tile)) {
+					y += 15;
+					g.setColor(Color.RED);
+					g.drawString(imp.requirementExplained(tile), x, y);
+				}
+				if(imp.hotkey!=0) {
+					y += 25;
+					g.setFont(Res.fontBold);
+					g.setColor(Color.WHITE);
+					g.drawString(String.format("Hotkey: %s", KeyEvent.getKeyText(imp.hotkey)), x, y);
+				}
 			}
 		}
 
@@ -189,7 +204,7 @@ public class BuildDialog extends OverlayDialog {
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
 		Improvement imp = Improvement.keyMap.get(code);
-		if(imp!=null) {
+		if(imp!=null && list!=null) {
 			for(int i=0; i<list.getNumItems(); i++)
 				if(list.getItem(i).object==imp) {
 					list.select(i);

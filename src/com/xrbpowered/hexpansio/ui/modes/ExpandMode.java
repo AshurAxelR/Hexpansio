@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;

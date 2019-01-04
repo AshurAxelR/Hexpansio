@@ -1,14 +1,14 @@
 package com.xrbpowered.hexpansio.world.tile;
 
 import com.xrbpowered.hexpansio.ui.modes.ScoutMode;
-import com.xrbpowered.hexpansio.world.City;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.utils.RandomUtils;

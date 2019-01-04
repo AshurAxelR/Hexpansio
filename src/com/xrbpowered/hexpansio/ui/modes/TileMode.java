@@ -8,10 +8,10 @@ import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
 import com.xrbpowered.hexpansio.ui.dlg.HurryDialog;
 import com.xrbpowered.hexpansio.ui.dlg.ProductionLossDialog;
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.tile.Tile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -229,7 +229,7 @@ public class TileMode extends MapMode {
 				return false;
 			}
 			else {
-				// new UpgradeDialog(tile);
+				new BuildDialog(tile);
 				return true;
 			}
 		}

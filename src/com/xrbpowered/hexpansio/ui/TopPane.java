@@ -5,16 +5,34 @@ import java.awt.GradientPaint;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.ui.dlg.GameMenu;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
 public class TopPane extends UIContainer {
 
+	private final FrameButton menuButton;
+
 	public TopPane(UIContainer parent) {
 		super(parent);
 		setSize(0, 60);
+		
+		menuButton = new FrameButton(this, "Menu", 80, (int)getHeight(), Res.font) {
+			@Override
+			public void onClick() {
+				new GameMenu().repaint();
+			}
+		};
+		menuButton.frameWidth = (int)menuButton.getWidth()-20;
+		menuButton.frameHeight = FrameButton.defaultHeight;
+	}
+	
+	@Override
+	public void layout() {
+		menuButton.setLocation(getWidth()-menuButton.getWidth(), 0);
+		super.layout();
 	}
 
 	@Override
@@ -29,7 +47,7 @@ public class TopPane extends UIContainer {
 		if(world==null)
 			return;
 
-		int x = (int)getWidth() - 10;
+		int x = (int)(menuButton.getX()-10);
 
 		g.setColor(Color.WHITE);
 		g.setFont(Res.font);

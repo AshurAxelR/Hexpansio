@@ -11,14 +11,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
+import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.Tile.DummyTile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildImprovement;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
-import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;

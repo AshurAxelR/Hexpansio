@@ -6,9 +6,10 @@ import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuildingProgress;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
@@ -37,8 +38,9 @@ public class TileInfoPane extends UIContainer {
 		
 		upgButton = new FrameButton(this, "Upgrade", 140) {
 			@Override
-			public boolean isEnabled() {
-				return false;
+			public void onClick() {
+				new BuildDialog(getMapView().selectedTile);
+				repaint();
 			}
 		};
 		upgButton.setLocation(margin, 0);
@@ -186,22 +188,34 @@ public class TileInfoPane extends UIContainer {
 			g.setColor(Color.WHITE);
 			g.setFont(Res.fontLarge);
 			g.drawString(tile.improvement.base.name, x, y);
+			
+			y += 20;
 			g.setFont(Res.font);
-			
+			if(tile.improvement.upgrades.isEmpty()) {
+				g.setColor(Color.GRAY);
+				g.drawString("No upgrades", x, y);
+			}
+			else {
+				g.setColor(Color.WHITE);
+				g.drawString("Upgrades:", x, y);
+				g.setFont(Res.fontBold);
+				for(Improvement upg : tile.improvement.upgrades) {
+					y += 20;
+					g.drawString(upg.name, x+20, y);
+				}
+				g.setFont(Res.font);
+			}
 			y += 20;
-			g.setColor(Color.GRAY);
-			g.drawString("No upgrades", x, y);
-			y += 20;
-			g.setColor(Color.WHITE);
-			g.drawString("Upg. points: 0 / 0", x, y);
-			
-			y += 15;
 			upgButton.setLocation(upgButton.getX(), y);
 			removeButton.setLocation(removeButton.getX(), y);
 			buildButton.setVisible(false);
 			upgButton.setVisible(true);
 			removeButton.setVisible(true);
 			y += upgButton.getHeight();
+			
+			y += 15;
+			g.setColor(Color.WHITE);
+			g.drawString(String.format("Upg. points: %d / %d", tile.improvement.upgPoints, tile.city.upgPoints), x, y);
 		}		
 		
 		y += 15;

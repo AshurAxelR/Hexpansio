@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.world.ObjectIndex;
+import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
+import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -14,22 +17,35 @@ public class Improvement implements Comparable<Improvement> {
 	public static final ObjectIndex<Improvement> objectIndex = new ObjectIndex<>();
 	public static final HashMap<Integer, Improvement> keyMap = new HashMap<>();
 	
+	public final Improvement prerequisite;
 	public final String name;
 	public final int buildCost;
+	public final int upgPoints;
 	public final Yield.Set yield = new Yield.Set();
 	
 	public String glyph = null;
 	public int hotkey = 0;
 	
+	public CityEffect effect = null;
+	
+	public int workplaces = 0;
 	public int maintenance = 0;
 	private Feature[] rejectFeatures = {Feature.water, Feature.peak};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	
-	public Improvement(String name, int buildCost) {
+	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		objectIndex.put(name, this);
+		this.prerequisite = prerequisite;
+		if(prerequisite==null)
+			workplaces = 1;
 		this.name = name;
 		this.buildCost = buildCost;
+		this.upgPoints = upgPoints;
+	}
+
+	public Improvement(String name, int buildCost) {
+		this(null, name, buildCost, 0);
 	}
 	
 	@Override
@@ -58,6 +74,11 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 
+	public Improvement workplaces(int w) {
+		this.workplaces = w;
+		return this;
+	}
+
 	public Improvement reject(Feature... features) {
 		this.rejectFeatures = features;
 		return this;
@@ -72,15 +93,34 @@ public class Improvement implements Comparable<Improvement> {
 		this.reqResource = true;
 		return this;
 	}
+	
+	public Improvement effects(CityEffect... effects) {
+		if(effects==null)
+			this.effect = null;
+		else if(effects.length==1)
+			this.effect = effects[0];
+		else
+			this.effect = new CityEffectStack(effects);
+		return this;
+	}
+	
+	public void collectEffects(CityEffectStack effects) {
+		if(effect!=null)
+			effect.addTo(effects);
+	}
 
 	public boolean canBuildOn(Tile tile) {
-		return (reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
+		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
+				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
 				(!reqResource || tile.resource!=null && tile.resource.improvement==this);
 	}
 	
 	public String requirementExplained(Tile tile) {
-		if(reqFeatures!=null && !tile.terrain.hasFeature(reqFeatures)) {
+		if(prerequisite!=null && !ImprovementStack.isPrerequisite(tile, this)) {
+			return String.format("Requires %s", prerequisite.name);
+		}
+		else if(reqFeatures!=null && !tile.terrain.hasFeature(reqFeatures)) {
 			StringBuilder sb = new StringBuilder();
 			for(int i=0; i<reqFeatures.length; i++) {
 				if(i>0 && i==rejectFeatures.length-1)
@@ -116,17 +156,16 @@ public class Improvement implements Comparable<Improvement> {
 		ArrayList<Improvement> impList = new ArrayList<>();
 		for(int i=0; i<Improvement.objectIndex.size(); i++) {
 			Improvement imp = Improvement.objectIndex.get(i);
-			if(imp!=Improvement.cityCenter) {
-				if(tile.improvement==null) {
-					// TODO check pre-req
-					impList.add(imp);
-				}
+			if(imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) && ImprovementStack.isPrerequisite(tile, imp)) {
+				impList.add(imp);
 			}
 		}
 		return impList;
 	}
 	
-	public static final Improvement cityCenter = new Improvement("City", 0).yield(1, 1, 1, 0);
+	public static final Improvement cityCenter = new Improvement("City", 0).workplaces(0).yield(1, 1, 1, 0)
+			.effects(CityEffect.add(EffectTarget.upgPoints, 1));
+	public static final Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
 	
 	public static final Improvement farm = new Improvement("Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")
 			.yield(2, 0, 0, 0).reject(Feature.values());

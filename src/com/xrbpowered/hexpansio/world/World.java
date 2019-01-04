@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.world;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;

@@ -1,6 +1,6 @@
-package com.xrbpowered.hexpansio.world.tile.improv;
+package com.xrbpowered.hexpansio.world.city.build;
 
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public abstract class BuildingProgress {

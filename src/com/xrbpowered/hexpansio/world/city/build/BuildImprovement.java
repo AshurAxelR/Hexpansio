@@ -1,7 +1,9 @@
-package com.xrbpowered.hexpansio.world.tile.improv;
+package com.xrbpowered.hexpansio.world.city.build;
 
-import com.xrbpowered.hexpansio.world.City;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
 public class BuildImprovement extends BuildingProgress {
 	
@@ -29,6 +31,9 @@ public class BuildImprovement extends BuildingProgress {
 	
 	@Override
 	public void complete() {
-		tile.improvement = new ImprovementStack(improvement);
+		if(tile.improvement==null)
+			tile.improvement = new ImprovementStack(improvement);
+		else
+			tile.improvement.add(improvement);
 	}
 }

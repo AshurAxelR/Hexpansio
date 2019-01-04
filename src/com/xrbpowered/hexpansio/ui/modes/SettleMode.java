@@ -3,8 +3,8 @@ package com.xrbpowered.hexpansio.ui.modes;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
-import com.xrbpowered.hexpansio.world.tile.improv.BuiltSettlement;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class SettleMode extends MapMode {
