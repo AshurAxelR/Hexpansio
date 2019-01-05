@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.world.ObjectIndex;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
-import com.xrbpowered.hexpansio.world.city.effect.YieldEffect;
 import com.xrbpowered.hexpansio.world.resources.Yield;
-import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
@@ -24,6 +23,7 @@ public class Improvement implements Comparable<Improvement> {
 	public final int buildCost;
 	public final int upgPoints;
 	public final Yield.Set yield = new Yield.Set();
+	public final Yield.Set yieldPerWorker = new Yield.Set();
 	
 	public String glyph = null;
 	public int hotkey = 0;
@@ -36,12 +36,11 @@ public class Improvement implements Comparable<Improvement> {
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	private boolean reqCoastalCity = false;
+	public boolean cityUnique = false;
 	
 	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		objectIndex.put(name, this);
 		this.prerequisite = prerequisite;
-		if(prerequisite==null)
-			workplaces = 1;
 		this.name = name;
 		this.buildCost = buildCost;
 		this.upgPoints = upgPoints;
@@ -60,7 +59,12 @@ public class Improvement implements Comparable<Improvement> {
 		yield.set(food, production, gold, happiness);
 		return this;
 	}
-	
+
+	public Improvement yieldPerWorker(int food, int production, int gold, int happiness) {
+		yieldPerWorker.set(food, production, gold, happiness);
+		return this;
+	}
+
 	public Improvement setGlyph(String glyph) {
 		this.glyph = glyph;
 		return this;
@@ -102,6 +106,11 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 
+	public Improvement cityUnique() {
+		this.cityUnique = true;
+		return this;
+	}
+
 	public Improvement effects(CityEffect... effects) {
 		if(effects==null)
 			this.effect = null;
@@ -119,15 +128,20 @@ public class Improvement implements Comparable<Improvement> {
 
 	public boolean canBuildOn(Tile tile) {
 		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
+				(!cityUnique || !ImprovementStack.cityContains(tile, this)) &&
 				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
 				(!reqResource || tile.resource!=null && tile.resource.improvement==this) &&
-				(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water);
+				(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water) &&
+				(upgPoints==0 || upgPoints<=ImprovementStack.getAvailUpgPoints(tile));
 	}
 	
 	public String requirementExplained(Tile tile) {
 		if(!(prerequisite==null || ImprovementStack.isPrerequisite(tile, this))) {
 			return String.format("Requires %s", prerequisite.name);
+		}
+		else if(!(!cityUnique || !ImprovementStack.cityContains(tile, this))) {
+			return "Already built in this city";
 		}
 		else if(!(reqFeatures==null || tile.terrain.hasFeature(reqFeatures))) {
 			StringBuilder sb = new StringBuilder();
@@ -148,6 +162,9 @@ public class Improvement implements Comparable<Improvement> {
 		}
 		else if(!(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water)) {
 			return "Requires coastal city";
+		}
+		else if(!(upgPoints==0 || upgPoints<=ImprovementStack.getAvailUpgPoints(tile))) {
+			return "Not enough upgrade points";
 		}
 		else
 			return null;
@@ -178,19 +195,10 @@ public class Improvement implements Comparable<Improvement> {
 	}
 	
 	public static final Improvement cityCenter = new Improvement("City", 0).workplaces(0).yield(1, 1, 1, 0)
-			.effects(CityEffect.add(EffectTarget.upgPoints, 1));
-	public static final Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
-	public static final Improvement harbour = new Improvement(cityCenter, "Harbour", 40, 1).maintenance(2).requireCoastalCity()
-			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
-				@Override
-				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {
-					return tile.terrain.feature==Feature.water ? this.yield.get(res) : 0;
-				}
-				@Override
-				public String getDescription() {
-					return "+1 Food and +1 Gold from water tiles";
-				}
-			});
+			.effects(
+					CityEffect.add(EffectTarget.upgPoints, 1),
+					CityEffect.dummy(EffectTarget.upgPoints.formatPluralDelta(City.cityUpgPoints)+" in the city tile")
+				);
 	
 	public static final Improvement farm = new Improvement("Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")
 			.yield(2, 0, 0, 0).reject(Feature.values());
@@ -214,5 +222,10 @@ public class Improvement implements Comparable<Improvement> {
 			.reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
 	public static final Improvement drill = new Improvement("Drill", 80).hotkey(KeyEvent.VK_I).setGlyph("I")
 			.reject((Feature[])null).yield(0, 2, 1, 0).requireResource();
+	
+	static {
+		CityUpgrades.init();
+		FarmUpgrades.init();
+	}
 
 }

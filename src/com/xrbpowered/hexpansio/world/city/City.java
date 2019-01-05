@@ -23,6 +23,7 @@ public class City {
 	public static final int expandRange = 3;
 	public static final int growthCostFactor = 10;
 	public static final int baseHappiness = 5;
+	public static final int cityUpgPoints = 3;
 	
 	public String name;
 	public int population = 1;
@@ -42,7 +43,7 @@ public class City {
 	public int foodIn, prodIn, goldIn, happyIn;
 	public int foodOut, goldOut, happyOut;
 	
-	public int upgPoints;
+	private int upgPoints;
 	
 	public ResourcePile resources = new ResourcePile();
 	public int unemployed, workplaces;
@@ -93,7 +94,8 @@ public class City {
 		tile.resource = null;
 		tile.region.cities.add(this);
 		tile.city = this;
-		tile.improvement = new ImprovementStack(Improvement.cityCenter);
+		if(tile.improvement==null)
+			tile.improvement = new ImprovementStack(Improvement.cityCenter);
 		coastalCity = tile.countAdjTerrain(Feature.water)>0;
 	}
 	
@@ -131,6 +133,10 @@ public class City {
 
 	public int getExcess(int prod) {
 		return prod/4;
+	}
+	
+	public int maxUpgPointsForTile(Tile tile) {
+		return tile.isCityCenter() ? upgPoints + cityUpgPoints : upgPoints;
 	}
 	
 	public boolean unassignWorker() {
@@ -257,6 +263,11 @@ public class City {
 					if(t.hasResourceImprovement()) {
 						resources.add(t.resource, 1);
 						appendYield(t.resource.yield);
+						
+						foodIn += effects.addResourceBonusYield(t.resource, YieldResource.food);
+						prodIn += effects.addResourceBonusYield(t.resource, YieldResource.production);
+						goldIn += effects.addResourceBonusYield(t.resource, YieldResource.gold);
+						happyIn += effects.addResourceBonusYield(t.resource, YieldResource.happiness);
 					}
 				}
 			}

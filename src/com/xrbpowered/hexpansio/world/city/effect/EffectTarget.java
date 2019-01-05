@@ -11,9 +11,17 @@ public class EffectTarget {
 	}
 	
 	public String formatPluralDelta(int v) {
-		return (!countable || v==1 || v==-1) ?  String.format("%+d %s", v, name) : String.format("%+d %ss", v, name);
+		return formatPluralDelta(v, name, countable);
 	}
 	
+	public static String formatPluralDelta(int v, String name, boolean countable) {
+		return (!countable || v==1 || v==-1) ?  String.format("%+d %s", v, name) : String.format("%+d %ss", v, name);
+	} 
+
+	public static String formatPluralDelta(int v, String name) {
+		return formatPluralDelta(v, name, true);
+	}
+
 	public static final EffectTarget upgPoints = new EffectTarget("Upg. Point", true);
 
 }

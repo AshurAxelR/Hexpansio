@@ -164,5 +164,28 @@ public class Res {
 		int n = calcTurns(prog, total, add);
 		return n<0 ? stall : n==1 ? "(1 turn)" : String.format("(%d turns)", n);
 	}
+	
+	public static void paintWorkerBubble(GraphAssist g, int x, int y, int size, Color fill, Color border) {
+		int r = size/2;
+		g.setColor(fill);
+		g.graph.fillOval(x-r, y-r, size, size);
+		g.setColor(border);
+		g.graph.drawOval(x-r, y-r, size, size);
+	}
+
+	public static void paintWorkerBubbles(GraphAssist g, int x, int y, int size, int count, int total, boolean employed, int halign) {
+		g.pushPureStroke(true);
+		int dx = size*2/3;
+		int w = size+dx*(total-1);
+		int tx = x - (int)GraphAssist.align(w, halign) + size/2;
+		Color fill = employed ? new Color(0x88ddbb) : new Color(0xdd0000);
+		Color border = employed ? new Color(0xaaffdd) : new Color(0xeeaaaa);
+		Color fillEmpty = new Color(0x333333);
+		Color borderEmpty = new Color(0x555555);
+		for(int i=total-1; i>=0; i--) {
+			paintWorkerBubble(g, tx+i*dx, y, size, (i<count) ? fill : fillEmpty, (i<count) ? border : borderEmpty);
+		}
+		g.popPureStroke();
+	}
 
 }

@@ -15,6 +15,7 @@ import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
@@ -22,13 +23,12 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.Tile.DummyTile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
-import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 
 public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 2;
+	public static final int saveVersion = 3;
 	
 	public final String path;
 	public final File file;
@@ -289,7 +289,7 @@ public class Save {
 
 			zip.close();
 		}
-		catch(IOException e) {
+		catch(Exception e) {
 			e.printStackTrace();
 			return null;
 		}

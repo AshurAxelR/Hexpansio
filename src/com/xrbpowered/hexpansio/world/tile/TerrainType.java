@@ -1,5 +1,7 @@
 package com.xrbpowered.hexpansio.world.tile;
 
+import static com.xrbpowered.hexpansio.world.resources.TokenResource.*;
+
 import java.awt.Color;
 import java.util.Random;
 
@@ -7,8 +9,6 @@ import com.xrbpowered.hexpansio.world.ObjectIndex;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.utils.RandomUtils;
-
-import static com.xrbpowered.hexpansio.world.resources.TokenResource.*;
 
 public class TerrainType {
 
@@ -23,6 +23,7 @@ public class TerrainType {
 	public final Yield.Set yield = new Yield.Set();
 	
 	public Feature feature = null;
+	public int workplaces = 1;
 	
 	public float tokenChance = 0f;
 	public TokenResource[] tokens = null;
@@ -36,6 +37,11 @@ public class TerrainType {
 
 	public TerrainType feature(Feature f) {
 		this.feature = f;
+		return this;
+	}
+	
+	public TerrainType workplaces(int w) {
+		this.workplaces = w;
 		return this;
 	}
 	

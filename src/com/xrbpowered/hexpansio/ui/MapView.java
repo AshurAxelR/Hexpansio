@@ -245,14 +245,10 @@ public class MapView extends UIElement {
 						}
 					}
 
-					if(tile.isCityCenter()) {
-						if(tile.city.unemployed>0)
-							TileMode.paintWorkerBubble(g, new Color(0xdd0000), new Color(0xeeaaaa));
-					}
 					if(tile.city==selectedCity && !tile.isCityCenter() && tile.improvement!=null) {
 						g.setColor(Color.WHITE);
 						g.setFont(Res.font);
-						g.drawString(tile.improvement.getGlyph(), 0, h-1, GraphAssist.CENTER, GraphAssist.BOTTOM);
+						g.drawString(tile.improvement.getGlyph(), 0, h-3, GraphAssist.CENTER, GraphAssist.BOTTOM);
 					}
 					
 					g.popAntialiasing();
@@ -314,7 +310,12 @@ public class MapView extends UIElement {
 			if(getScale()>0.75f) {
 				g.setFont(Res.font);
 				String str = String.format("%d. %s", city.population, city.name.toUpperCase());
-				
+			
+				if(getScale()>1.25f) {
+					if(city.unemployed>0)
+						TileMode.paintWorkerBubbles(g, city.unemployed, city.unemployed, false);
+				}
+
 				FontMetrics fm = g.graph.getFontMetrics();
 				float tw = fm.stringWidth(str);
 				if(city.buildingProgress==null)

@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world.city.effect;
 
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 
@@ -17,6 +18,16 @@ public abstract class YieldEffect extends CityEffect {
 		}
 		@Override
 		public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {
+			return this.yield.get(res);
+		}
+	}
+	
+	public static abstract class Resource extends YieldEffect {
+		public Resource(int food, int production, int gold, int happiness) {
+			super(food, production, gold, happiness);
+		}
+		@Override
+		public int addResourceBonusYield(TokenResource resource, YieldResource res) {
 			return this.yield.get(res);
 		}
 	}

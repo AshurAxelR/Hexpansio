@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.ui.modes;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
@@ -11,9 +12,9 @@ import com.xrbpowered.hexpansio.ui.dlg.ProductionLossDialog;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
+import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
-import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class TileMode extends MapMode {
@@ -26,8 +27,7 @@ public class TileMode extends MapMode {
 
 	@Override
 	public boolean isTileEnabled(Tile tile) {
-		return tile!=null && tile.discovered; // && tile.city==view.selectedCity 
-				// || tile.isCityCenter() && tile.city!=view.selectedCity;
+		return tile!=null && tile.discovered;
 	}
 	
 	@Override
@@ -47,27 +47,15 @@ public class TileMode extends MapMode {
 			return null;
 	}
 
-	public static void paintWorkerBubble(GraphAssist g, int x, int y, Color fill, Color border) {
-		g.pushPureStroke(true);
+	public static void paintWorkerBubbles(GraphAssist g, int count, int total, boolean employed) {
 		g.resetStroke();
-		g.setColor(fill);
-		g.graph.fillOval(x-5, y-5, 10, 10);
-		g.setColor(border);
-		g.graph.drawOval(x-5, y-5, 10, 10);
-		g.popPureStroke();
-	}
-
-	public static void paintWorkerBubble(GraphAssist g, Color fill, Color border) {
-		paintWorkerBubble(g, 0, -MapView.h*2/3, fill, border);
+		Res.paintWorkerBubbles(g, 0, -MapView.h*2/3, 10, count, total, employed, GraphAssist.CENTER);
 	}
 	
 	@Override
 	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
 		if(view.getScale()>1.25f && tile!=null && tile.city==view.selectedCity && !tile.isCityCenter()) {
-			if(tile.workers==0)
-				paintWorkerBubble(g, Color.BLACK, Color.DARK_GRAY);
-			else
-				paintWorkerBubble(g, new Color(0x88ddbb), new Color(0xaaffdd));
+			paintWorkerBubbles(g, tile.workers, tile.getWorkplaces(), true);
 		}
 	}
 	
@@ -117,14 +105,14 @@ public class TileMode extends MapMode {
 			return true;
 		}
 		else if(hoverTile.city==view.selectedCity && !hoverTile.isCityCenter()) {
-			if(hoverTile.workers==0) {
+			if(hoverTile.workers<hoverTile.getWorkplaces()) {
 				if(hoverTile.assignWorker()) {
 					view.selectedCity.updateStats();
 					view.world.updateWorldTotals();
 					return true;
 				}
 			}
-			else if(hoverTile.workers>0) {
+			if(hoverTile.workers>0) {
 				if(hoverTile.unassignWorkers()) {
 					view.selectedCity.updateStats();
 					view.world.updateWorldTotals();
@@ -143,6 +131,11 @@ public class TileMode extends MapMode {
 				@Override
 				public void onEnter() {
 					city.setBuilding(bp);
+					dismiss();
+				}
+				@Override
+				public void onCancel() {
+					bp.cancel();
 					dismiss();
 				}
 			};

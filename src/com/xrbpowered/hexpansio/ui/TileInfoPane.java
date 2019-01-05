@@ -7,10 +7,10 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
+import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
-import com.xrbpowered.hexpansio.world.tile.improv.RemoveImprovement;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -142,7 +142,17 @@ public class TileInfoPane extends UIContainer {
 			return;
 		}
 
-		y += 25;
+		y += 10;
+		int wp = tile.getWorkplaces();
+		if(wp>0) {
+			y += 40;
+			g.setStroke(1.25f);
+			Res.paintWorkerBubbles(g, x, y-30, 15, tile.workers, wp, true, GraphAssist.LEFT);
+		}
+		else {
+			y += 15;
+		}
+
 		BuildingProgress bp = tile.city.buildingProgress==null || tile.city.buildingProgress.tile!=tile ? null : tile.city.buildingProgress;
 		if(tile.improvement==null && bp==null) {
 			g.setColor(Color.LIGHT_GRAY);
@@ -215,7 +225,7 @@ public class TileInfoPane extends UIContainer {
 			
 			y += 15;
 			g.setColor(Color.WHITE);
-			g.drawString(String.format("Upg. points: %d / %d", tile.improvement.upgPoints, tile.city.upgPoints), x, y);
+			g.drawString(String.format("Upg. points: %d / %d", tile.improvement.upgPoints, tile.city.maxUpgPointsForTile(tile)), x, y);
 		}		
 		
 		y += 15;

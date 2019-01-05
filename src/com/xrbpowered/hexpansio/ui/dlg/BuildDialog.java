@@ -10,9 +10,11 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.FrameButton;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.std.UIListBox;
 import com.xrbpowered.zoomui.std.UIListItem;
@@ -155,7 +157,7 @@ public class BuildDialog extends OverlayDialog {
 				y = (int)list.getY();
 				g.setFont(Res.fontLarge);
 				g.drawString(imp.name, x, y, GraphAssist.LEFT, GraphAssist.TOP);
-				y += 25;
+				y += 20;
 				g.setFont(Res.font);
 				if(imp.isRecommendedFor(tile)) {
 					g.setColor(Color.YELLOW);
@@ -164,28 +166,53 @@ public class BuildDialog extends OverlayDialog {
 					y += 15;
 					g.drawString(imp.recommendationExplained(tile), x, y);
 				}
-				y += 15;
 				g.setColor(Color.WHITE);
-				g.drawString(String.format("Build cost: %d  %s", imp.buildCost, Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), "")), x, y);
+				if(imp.cityUnique) {
+					y += 15;
+					g.drawString("City unique", x, y);
+				}
+				y += 15;
+				Res.paintCost(g, YieldResource.production, "Build cost: ", imp.buildCost, " "+Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), ""),
+						imp.buildCost, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+				if(imp.upgPoints>0) {
+					y += 15;
+					g.setColor(ImprovementStack.getAvailUpgPoints(tile)>=imp.upgPoints ? Color.WHITE : Color.RED);
+					g.drawString(String.format("Upg. Points required: %d", imp.upgPoints), x, y);
+				}
+				
+				y += 10;
 				if(imp.maintenance>0) {
 					y += 15;
+					g.setColor(Color.LIGHT_GRAY);
 					Res.paintIncome(g, YieldResource.gold, "Maintenance: ", -imp.maintenance, " gold", x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+				}
+				if(imp.workplaces!=0) {
+					y += 15;
+					g.setColor(Color.LIGHT_GRAY);
+					g.drawString(EffectTarget.formatPluralDelta(imp.workplaces, "workplace", true), x, y);
 				}
 				for(YieldResource res : YieldResource.values()) {
 					int yield = imp.yield.get(res);
 					if(yield!=0) {
 						y += 15;
-						g.setColor(res.fill);
+						g.setColor(yield<0 ? Color.RED : res.fill);
 						g.drawString(String.format("%+d %s", yield, res.name), x, y);
+					}
+					yield = imp.yieldPerWorker.get(res);
+					if(yield!=0) {
+						y += 15;
+						g.setColor(yield<0 ? Color.RED : res.fill);
+						g.drawString(String.format("%+d %s per worker", yield, res.name), x, y);
 					}
 				}
 				if(imp.effect!=null) {
 					y += 15;
-					g.setColor(Color.WHITE);
+					g.setColor(Color.LIGHT_GRAY);
 					g.drawString(imp.effect.getDescription(), x, y);
 				}
+				
 				if(!imp.canBuildOn(tile)) {
-					y += 15;
+					y += 25;
 					g.setColor(Color.RED);
 					g.drawString(imp.requirementExplained(tile), x, y);
 				}

@@ -143,18 +143,9 @@ public class CityInfoPane extends UIContainer {
 
 		y += 10;
 		if(city.unemployed>0) {
-			y += 30;
-			g.pushPureStroke(true);
+			y += 35;
 			g.setStroke(1.25f);
-			Color fill = new Color(0xdd0000);
-			Color border = new Color(0xeeaaaa);
-			for(int i=0; i<city.unemployed; i++) {
-				g.setColor(fill);
-				g.graph.fillOval(i*10+10, y-30, 15, 15);
-				g.setColor(border);
-				g.graph.drawOval(i*10+10, y-30, 15, 15);
-			}
-			g.popPureStroke();
+			Res.paintWorkerBubbles(g, x, y-25, 15, city.unemployed, city.unemployed, false, GraphAssist.LEFT);
 			g.setColor(Color.RED);
 			g.drawString(String.format("Unemployed: %d", city.unemployed), x, y);
 			g.setColor(Color.WHITE);

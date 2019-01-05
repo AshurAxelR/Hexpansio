@@ -26,7 +26,7 @@ public class ConfirmationDialog extends OverlayDialog {
 		noButton = new FrameButton(box, noLabel, 140) {
 			@Override
 			public void onClick() {
-				dismiss();
+				onCancel();
 			}
 		};
 		noButton.setLocation(box.getWidth()/2-noButton.getWidth()-10, box.getHeight()-yesButton.getHeight()-10);
@@ -36,6 +36,10 @@ public class ConfirmationDialog extends OverlayDialog {
 		this(height, title, message==null ? null : message.split("\\n"), yesLabel, noLabel);
 	}
 
+	public void onCancel() {
+		dismiss();
+	}
+	
 	@Override
 	protected void paintBoxContents(GraphAssist g) {
 		if(lines!=null) {

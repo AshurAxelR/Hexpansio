@@ -107,9 +107,13 @@ public class Tile {
 		return adj;
 	}
 
+	public int getWorkplaces() {
+		return isCityCenter() ? 0 : terrain.workplaces + (improvement==null ? 0 : improvement.workplaces);
+	}
+	
 	public boolean assignWorker() {
-		if(city!=null && !isCityCenter() && workers==0 && city.unemployed>0) {
-			workers = 1;
+		if(city!=null && !isCityCenter() && workers<getWorkplaces() && city.unemployed>0) {
+			workers++;
 			city.unemployed--;
 			return true;
 		}

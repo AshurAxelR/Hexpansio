@@ -2,6 +2,7 @@ package com.xrbpowered.hexpansio.world.city.effect;
 
 import java.util.ArrayList;
 
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
@@ -55,6 +56,14 @@ public class CityEffectStack extends CityEffect {
 		int value = 0;
 		for(CityEffect eff : effects)
 			value += eff.addTileYield(tile, res);
+		return value;
+	}
+	
+	@Override
+	public int addResourceBonusYield(TokenResource resource, YieldResource res) {
+		int value = 0;
+		for(CityEffect eff : effects)
+			value += eff.addResourceBonusYield(resource, res);
 		return value;
 	}
 
