@@ -1,5 +1,8 @@
 package com.xrbpowered.hexpansio.world.city.effect;
 
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.Tile;
+
 public abstract class CityEffect {
 
 	public void addTo(CityEffectStack effects) {
@@ -18,6 +21,10 @@ public abstract class CityEffect {
 	
 	public int modifyCityValue(EffectTarget key, int value) {
 		return (int)((value + addCityValue(key) * multiplyCityValue(key)));
+	}
+	
+	public int addTileYield(Tile tile, YieldResource res) {
+		return 0;
 	}
 	
 	private static class AddCityValue extends CityEffect {

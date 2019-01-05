@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.utils.RandomUtils;
 
 public class TerrainGenerator {
@@ -206,30 +206,17 @@ public class TerrainGenerator {
 	
 	public void finaliseTile(Tile tile) {
 		if(tile.terrain==oasis) {
-			for(Dir d : Dir.values()) {
-				Tile t = tile.getAdj(d);
-				if(t.terrain!=plains && t.terrain.feature!=Feature.desert) {
-					tile.terrain = plains;
-					break;
-				}
+			if(tile.countAdjTerrain(Feature.desert)<6) {
+				tile.terrain = plains;
 			}
 		}
 		else if(tile.terrain.feature==Feature.desert) {
-			for(Dir d : Dir.values()) {
-				Tile t = tile.getAdj(d);
-				if(t.terrain.feature==Feature.water) {
-					tile.terrain = plains;
-					break;
-				}
+			if(tile.countAdjTerrain(Feature.water)>0) {
+				tile.terrain = plains;
 			}
 		}
 		else if(tile.terrain==water) {
-			int adjWater = 0;
-			for(Dir d : Dir.values()) {
-				Tile t = tile.getAdj(d);
-				if(t.terrain.feature==Feature.water)
-					adjWater++;
-			}
+			int adjWater = tile.countAdjTerrain(Feature.water);
 			
 			if(adjWater==6)
 				tile.terrain = deepWater;

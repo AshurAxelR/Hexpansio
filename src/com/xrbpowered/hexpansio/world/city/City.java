@@ -14,6 +14,7 @@ import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
@@ -35,6 +36,7 @@ public class City {
 	public final int index;
 	public final World world;
 	public Tile tile = null;
+	public boolean coastalCity = false;
 
 	public int numTiles = 0;
 	public int foodIn, prodIn, goldIn, happyIn;
@@ -92,6 +94,7 @@ public class City {
 		tile.region.cities.add(this);
 		tile.city = this;
 		tile.improvement = new ImprovementStack(Improvement.cityCenter);
+		coastalCity = tile.countAdjTerrain(Feature.water)>0;
 	}
 	
 	public void addTile(int wx, int wy) {

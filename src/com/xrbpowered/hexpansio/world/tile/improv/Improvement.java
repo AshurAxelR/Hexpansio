@@ -8,7 +8,9 @@ import com.xrbpowered.hexpansio.world.ObjectIndex;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
+import com.xrbpowered.hexpansio.world.city.effect.YieldEffect;
 import com.xrbpowered.hexpansio.world.resources.Yield;
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
@@ -33,6 +35,7 @@ public class Improvement implements Comparable<Improvement> {
 	private Feature[] rejectFeatures = {Feature.water, Feature.peak};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
+	private boolean reqCoastalCity = false;
 	
 	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		objectIndex.put(name, this);
@@ -93,7 +96,12 @@ public class Improvement implements Comparable<Improvement> {
 		this.reqResource = true;
 		return this;
 	}
-	
+
+	public Improvement requireCoastalCity() {
+		this.reqCoastalCity = true;
+		return this;
+	}
+
 	public Improvement effects(CityEffect... effects) {
 		if(effects==null)
 			this.effect = null;
@@ -113,14 +121,15 @@ public class Improvement implements Comparable<Improvement> {
 		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
 				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
-				(!reqResource || tile.resource!=null && tile.resource.improvement==this);
+				(!reqResource || tile.resource!=null && tile.resource.improvement==this) &&
+				(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water);
 	}
 	
 	public String requirementExplained(Tile tile) {
-		if(prerequisite!=null && !ImprovementStack.isPrerequisite(tile, this)) {
+		if(!(prerequisite==null || ImprovementStack.isPrerequisite(tile, this))) {
 			return String.format("Requires %s", prerequisite.name);
 		}
-		else if(reqFeatures!=null && !tile.terrain.hasFeature(reqFeatures)) {
+		else if(!(reqFeatures==null || tile.terrain.hasFeature(reqFeatures))) {
 			StringBuilder sb = new StringBuilder();
 			for(int i=0; i<reqFeatures.length; i++) {
 				if(i>0 && i==rejectFeatures.length-1)
@@ -134,20 +143,25 @@ public class Improvement implements Comparable<Improvement> {
 		else if(tile.terrain.hasFeature(rejectFeatures)) {
 			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name());
 		}
-		else if(reqResource && (tile.resource==null || tile.resource.improvement!=this)) {
+		else if(!(!reqResource || tile.resource!=null && tile.resource.improvement==this)) {
 			return "Requires appropriate resource";
+		}
+		else if(!(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water)) {
+			return "Requires coastal city";
 		}
 		else
 			return null;
 	}
 	
 	public boolean isRecommendedFor(Tile tile) {
-		return tile.resource!=null && tile.resource.improvement==this;
+		return canBuildOn(tile) &&
+				(tile.resource!=null && tile.resource.improvement==this);
 	}
 	
 	public String recommendationExplained(Tile tile) {
-		if(tile.resource!=null && tile.resource.improvement==this)
+		if(tile.resource!=null && tile.resource.improvement==this) {
 			return "Will produce "+tile.resource.name;
+		}
 		else
 			return null;
 	}
@@ -166,6 +180,17 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement cityCenter = new Improvement("City", 0).workplaces(0).yield(1, 1, 1, 0)
 			.effects(CityEffect.add(EffectTarget.upgPoints, 1));
 	public static final Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+	public static final Improvement harbour = new Improvement(cityCenter, "Harbour", 40, 1).maintenance(2).requireCoastalCity()
+			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
+				@Override
+				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {
+					return tile.terrain.feature==Feature.water ? this.yield.get(res) : 0;
+				}
+				@Override
+				public String getDescription() {
+					return "+1 Food and +1 Gold from water tiles";
+				}
+			});
 	
 	public static final Improvement farm = new Improvement("Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")
 			.yield(2, 0, 0, 0).reject(Feature.values());

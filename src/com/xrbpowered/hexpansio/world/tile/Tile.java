@@ -9,6 +9,7 @@ import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.utils.RandomUtils;
@@ -39,7 +40,12 @@ public class Tile {
 	public final Yield terrainYield = new Yield() {
 		@Override
 		public int get(YieldResource res) {
-			return terrain.yield.get(res) + (resource==null ? 0 : resource.terrainBonus.get(res));
+			int y = terrain.yield.get(res);
+			if(resource!=null)
+				y += resource.terrainBonus.get(res);
+			if(city!=null)
+				y += city.effects.addTileYield(Tile.this, res);
+			return y;
 		}
 	};
 	
@@ -91,6 +97,16 @@ public class Tile {
 		return adj;
 	}
 	
+	public int countAdjTerrain(Feature feature) {
+		int adj = 0;
+		for(Dir d : Dir.values()) {
+			Tile t = getAdj(d);
+			if(t!=null && t.terrain.feature==feature)
+				adj++;
+		}
+		return adj;
+	}
+
 	public boolean assignWorker() {
 		if(city!=null && !isCityCenter() && workers==0 && city.unemployed>0) {
 			workers = 1;
