@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.dlg.ResourceInfoDialog;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
@@ -16,14 +17,16 @@ public class CityInfoPane extends UIContainer {
 
 	private static final int margin = 10;
 	
-	private final FrameButton hurryButton;
-	private final FrameButton cancelButton;
+	private final ClickButton hurryButton;
+	private final ClickButton cancelButton;
+	
+	private final FrameButton resFrame;
 	
 	public CityInfoPane(Hexpansio parent) {
 		super(parent);
 		setSize(250, 400);
 		
-		hurryButton = new FrameButton(this, "Hurry", 140) {
+		hurryButton = new ClickButton(this, "Hurry", 140) {
 			@Override
 			public boolean isEnabled() {
 				City city = getMapView().selectedCity;
@@ -44,7 +47,7 @@ public class CityInfoPane extends UIContainer {
 		hurryButton.setLocation(getWidth()-hurryButton.getWidth()-margin, 0);
 		hurryButton.setVisible(false);
 		
-		cancelButton = new FrameButton(this, "Cancel", (int)(getWidth()-hurryButton.getWidth()-margin*2-5)) {
+		cancelButton = new ClickButton(this, "Cancel", (int)(getWidth()-hurryButton.getWidth()-margin*2-5)) {
 			@Override
 			public void onClick() {
 				TileMode.instance.cancelBuilding();
@@ -53,6 +56,14 @@ public class CityInfoPane extends UIContainer {
 		};
 		cancelButton.setLocation(margin, 0);
 		cancelButton.setVisible(false);
+		
+		resFrame = new FrameButton(this, 3, 3) {
+			@Override
+			public void onClick() {
+				new ResourceInfoDialog(getMapView().selectedCity).repaint();
+			}
+		};
+		resFrame.setLocation(0, 0);
 	}
 	
 	public MapView getMapView() {
@@ -115,7 +126,7 @@ public class CityInfoPane extends UIContainer {
 		}
 		g.setColor(Color.WHITE);
 		y += 20; g.drawString(String.format("%+d base happiness", City.baseHappiness), x, y);
-		y += 15; g.drawString(String.format("%+d from tiles and resources", city.happyIn-3), x, y);
+		y += 15; g.drawString(String.format("%+d from tiles and resources", city.happyIn-City.baseHappiness), x, y);
 		g.setColor(Color.GRAY);
 		if(city.population>1) {
 			y += 15; g.drawString(String.format("%d from population", -(city.population-1)), x, y);
@@ -133,9 +144,6 @@ public class CityInfoPane extends UIContainer {
 		if(city.foodIn<city.foodOut) {
 			y += 15; g.drawString(String.format("%d from starvation", -city.population), x, y);
 		}
-		/*y += 15;
-		g.setColor(Color.WHITE);
-		g.drawString("Details...", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);*/
 
 		y += 15;
 		g.resetStroke();
@@ -158,6 +166,7 @@ public class CityInfoPane extends UIContainer {
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
 
+		resFrame.setLocation(0, y);
 		y += 25;
 		float cx = getWidth()*0.4f;
 		g.setColor(YieldResource.food.fill);
@@ -175,13 +184,18 @@ public class CityInfoPane extends UIContainer {
 		else
 			g.drawString(String.format("%+d", city.prodIn), cx, y);
 		
-		if(!city.resources.isEmpty()) {
+		if(!city.resourcesProduced.isEmpty()) {
 			y += 15;
-			city.resources.paint(g, x, y, "%d");
+			city.resourcesProduced.paint(g, x, y, "%d");
 			y += 40;
 		}
 
 		y += 15;
+		g.setColor(Color.WHITE);
+		g.drawString("Details...", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+
+		y += 15;
+		resFrame.setSize(getWidth(), y-resFrame.getY());
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
 

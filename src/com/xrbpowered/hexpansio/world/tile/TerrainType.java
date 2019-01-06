@@ -111,9 +111,9 @@ public class TerrainType {
 	public static final TerrainType swamp = new TerrainType("Swamp", new Color(0x86ae6b)).yield(1, 0, 0).feature(Feature.swamp)
 			.resources(0.15f, berries, fuel);
 	public static final TerrainType desert = new TerrainType("Desert", new Color(0xcccc99)).yield(0, 0, 1).feature(Feature.desert)
-			.resources(0.1f, sand, clay, cacti, fuel);
+			.resources(0.2f, sand, clay, cacti, fuel);
 	public static final TerrainType desertHills = new TerrainType("Desert Hills", new Color(0xb5b580)).yield(0, 1, 1).feature(Feature.desert)
-			.resources(0.1f, sand, clay, stone, cacti);
+			.resources(0.15f, sand, clay, stone, cacti);
 	public static final TerrainType oasis = new TerrainType("Oasis", new Color(0x93c64f)).yield(2, 0, 2, 1)
 			.resources(0.5f, flowers, fruits);
 	public static final TerrainType jungle = new TerrainType("Jungle", new Color(0x588a4b)).yield(3, 1, 0).feature(Feature.forest)

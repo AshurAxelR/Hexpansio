@@ -17,7 +17,7 @@ public class BottomPane extends UIContainer {
 	private static final int buttonWidth = 70;
 	private static final int buttonFrameSize = 50;
 	
-	public class ModeButton extends FrameButton {
+	public class ModeButton extends ClickButton {
 		public final MapMode mode;
 		
 		public ModeButton(MapMode mode) {
@@ -61,7 +61,7 @@ public class BottomPane extends UIContainer {
 		}
 	};
 	
-	public class NextTurnButton extends FrameButton {
+	public class NextTurnButton extends ClickButton {
 		public NextTurnButton() {
 			super(BottomPane.this, "NEXT TURN", 200, (int)BottomPane.this.getHeight(), Res.fontLarge);
 			setFrameSize(frameWidth-40, buttonFrameSize);

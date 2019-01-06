@@ -1,13 +1,13 @@
 package com.xrbpowered.hexpansio.ui.dlg;
 
 import com.xrbpowered.hexpansio.Hexpansio;
-import com.xrbpowered.hexpansio.ui.FrameButton;
+import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class ConfirmationDialog extends OverlayDialog {
 
-	protected final FrameButton yesButton;
-	protected final FrameButton noButton;
+	protected final ClickButton yesButton;
+	protected final ClickButton noButton;
 	
 	protected String[] lines;
 
@@ -15,7 +15,7 @@ public class ConfirmationDialog extends OverlayDialog {
 		super(Hexpansio.instance.getBase(), 400, height>0 ? height : lines.length*15+120, title);
 		this.lines = lines;
 		
-		yesButton = new FrameButton(box, yesLabel, 140) {
+		yesButton = new ClickButton(box, yesLabel, 140) {
 			@Override
 			public void onClick() {
 				onEnter();
@@ -23,7 +23,7 @@ public class ConfirmationDialog extends OverlayDialog {
 		};
 		yesButton.setLocation(box.getWidth()/2+10, box.getHeight()-yesButton.getHeight()-10);
 
-		noButton = new FrameButton(box, noLabel, 140) {
+		noButton = new ClickButton(box, noLabel, 140) {
 			@Override
 			public void onClick() {
 				onCancel();

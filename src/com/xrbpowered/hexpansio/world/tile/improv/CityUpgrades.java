@@ -11,7 +11,8 @@ import static com.xrbpowered.hexpansio.world.tile.improv.Improvement.*;
 public abstract class CityUpgrades {
 
 	public static void init() {
-		new Improvement(cityCenter, "Town Hall", 100, 0).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+		new Improvement(cityCenter, "Town Hall", 100, 0).maintenance(3).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+		
 		new Improvement(cityCenter, "Harbour", 40, 1).maintenance(2).requireCoastalCity()
 				.effects(new YieldEffect.Tile(1, 0, 1, 0) {
 					@Override

@@ -13,20 +13,20 @@ import com.xrbpowered.zoomui.UIContainer;
 
 public class TopPane extends UIContainer {
 
-	private final FrameButton menuButton;
+	private final ClickButton menuButton;
 
 	public TopPane(UIContainer parent) {
 		super(parent);
 		setSize(0, 60);
 		
-		menuButton = new FrameButton(this, "Menu", 80, (int)getHeight(), Res.font) {
+		menuButton = new ClickButton(this, "Menu", 80, (int)getHeight(), Res.font) {
 			@Override
 			public void onClick() {
 				new GameMenu().repaint();
 			}
 		};
 		menuButton.frameWidth = (int)menuButton.getWidth()-20;
-		menuButton.frameHeight = FrameButton.defaultHeight;
+		menuButton.frameHeight = ClickButton.defaultHeight;
 	}
 	
 	@Override

@@ -45,7 +45,9 @@ public class City {
 	
 	private int upgPoints;
 	
-	public ResourcePile resources = new ResourcePile();
+	public final ResourcePile resourcesOnMap = new ResourcePile();
+	public final ResourcePile resourcesProduced = new ResourcePile();
+	
 	public int unemployed, workplaces;
 	public Happiness happiness = Happiness.content;
 	
@@ -238,7 +240,8 @@ public class City {
 		collectEffects();
 		upgPoints = effects.modifyCityValue(EffectTarget.upgPoints, 0);
 		
-		resources.clear();
+		resourcesOnMap.clear();
+		resourcesProduced.clear();
 		numTiles = 0;
 		foodIn = 0;
 		prodIn = 0;
@@ -252,16 +255,17 @@ public class City {
 				Tile t = world.getTile(tile.wx+x, tile.wy+y);
 				if(t!=null && t.city==this) {
 					numTiles++;
-					if(!t.isCityCenter())
-						workplaces++;
+					workplaces += t.getWorkplaces();
 					if(t.workers>0 || t.isCityCenter())
 						appendYield(t.yield);
 					if(t.workers>0)
 						workers += t.workers;
 					if(t.improvement!=null)
 						goldOut += t.improvement.maintenance;
+					if(t.resource!=null)
+						resourcesOnMap.add(t.resource, 1);
 					if(t.hasResourceImprovement()) {
-						resources.add(t.resource, 1);
+						resourcesProduced.add(t.resource, 1);
 						appendYield(t.resource.yield);
 						
 						foodIn += effects.addResourceBonusYield(t.resource, YieldResource.food);

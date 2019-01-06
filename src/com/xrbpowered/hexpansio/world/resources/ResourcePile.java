@@ -25,7 +25,7 @@ public class ResourcePile {
 	private HashMap<String, Entry> map = new HashMap<>();
 	private ArrayList<Entry> sortedList = null;
 	
-	public Entry get(TokenResource res) {
+	private Entry get(TokenResource res) {
 		Entry e = map.get(res.name);
 		if(e==null) {
 			e = new Entry(res);
@@ -56,6 +56,11 @@ public class ResourcePile {
 	
 	public int remove(TokenResource res, int count) {
 		return add(res, -count);
+	}
+	
+	public int count(TokenResource res) {
+		Entry e = map.get(res.name);
+		return e==null ? 0 : e.count;
 	}
 	
 	public ArrayList<Entry> getSortedList() {

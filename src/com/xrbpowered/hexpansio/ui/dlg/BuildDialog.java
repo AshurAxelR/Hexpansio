@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
-import com.xrbpowered.hexpansio.ui.FrameButton;
+import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
@@ -65,8 +65,8 @@ public class BuildDialog extends OverlayDialog {
 	
 	private UIListBox list;
 	
-	private final FrameButton buildButton;
-	private final FrameButton closeButton;
+	private final ClickButton buildButton;
+	private final ClickButton closeButton;
 	
 	public BuildDialog(Tile tile) {
 		super(Hexpansio.instance.getBase(), 600, 400, tile.improvement==null ? "BUILD IMPROVEMENT" : "ADD UPGRADE");
@@ -88,7 +88,7 @@ public class BuildDialog extends OverlayDialog {
 			list.setLocation(10, 60);
 		}
 		
-		buildButton = new FrameButton(box, "START", 140) {
+		buildButton = new ClickButton(box, "START", 140) {
 			@Override
 			public boolean isEnabled() {
 				Improvement imp = selectedImprovement();
@@ -101,7 +101,7 @@ public class BuildDialog extends OverlayDialog {
 		};
 		buildButton.setLocation(box.getWidth()-buildButton.getWidth()-10, box.getHeight()-buildButton.getHeight()-10);
 
-		closeButton = new FrameButton(box, "Close", 100) {
+		closeButton = new ClickButton(box, "Close", 100) {
 			@Override
 			public void onClick() {
 				dismiss();

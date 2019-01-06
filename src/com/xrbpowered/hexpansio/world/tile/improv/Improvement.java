@@ -52,6 +52,7 @@ public class Improvement implements Comparable<Improvement> {
 	
 	@Override
 	public int compareTo(Improvement o) {
+		// TODO sort order: base, recommend?, buildable?, name
 		return name.compareTo(o.name);
 	}
 	
@@ -121,6 +122,10 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 	
+	public Improvement getBase() {
+		return prerequisite==null ? this : prerequisite.getBase();
+	}
+	
 	public void collectEffects(CityEffectStack effects) {
 		if(effect!=null)
 			effect.addTo(effects);
@@ -131,7 +136,7 @@ public class Improvement implements Comparable<Improvement> {
 				(!cityUnique || !ImprovementStack.cityContains(tile, this)) &&
 				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
-				(!reqResource || tile.resource!=null && tile.resource.improvement==this) &&
+				(!reqResource || tile.resource!=null && tile.resource.improvement==this.getBase()) &&
 				(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water) &&
 				(upgPoints==0 || upgPoints<=ImprovementStack.getAvailUpgPoints(tile));
 	}
@@ -157,7 +162,7 @@ public class Improvement implements Comparable<Improvement> {
 		else if(tile.terrain.hasFeature(rejectFeatures)) {
 			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name());
 		}
-		else if(!(!reqResource || tile.resource!=null && tile.resource.improvement==this)) {
+		else if(!(!reqResource || tile.resource!=null && tile.resource.improvement==this.getBase())) {
 			return "Requires appropriate resource";
 		}
 		else if(!(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water)) {
@@ -211,7 +216,7 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement market = new Improvement("Market", 60).hotkey(KeyEvent.VK_T).setGlyph("T")
 			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak);
 	public static final Improvement park = new Improvement("Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
-			.yield(0, 0, 0, 2).maintenance(2).reject(Feature.water, Feature.desert);
+			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert);
 	public static final Improvement pasture = new Improvement("Pasture", 30).hotkey(KeyEvent.VK_U).setGlyph("U")
 			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak);
 	public static final Improvement plantation = new Improvement("Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
@@ -226,6 +231,7 @@ public class Improvement implements Comparable<Improvement> {
 	static {
 		CityUpgrades.init();
 		FarmUpgrades.init();
+		ParkUpgrades.init();
 	}
 
 }

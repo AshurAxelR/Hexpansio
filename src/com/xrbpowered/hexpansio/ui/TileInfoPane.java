@@ -18,15 +18,15 @@ public class TileInfoPane extends UIContainer {
 
 	private static final int margin = 10;
 
-	private final FrameButton buildButton;
-	private final FrameButton upgButton;
-	private final FrameButton removeButton;
+	private final ClickButton buildButton;
+	private final ClickButton upgButton;
+	private final ClickButton removeButton;
 
 	public TileInfoPane(UIContainer parent) {
 		super(parent);
 		setSize(250, 400);
 		
-		buildButton = new FrameButton(this, "Build", (int)(getWidth()-margin*2)) {
+		buildButton = new ClickButton(this, "Build", (int)(getWidth()-margin*2)) {
 			@Override
 			public void onClick() {
 				new BuildDialog(getMapView().selectedTile);
@@ -36,7 +36,7 @@ public class TileInfoPane extends UIContainer {
 		buildButton.setLocation(margin, 0);
 		buildButton.setVisible(false);
 		
-		upgButton = new FrameButton(this, "Upgrade", 140) {
+		upgButton = new ClickButton(this, "Upgrade", 140) {
 			@Override
 			public void onClick() {
 				new BuildDialog(getMapView().selectedTile);
@@ -46,7 +46,7 @@ public class TileInfoPane extends UIContainer {
 		upgButton.setLocation(margin, 0);
 		upgButton.setVisible(false);
 		
-		removeButton = new FrameButton(this, "Remove", (int)(getWidth()-upgButton.getWidth()-margin*2-5)) {
+		removeButton = new ClickButton(this, "Remove", (int)(getWidth()-upgButton.getWidth()-margin*2-5)) {
 			@Override
 			public boolean isEnabled() {
 				Tile tile= getMapView().selectedTile;
@@ -123,6 +123,8 @@ public class TileInfoPane extends UIContainer {
 			}
 			for(YieldResource res : YieldResource.values()) {
 				int yield = tile.resource.yield.get(res);
+				if(tile.city!=null)
+					yield += tile.city.effects.addResourceBonusYield(tile.resource, res);
 				if(yield!=0) {
 					y += 15;
 					g.setColor(tile.hasResourceImprovement() ? res.fill : Color.GRAY);

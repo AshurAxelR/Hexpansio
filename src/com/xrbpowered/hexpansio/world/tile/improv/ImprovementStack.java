@@ -19,7 +19,7 @@ public class ImprovementStack {
 	public final ArrayList<Improvement> upgrades;
 
 	public int upgPoints;
-	public int workplaces; // TODO use workplaces
+	public int workplaces;
 	public int maintenance;
 	public final Yield.Cache yield = new Yield.Cache();
 	public final Yield.Cache yieldPerWorker = new Yield.Cache();
