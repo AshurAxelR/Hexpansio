@@ -68,7 +68,7 @@ public class BuildDialog extends OverlayDialog {
 	private final ClickButton buildButton;
 	private final ClickButton closeButton;
 	
-	public BuildDialog(Tile tile) {
+	public BuildDialog(final Tile tile) {
 		super(Hexpansio.instance.getBase(), 600, 400, tile.improvement==null ? "BUILD IMPROVEMENT" : "ADD UPGRADE");
 		this.tile = tile;
 		

@@ -123,8 +123,8 @@ public class TileMode extends MapMode {
 		return false;
 	}
 	
-	public void switchBuildingProgress(BuildingProgress bp) {
-		City city = view.selectedCity;
+	public void switchBuildingProgress(final BuildingProgress bp) {
+		final City city = view.selectedCity;
 		int loss = city.buildingProgress!=null ? city.buildingProgress.progress : 0;
 		if(loss>0) {
 			new ProductionLossDialog(city.buildingProgress, bp) {
@@ -155,7 +155,7 @@ public class TileMode extends MapMode {
 
 	public boolean hurryBuilding() {
 		if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.canHurry()) {
-			int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
+			final int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
 			if(cost >0 && view.world.goods>=cost) {
 				new HurryDialog(cost) {
 					@Override
