@@ -47,6 +47,10 @@ public abstract class Yield {
 			for(YieldResource res : YieldResource.values())
 				add(res, yield.get(res));
 		}
+		public void subtract(Yield yield) {
+			for(YieldResource res : YieldResource.values())
+				add(res, -yield.get(res));
+		}
 		public void add(YieldResource res, int add) {
 			yield[res.ordinal()] += add;
 		}

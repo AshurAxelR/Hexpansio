@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -234,7 +235,7 @@ public class World {
 		totalGoodsIn = 0;
 		for(City city : cities) {
 			totalPopulation += city.population;
-			totalGoldIn += city.goldIn-city.goldOut;
+			totalGoldIn += city.balance.get(YieldResource.gold);
 			if(city.buildingProgress==null)
 				totalGoodsIn += city.getExcess(city.getProduction());
 		}

@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world.city;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.Dir;
@@ -11,10 +12,11 @@ import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
+import com.xrbpowered.hexpansio.world.resources.TradeList;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
+import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
@@ -24,12 +26,14 @@ public class City {
 	public static final int growthCostFactor = 10;
 	public static final int baseHappiness = 5;
 	public static final int cityUpgPoints = 3;
-	
+
 	public String name;
 	public int population = 1;
 	public int growth = 0;
 	public BuildingProgress buildingProgress = null;
 	public CityEffectStack effects = new CityEffectStack();
+	
+	public final TradeList trades = new TradeList(this);
 
 	public int availDiscover = 1;
 	public int availExpand = 1;
@@ -40,8 +44,10 @@ public class City {
 	public boolean coastalCity = false;
 
 	public int numTiles = 0;
-	public int foodIn, prodIn, goldIn, happyIn;
-	public int foodOut, goldOut, happyOut;
+	public final Yield.Cache incomeTiles = new Yield.Cache();
+	public final Yield.Cache incomeResources = new Yield.Cache();
+	public final Yield.Cache expences = new Yield.Cache();
+	public final Yield.Cache balance = new Yield.Cache();
 	
 	private int upgPoints;
 	
@@ -66,6 +72,16 @@ public class City {
 			for(Dir d : Dir.values())
 				addTile(tile.wx+d.dx, tile.wy+d.dy);
 		}
+	}
+	
+	public ArrayList<City> getNeighbours(int range) {
+		ArrayList<City> list = new ArrayList<>();
+		for(City c : world.cities) {
+			if(c!=this && tile.distTo(c.tile)<=range) {
+				list.add(c);
+			}
+		}
+		return list;
 	}
 	
 	public static String generateName(World world, Tile tile) {
@@ -126,11 +142,12 @@ public class City {
 	}
 	
 	public int getFoodGrowth() {
-		return (foodIn>foodOut) ? (foodIn-foodOut)*(100-happiness.growthPenalty)/100 : (foodIn-foodOut);
+		int food = balance.get(YieldResource.food);
+		return food>0 ? food*(100-happiness.growthPenalty)/100 : food;
 	}
 
 	public int getProduction() {
-		return prodIn*(100-happiness.prodPenalty)/100;
+		return balance.get(YieldResource.production)*(100-happiness.prodPenalty)/100;
 	}
 
 	public int getExcess(int prod) {
@@ -210,19 +227,12 @@ public class City {
 			}
 		}
 		
-		world.gold += goldIn-goldOut;
+		world.gold += balance.get(YieldResource.gold);
 		
 		availDiscover = 1;
 		availExpand = 1;
 		
 		world.totalPopulation += population;
-	}
-	
-	private void appendYield(Yield yield) {
-		foodIn += yield.get(YieldResource.food);
-		prodIn += yield.get(YieldResource.production);
-		goldIn += yield.get(YieldResource.gold);
-		happyIn += yield.get(YieldResource.happiness);
 	}
 	
 	public void collectEffects() {
@@ -236,19 +246,16 @@ public class City {
 			}
 	}
 
-	public void updateStats() {
-		collectEffects();
+	public void updateIncomeTiles() {
 		upgPoints = effects.modifyCityValue(EffectTarget.upgPoints, 0);
 		
 		resourcesOnMap.clear();
 		resourcesProduced.clear();
 		numTiles = 0;
-		foodIn = 0;
-		prodIn = 0;
-		goldIn = 0;
-		happyIn = baseHappiness;
+		
+		incomeTiles.clear();
+		expences.clear();
 		workplaces = 0;
-		goldOut = 0;
 		int workers = 0;
 		for(int x=-expandRange; x<=expandRange; x++)
 			for(int y=-expandRange; y<=expandRange; y++) {
@@ -257,21 +264,15 @@ public class City {
 					numTiles++;
 					workplaces += t.getWorkplaces();
 					if(t.workers>0 || t.isCityCenter())
-						appendYield(t.yield);
+						incomeTiles.add(t.yield);
 					if(t.workers>0)
 						workers += t.workers;
 					if(t.improvement!=null)
-						goldOut += t.improvement.maintenance;
+						expences.add(YieldResource.gold, t.improvement.maintenance);
 					if(t.resource!=null)
 						resourcesOnMap.add(t.resource, 1);
 					if(t.hasResourceImprovement()) {
 						resourcesProduced.add(t.resource, 1);
-						appendYield(t.resource.yield);
-						
-						foodIn += effects.addResourceBonusYield(t.resource, YieldResource.food);
-						prodIn += effects.addResourceBonusYield(t.resource, YieldResource.production);
-						goldIn += effects.addResourceBonusYield(t.resource, YieldResource.gold);
-						happyIn += effects.addResourceBonusYield(t.resource, YieldResource.happiness);
 					}
 				}
 			}
@@ -279,12 +280,46 @@ public class City {
 			workers++;
 		unemployed = population - workers;
 		
-		foodOut = population;
+		expences.add(YieldResource.food, population);
+	}
+
+	public void updateIncomeResources() {
+		incomeResources.clear();
+		for(ResourcePile.Entry e : resourcesProduced.getUnsorted()) {
+			for(YieldResource res : YieldResource.values()) {
+				incomeResources.add(res, e.count * (e.resource.yield.get(res) + effects.addResourceBonusYield(e.resource, res)));
+			}
+		}
+	}
+
+	public void updateBalance() {
+		expences.add(YieldResource.happiness,
+				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty);
 		
-		happyOut = (population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty;
-		if(foodIn<foodOut)
-			happyOut += population;
-		happiness = Happiness.get(happyIn-happyOut, population);
+		balance.clear();
+		balance.add(YieldResource.happiness, baseHappiness);
+		balance.add(incomeTiles);
+		balance.add(incomeResources);
+		balance.subtract(expences);
+		
+		if(balance.get(YieldResource.food)<0) {
+			expences.add(YieldResource.happiness, population);
+			balance.add(YieldResource.happiness, -population);
+		}
+		
+		happiness = Happiness.get(balance.get(YieldResource.happiness), population);
+	}
+
+	public void updateTrade() {
+		// TODO update trade
+	}
+	
+	public void updateStats() {
+		collectEffects();
+		updateIncomeTiles();
+		updateTrade();
+		updateIncomeResources();
+		updateBalance();
 	}
 
 }

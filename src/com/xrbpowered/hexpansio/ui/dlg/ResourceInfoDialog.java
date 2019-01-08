@@ -39,7 +39,7 @@ public class ResourceInfoDialog extends OverlayDialog {
 			x += 40;
 			g.setColor(enabled ? Color.WHITE : Color.GRAY);
 			g.setFont(Res.fontBold);
-			g.drawString(e.resource.name, 50, y, GraphAssist.LEFT, GraphAssist.CENTER);
+			g.drawString(e.resource.name, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
 			
 			x += 180;
 			g.setFont(Res.font);
@@ -121,8 +121,8 @@ public class ResourceInfoDialog extends OverlayDialog {
 				}
 			}
 		};
-		list.setSize(1000, 660-100-100-60);
-		list.setLocation(10, 100+100);
+		list.setSize(1000, 660-100-140-60);
+		list.setLocation(10, 100+140);
 		
 		closeButton = new ClickButton(box, "Close", 100) {
 			@Override
@@ -135,62 +135,43 @@ public class ResourceInfoDialog extends OverlayDialog {
 
 	@Override
 	protected void paintBoxContents(GraphAssist g) {
-		int x = 30;
+		int x = 20;
 		g.resetStroke();
-		g.drawRect(x-20, 50, 250, 100, Res.uiBorderDark);
-		
-		int y = 80;
-		g.setColor(YieldResource.happiness.fill);
-		g.setFont(Res.fontLarge);
-		g.drawString(String.format("%+d Happiness", city.happyIn-city.happyOut), x, y);
-		y += 25;
-		g.setFont(Res.font);
-		g.drawString(String.format("%+d income", city.happyIn), x, y);
-		y += 15;
-		g.drawString(String.format("-%d expenses", city.happyOut), x, y);
-		
-		x += 250; 
-		g.resetStroke();
-		g.drawRect(x-20, 50, 250, 100, Res.uiBorderDark);
-		
-		y = 80;
-		g.setColor(YieldResource.food.fill);
-		g.setFont(Res.fontLarge);
-		g.drawString(String.format("%+d Food", city.foodIn-city.foodOut), x, y);
-		y += 25;
-		g.setFont(Res.font);
-		g.drawString(String.format("%+d income", city.foodIn), x, y);
-		y += 15;
-		g.drawString(String.format("-%d expenses", city.foodOut), x, y);
+		for(YieldResource res : YieldResource.values()) {
+			g.drawRect(x-10, 50, 250, 140, Res.uiBorderDark);
+			
+			int y = 80;
+			g.setColor(res.fill);
+			g.setFont(Res.fontLarge);
+			g.drawString(String.format("%+d %s", city.balance.get(res), res.name), x, y);
+			y += 25;
+			g.setFont(Res.font);
+			g.drawString(String.format("%+d from tiles", city.incomeTiles.get(res)), x, y);
+			y += 15;
+			g.drawString(String.format("%+d from resources", city.incomeResources.get(res)), x, y);
+			y += 15;
+			if(res==YieldResource.food)
+				g.drawString(String.format("-%d from population", city.expences.get(res)), x, y);
+			else if(res==YieldResource.gold)
+				g.drawString(String.format("-%d maintenance", city.expences.get(res)), x, y);
+			else if(res==YieldResource.happiness)
+				g.drawString(String.format("-%d total penalty", city.expences.get(res)), x, y);
+			else
+				y -= 15;
 
-		x += 250; 
-		g.resetStroke();
-		g.drawRect(x-20, 50, 250, 100, Res.uiBorderDark);
+			if(res==YieldResource.food) {
+				y += 15;
+				if(city.happiness.growthPenalty>0)
+					g.drawString(String.format("-%d%% growth from unhapiness", city.happiness.growthPenalty), x, y);
+			}
+			else if(res==YieldResource.production) {
+				y += 15;
+				if(city.happiness.prodPenalty>0)
+					g.drawString(String.format("-%d%% from unhappiness", city.happiness.prodPenalty), x, y);
+			}
 
-		y = 80;
-		g.setColor(YieldResource.gold.fill);
-		g.setFont(Res.fontLarge);
-		g.drawString(String.format("%+d Gold", city.goldIn-city.goldOut), x, y);
-		y += 25;
-		g.setFont(Res.font);
-		g.drawString(String.format("%+d income", city.goldIn), x, y);
-		y += 15;
-		g.drawString(String.format("-%d expenses", city.goldOut), x, y);
-
-		x += 250; 
-		g.resetStroke();
-		g.drawRect(x-20, 50, 250, 100, Res.uiBorderDark);
-
-		y = 80;
-		g.setColor(YieldResource.production.fill);
-		g.setFont(Res.fontLarge);
-		g.drawString(String.format("%+d Production", city.getProduction()), x, y);
-		y += 25;
-		g.setFont(Res.font);
-		g.drawString(String.format("%+d income", city.prodIn), x, y);
-		y += 15;
-		if(city.happiness.prodPenalty>0)
-			g.drawString(String.format("-%d%% penalty", city.happiness.prodPenalty), x, y);
+			x += 250;
+		}
 
 		super.paintBoxContents(g);
 	}

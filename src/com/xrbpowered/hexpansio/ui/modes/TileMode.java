@@ -160,7 +160,7 @@ public class TileMode extends MapMode {
 				new HurryDialog(cost) {
 					@Override
 					public void onEnter() {
-						view.selectedCity.buildingProgress.progress += cost;
+						view.selectedCity.buildingProgress.progress += cost; // TODO instant complete
 						view.world.goods -= cost;
 						dismiss();
 					}

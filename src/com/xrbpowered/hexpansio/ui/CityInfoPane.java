@@ -112,7 +112,7 @@ public class CityInfoPane extends UIContainer {
 
 		y += 25;
 		g.setColor(city.happiness.color);
-		g.drawString(String.format("%s (%+d)", city.happiness.name.toUpperCase(), city.happyIn-city.happyOut), x, y);
+		g.drawString(String.format("%s (%+d)", city.happiness.name.toUpperCase(), city.balance.get(YieldResource.happiness)), x, y);
 		g.setFont(Res.font);
 		if(city.happiness.growthPenalty>0) {
 			y += 15;
@@ -126,7 +126,7 @@ public class CityInfoPane extends UIContainer {
 		}
 		g.setColor(Color.WHITE);
 		y += 20; g.drawString(String.format("%+d base happiness", City.baseHappiness), x, y);
-		y += 15; g.drawString(String.format("%+d from tiles and resources", city.happyIn-City.baseHappiness), x, y);
+		y += 15; g.drawString(String.format("%+d from tiles and resources", city.incomeTiles.get(YieldResource.happiness)+city.incomeResources.get(YieldResource.happiness)), x, y);
 		g.setColor(Color.GRAY);
 		if(city.population>1) {
 			y += 15; g.drawString(String.format("%d from population", -(city.population-1)), x, y);
@@ -141,7 +141,7 @@ public class CityInfoPane extends UIContainer {
 		if(city.world.poverty>0) {
 			y += 15; g.drawString(String.format("%d from poverty", -city.world.poverty), x, y);
 		}
-		if(city.foodIn<city.foodOut) {
+		if(city.balance.get(YieldResource.food)<0) {
 			y += 15; g.drawString(String.format("%d from starvation", -city.population), x, y);
 		}
 
@@ -171,18 +171,22 @@ public class CityInfoPane extends UIContainer {
 		float cx = getWidth()*0.4f;
 		g.setColor(YieldResource.food.fill);
 		g.drawString("Food:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d / -%d)", city.foodIn-city.foodOut, city.foodIn, city.foodOut), cx, y);
+		g.drawString(String.format("%+d (+%d / -%d)", city.balance.get(YieldResource.food),
+				city.incomeTiles.get(YieldResource.food)+city.incomeResources.get(YieldResource.food),
+				city.expences.get(YieldResource.food)), cx, y);
 		y += 15;
 		g.setColor(YieldResource.gold.fill);
 		g.drawString("Gold:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
-		g.drawString(String.format("%+d (+%d / -%d)", city.goldIn-city.goldOut, city.goldIn, city.goldOut), cx, y);
+		g.drawString(String.format("%+d (+%d / -%d)", city.balance.get(YieldResource.gold),
+				city.incomeTiles.get(YieldResource.food)+city.incomeResources.get(YieldResource.gold),
+				city.expences.get(YieldResource.gold)), cx, y);
 		y += 15;
 		g.setColor(YieldResource.production.fill);
 		g.drawString("Production:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 		if(city.happiness.prodPenalty>0)
-			g.drawString(String.format("%+d (%+d -%d%%)", city.getProduction(), city.prodIn, city.happiness.prodPenalty), cx, y);
+			g.drawString(String.format("%+d (%+d -%d%%)", city.getProduction(), city.balance.get(YieldResource.production), city.happiness.prodPenalty), cx, y);
 		else
-			g.drawString(String.format("%+d", city.prodIn), cx, y);
+			g.drawString(String.format("%+d", city.balance.get(YieldResource.production)), cx, y);
 		
 		if(!city.resourcesProduced.isEmpty()) {
 			y += 15;

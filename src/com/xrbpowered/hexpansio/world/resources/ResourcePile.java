@@ -2,6 +2,7 @@ package com.xrbpowered.hexpansio.world.resources;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.xrbpowered.zoomui.GraphAssist;
@@ -15,15 +16,28 @@ public class ResourcePile {
 		public Entry(TokenResource res) {
 			this.resource = res;
 		}
-		
+
+		public Entry copy() {
+			Entry e = new Entry(resource);
+			e.count = this.count;
+			return e;
+		}
+
 		@Override
 		public int compareTo(Entry o) {
 			return this.resource.name.compareTo(o.resource.name);
 		}
 	}
 	
-	private HashMap<String, Entry> map = new HashMap<>();
+	public HashMap<String, Entry> map = new HashMap<>();
 	private ArrayList<Entry> sortedList = null;
+	
+	public ResourcePile copy() {
+		ResourcePile pile = new ResourcePile();
+		for(Entry e : map.values())
+			pile.map.put(e.resource.name, e.copy());
+		return pile;
+	}
 	
 	private Entry get(TokenResource res) {
 		Entry e = map.get(res.name);
@@ -54,13 +68,35 @@ public class ResourcePile {
 		return e.count;
 	}
 	
+	public void add(ResourcePile pile) {
+		for(Entry e : pile.map.values())
+			add(e.resource, e.count);
+	}
+	
 	public int remove(TokenResource res, int count) {
 		return add(res, -count);
 	}
-	
+
+	public void remove(ResourcePile pile) {
+		for(Entry e : pile.map.values())
+			remove(e.resource, e.count);
+	}
+
 	public int count(TokenResource res) {
 		Entry e = map.get(res.name);
 		return e==null ? 0 : e.count;
+	}
+	
+	public int totalCount() {
+		int total = 0;
+		for(Entry e : map.values()) {
+			total += e.count;
+		}
+		return total;
+	}
+	
+	public Collection<Entry> getUnsorted() {
+		return map.values();
 	}
 	
 	public ArrayList<Entry> getSortedList() {
