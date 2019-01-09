@@ -28,7 +28,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 3;
+	public static final int saveVersion = 4;
 	
 	public final String path;
 	public final File file;
@@ -159,16 +159,14 @@ public class Save {
 		out.writeInt(city.population);
 		out.writeInt(city.growth);
 		writeBuildingProgress(out, city.buildingProgress);
-		out.writeByte(city.availDiscover);
-		out.writeByte(city.availExpand);
+		out.writeByte(city.availExpand ? 1 : 0);
 	}
 	
 	protected void readCity(DataInputStream in, City city) throws IOException {
 		city.population = in.readInt();
 		city.growth = in.readInt();
 		city.buildingProgress = readBuildingProgress(in, city);
-		city.availDiscover = in.readByte();
-		city.availExpand = in.readByte();
+		city.availExpand = in.readByte()>0;
 	}
 	
 	protected void realiseCity(City city) {
@@ -183,6 +181,7 @@ public class Save {
 		out.writeInt(world.poverty);
 		out.writeInt(world.gold);
 		out.writeInt(world.goods);
+		out.writeInt(world.discoverThisTurn);
 
 		out.writeInt(world.cities.size());
 		for(City city : world.cities) {
@@ -207,6 +206,7 @@ public class Save {
 		world.poverty = in.readInt();
 		world.gold = in.readInt();
 		world.goods = in.readInt();
+		world.discoverThisTurn = in.readInt();
 
 		int numCities = in.readInt();
 		for(int i=0; i<numCities; i++) {

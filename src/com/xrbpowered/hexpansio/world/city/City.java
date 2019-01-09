@@ -35,8 +35,7 @@ public class City {
 	
 	public final TradeList trades = new TradeList(this);
 
-	public int availDiscover = 1;
-	public int availExpand = 1;
+	public boolean availExpand = true;
 
 	public final int index;
 	public final World world;
@@ -205,16 +204,11 @@ public class City {
 		
 		growth +=getFoodGrowth();
 		
-		if(buildingProgress!=null) {
-			if(buildingProgress.nextTurn(getProduction())) {
-				world.goods += getExcess(buildingProgress.progress);
-				buildingProgress = null;
-			}
-		}
-		else {
+		if(buildingProgress!=null)
+			buildingProgress.progress(getProduction());
+		else
 			world.goods += getExcess(getProduction());
-		}
-
+		
 		if(happiness==Happiness.raging)
 			reducePopulation();
 		if(growth<0) {
@@ -228,11 +222,7 @@ public class City {
 		}
 		
 		world.gold += balance.get(YieldResource.gold);
-		
-		availDiscover = 1;
-		availExpand = 1;
-		
-		world.totalPopulation += population;
+		availExpand = true;
 	}
 	
 	public void collectEffects() {

@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.ui.modes;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -72,8 +73,13 @@ public class SettleMode extends MapMode {
 	}
 	
 	@Override
-	public int showCityRange() {
-		return cityRange;
+	public boolean showCityRange() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRangeBorder(Tile tile, Dir d) {
+		return tile.isRangeBorder(d, view.selectedCity.tile, cityRange);
 	}
 	
 	@Override

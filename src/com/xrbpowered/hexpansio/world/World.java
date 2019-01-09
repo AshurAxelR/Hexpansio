@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
@@ -22,6 +23,9 @@ public class World {
 	public int gold = 0;
 	public int goods = 0;
 	public int poverty = 0;
+	
+	public int maxDiscover;
+	public int discoverThisTurn = 0;
 
 	private HashMap<Integer, Region> regions = new HashMap<>();
 	public ArrayList<City> cities = new ArrayList<>();
@@ -149,8 +153,8 @@ public class World {
 	}
 	
 	public int costDiscover(Tile t) {
-		int dist = origin.distTo(t)/3;
-		return dist*dist;
+		float dist = (float)origin.distTo(t)/3f;
+		return (int)(dist*dist);
 	}
 	
 	public boolean canAddToCity(Tile t, City city) {
@@ -180,7 +184,7 @@ public class World {
 		}
 	}
 	
-	public int distToNearestCityOrSettler(int wx, int wy) {
+	private int distToNearestCityOrSettler(int wx, int wy, boolean cityOnly) {
 		int rx = wx>>Region.sized;
 		int ry = wy>>Region.sized;
 		int dist = Region.size*2;
@@ -191,7 +195,7 @@ public class World {
 					for(City c : r.cities) {
 						int d = c.tile.distTo(wx, wy);
 						if(d<dist) dist = d;
-						if(c.isBuildingSettlement()) {
+						if(!cityOnly && c.isBuildingSettlement()) {
 							d = c.getSettlement().distTo(wx, wy);
 							if(d<dist) dist = d;
 						}
@@ -200,7 +204,15 @@ public class World {
 			}
 		return dist;
 	}
-	
+
+	public int distToNearestCity(int wx, int wy) {
+		return distToNearestCityOrSettler(wx, wy, true);
+	}
+
+	public int distToNearestCityOrSettler(int wx, int wy) {
+		return distToNearestCityOrSettler(wx, wy, false);
+	}
+
 	public void nextTurn() {
 		for(City city : cities) {
 			city.nextTurn();
@@ -220,6 +232,7 @@ public class World {
 		updateCities();
 		updateWorldTotals();
 		
+		discoverThisTurn = 0;
 		turn++;
 	}
 	
@@ -233,11 +246,13 @@ public class World {
 		totalPopulation = 0;
 		totalGoldIn = 0;
 		totalGoodsIn = 0;
+		maxDiscover = 0;
 		for(City city : cities) {
 			totalPopulation += city.population;
 			totalGoldIn += city.balance.get(YieldResource.gold);
 			if(city.buildingProgress==null)
 				totalGoodsIn += city.getExcess(city.getProduction());
+			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0); 
 		}
 	}
 	

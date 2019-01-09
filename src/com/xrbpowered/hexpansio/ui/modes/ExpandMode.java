@@ -25,12 +25,12 @@ public class ExpandMode extends MapMode {
 	
 	@Override
 	public boolean isEnabled() {
-		return view.selectedCity.availExpand>0;
+		return view.selectedCity.availExpand;
 	}
 	
 	@Override
 	public String getButtonStatusText() {
-		return String.format("%d / 1", view.selectedCity.availExpand);
+		return String.format("%d / 1", view.selectedCity.availExpand ? 1 : 0);
 	}
 	
 	public boolean canExpand(Tile tile) {
@@ -63,7 +63,7 @@ public class ExpandMode extends MapMode {
 			s = "Click to select "+view.hoverTile.city.name;
 			c = Color.WHITE;
 		}
-		else if(view.selectedCity.availExpand==0)
+		else if(!view.selectedCity.availExpand)
 			s = "Out of actions until the next turn";
 		else if(view.hoverTile.city==view.selectedCity)
 			s = "Tile already belongs to "+view.selectedCity.name;
@@ -94,9 +94,9 @@ public class ExpandMode extends MapMode {
 		}
 		else if(canExpand(hoverTile)) {
 			int cost = view.world.costAddToCity(hoverTile, view.selectedCity);
-			if(view.selectedCity.availExpand>0 && view.world.gold>=cost) {
+			if(view.selectedCity.availExpand && view.world.gold>=cost) {
 				view.world.gold -= cost;
-				view.selectedCity.availExpand--;
+				view.selectedCity.availExpand = false;
 				view.world.addToCity(hoverTile.wx, hoverTile.wy, view.selectedCity);
 				view.selectedCity.updateStats();
 				view.selectedTile = hoverTile;

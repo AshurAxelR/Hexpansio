@@ -31,20 +31,20 @@ public class TileMode extends MapMode {
 	}
 	
 	@Override
+	public String getButtonStatusText() {
+		if(view!=null && view.selectedCity!=null)
+			return String.format("%d / %d", view.selectedCity.unemployed, view.selectedCity.population);
+		else
+			return null;
+	}
+	
+	@Override
 	public boolean isHighlighted() {
 		return view!=null && view.selectedCity!=null && view.selectedCity.unemployed>0;
 	}
 	
 	public boolean canBuild(Tile tile) {
 		return tile!=null && tile.city==view.selectedCity && !tile.isCityCenter() && tile.improvement==null;
-	}
-
-	@Override
-	public String getButtonStatusText() {
-		if(view!=null && view.selectedCity!=null)
-			return String.format("%d / %d", view.selectedCity.unemployed, view.selectedCity.population);
-		else
-			return null;
 	}
 
 	public static void paintWorkerBubbles(GraphAssist g, int count, int total, boolean employed) {
@@ -160,8 +160,8 @@ public class TileMode extends MapMode {
 				new HurryDialog(cost) {
 					@Override
 					public void onEnter() {
-						view.selectedCity.buildingProgress.progress += cost; // TODO instant complete
 						view.world.goods -= cost;
+						view.selectedCity.buildingProgress.progress(cost);
 						dismiss();
 					}
 				};

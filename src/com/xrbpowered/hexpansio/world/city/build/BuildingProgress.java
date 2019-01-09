@@ -18,11 +18,17 @@ public abstract class BuildingProgress {
 		this.tile = tile;
 	}
 	
-	public boolean nextTurn(int prod) {
+	public boolean progress(int prod) {
 		progress += prod;
+		return checkComplete();
+	}
+	
+	public boolean checkComplete() {
 		if(progress>=getCost()) {
 			progress -= getCost();
 			complete();
+			city.world.goods += city.getExcess(progress);
+			city.buildingProgress = null;
 			return true;
 		}
 		else

@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.ui.modes;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.ui.dlg.SetupTradeDialog;
+import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class TradeMode extends MapMode {
@@ -22,17 +23,17 @@ public class TradeMode extends MapMode {
 	
 	@Override
 	public boolean isEnabled() {
-		return false;
-	}
-
-	@Override
-	public String getButtonStatusText() {
-		return "0 / 0";
+		return view.world.cities.size()>1;
 	}
 	
 	@Override
-	public int showCityRange() {
-		return cityRange;
+	public boolean showCityRange() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRangeBorder(Tile tile, Dir d) {
+		return tile.isRangeBorder(d, view.selectedCity.tile, cityRange);
 	}
 	
 	@Override
@@ -43,7 +44,6 @@ public class TradeMode extends MapMode {
 			return true;
 		}
 		else if(hoverTile.isCityCenter()) {
-			// TODO show city-city trade
 			new SetupTradeDialog(view.selectedCity, hoverTile.city);
 			return true;
 		}

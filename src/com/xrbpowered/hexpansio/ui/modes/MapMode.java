@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
 
@@ -66,8 +67,12 @@ public abstract class MapMode {
 		return y;
 	}
 	
-	public int showCityRange() {
-		return 0;
+	public boolean showCityRange() {
+		return false;
+	}
+	
+	public boolean isRangeBorder(Tile tile, Dir d) {
+		return false;
 	}
 	
 	public boolean action() {

@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -27,19 +28,19 @@ public class ScoutMode extends MapMode {
 	
 	@Override
 	public boolean isEnabled() {
-		return view!=null && view.selectedCity!=null && view.selectedCity.availDiscover>0;
+		return view!=null && view.selectedCity!=null && view.world.discoverThisTurn<view.world.maxDiscover;
 	}
 	
 	@Override
 	public String getButtonStatusText() {
 		if(view!=null && view.selectedCity!=null)
-			return String.format("%d / 1", view.selectedCity.availDiscover);
+			return String.format("%d / %d", view.world.maxDiscover - view.world.discoverThisTurn, view.world.maxDiscover);
 		else
 			return null;
 	}
 	
 	public boolean canDiscover(Tile tile) {
-		return tile!=null && tile.discovered && view.selectedCity.tile.distTo(tile)<=cityRange &&
+		return tile!=null && tile.discovered && inRange(tile) &&
 				!tile.isAreaDiscovered();
 	}
 	
@@ -69,10 +70,10 @@ public class ScoutMode extends MapMode {
 			s = "Click to select "+view.hoverTile.city.name;
 			c = Color.WHITE;
 		}
-		else if(view.selectedCity.availDiscover==0)
+		else if(view.world.discoverThisTurn>=view.world.maxDiscover)
 			s = "Out of actions until the next turn";
-		else if(view.hoverTile.distTo(view.selectedCity.tile)>cityRange)
-			s = "Out of city range";
+		else if(!inRange(view.selectedCity.tile))
+			s = "Out of range";
 		else if(view.hoverTile.isAreaDiscovered())
 			s = "Area already discovered";
 		else {
@@ -90,8 +91,21 @@ public class ScoutMode extends MapMode {
 	}
 	
 	@Override
-	public int showCityRange() {
-		return cityRange;
+	public boolean showCityRange() {
+		return true;
+	}
+
+	public boolean inRange(int wx, int wy) {
+		return view.world.distToNearestCity(wx, wy)<=cityRange;
+	}
+
+	public boolean inRange(Tile tile) {
+		return inRange(tile.wx, tile.wy);
+	}
+	
+	@Override
+	public boolean isRangeBorder(Tile tile, Dir d) {
+		return inRange(tile.wx, tile.wy) ^ inRange(tile.wx+d.dx, tile.wy+d.dy);
 	}
 	
 	@Override
@@ -103,9 +117,9 @@ public class ScoutMode extends MapMode {
 		}
 		else if(canDiscover(hoverTile)) {
 			int cost = view.world.costDiscover(hoverTile);
-			if(view.selectedCity.availDiscover>0 && view.world.gold>=cost) {
+			if(view.world.discoverThisTurn<view.world.maxDiscover && view.world.gold>=cost) {
 				view.world.gold -= cost;
-				view.selectedCity.availDiscover--;
+				view.world.discoverThisTurn++;
 				view.world.discoverArea(hoverTile.wx, hoverTile.wy, areaRange);
 				return true;
 			}

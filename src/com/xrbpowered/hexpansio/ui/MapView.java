@@ -205,15 +205,14 @@ public class MapView extends UIElement {
 
 					g.pushAntialiasing(true);
 
-					int range = MapMode.active.showCityRange();
-					if(range>0) {
+					if(MapMode.active.showCityRange()) {
 						g.resetStroke();
 						g.setColor(Color.WHITE);
-						if(tile.isRangeBorder(Dir.NW, selectedCity.tile, range))
+						if(MapMode.active.isRangeBorder(tile, Dir.NW))
 							g.line(-w/2-a, 0, -w/2, -h);
-						if(tile.isRangeBorder(Dir.N, selectedCity.tile, range))
+						if(MapMode.active.isRangeBorder(tile, Dir.N))
 							g.line(-w/2, -h, w/2, -h);
-						if(tile.isRangeBorder(Dir.SW, selectedCity.tile, range))
+						if(MapMode.active.isRangeBorder(tile, Dir.SW))
 							g.line(-w/2-a, 0, -w/2, h);
 					}
 					

@@ -201,6 +201,7 @@ public class Improvement implements Comparable<Improvement> {
 	
 	public static final Improvement cityCenter = new Improvement("City", 0).workplaces(0).yield(1, 1, 1, 0)
 			.effects(
+					CityEffect.add(EffectTarget.scouts, 1),
 					CityEffect.add(EffectTarget.upgPoints, 1),
 					CityEffect.dummy(EffectTarget.upgPoints.formatPluralDelta(City.cityUpgPoints)+" in the city tile")
 				);
