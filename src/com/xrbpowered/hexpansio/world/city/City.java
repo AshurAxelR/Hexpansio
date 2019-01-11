@@ -52,6 +52,7 @@ public class City {
 	
 	public final ResourcePile resourcesOnMap = new ResourcePile();
 	public final ResourcePile resourcesProduced = new ResourcePile();
+	public final ResourcePile resourcesAvail = new ResourcePile();
 	
 	public int unemployed, workplaces;
 	public Happiness happiness = Happiness.content;
@@ -225,7 +226,7 @@ public class City {
 		availExpand = true;
 	}
 	
-	public void collectEffects() {
+	protected void collectEffects() {
 		effects.effects.clear();
 		for(int x=-expandRange; x<=expandRange; x++)
 			for(int y=-expandRange; y<=expandRange; y++) {
@@ -236,7 +237,7 @@ public class City {
 			}
 	}
 
-	public void updateIncomeTiles() {
+	protected void updateIncomeTiles() {
 		upgPoints = effects.modifyCityValue(EffectTarget.upgPoints, 0);
 		
 		resourcesOnMap.clear();
@@ -273,16 +274,17 @@ public class City {
 		expences.add(YieldResource.food, population);
 	}
 
-	public void updateIncomeResources() {
+	protected void updateIncomeResources() {
 		incomeResources.clear();
-		for(ResourcePile.Entry e : resourcesProduced.getUnsorted()) {
+		incomeResources.add(YieldResource.gold, trades.profit);
+		for(ResourcePile.Entry e : resourcesAvail.getUnsorted()) {
 			for(YieldResource res : YieldResource.values()) {
 				incomeResources.add(res, e.count * (e.resource.yield.get(res) + effects.addResourceBonusYield(e.resource, res)));
 			}
 		}
 	}
 
-	public void updateBalance() {
+	protected void updateBalance() {
 		expences.add(YieldResource.happiness,
 				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty);
 		
@@ -300,16 +302,27 @@ public class City {
 		happiness = Happiness.get(balance.get(YieldResource.happiness), population);
 	}
 
-	public void updateTrade() {
-		// TODO update trade
+	protected boolean updateTrade() {
+		resourcesAvail.clear();
+		resourcesAvail.add(resourcesProduced);
+		resourcesAvail.remove(trades.totalOut);
+		for(ResourcePile.Entry e : resourcesAvail.getUnsorted()) {
+			if(e.count<0) {
+				trades.cancelResource(e.resource);
+				return false;
+			}
+		}
+		resourcesAvail.add(trades.totalIn);
+		return true;
 	}
 	
 	public void updateStats() {
 		collectEffects();
 		updateIncomeTiles();
-		updateTrade();
-		updateIncomeResources();
-		updateBalance();
+		if(updateTrade()) {
+			updateIncomeResources();
+			updateBalance();
+		}
 	}
 
 }

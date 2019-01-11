@@ -188,9 +188,9 @@ public class CityInfoPane extends UIContainer {
 		else
 			g.drawString(String.format("%+d", city.balance.get(YieldResource.production)), cx, y);
 		
-		if(!city.resourcesProduced.isEmpty()) {
+		if(!city.resourcesAvail.isEmpty()) {
 			y += 15;
-			city.resourcesProduced.paint(g, x, y, "%d");
+			city.resourcesAvail.paint(g, x, y, "%d");
 			y += 40;
 		}
 

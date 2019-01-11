@@ -21,5 +21,6 @@ public class RemoveImprovement extends BuildingProgress {
 	@Override
 	public void complete() {
 		tile.improvement = null;
+		city.updateStats();
 	}
 }

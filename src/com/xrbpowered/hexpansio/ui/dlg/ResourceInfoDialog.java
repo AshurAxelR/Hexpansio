@@ -26,7 +26,7 @@ public class ResourceInfoDialog extends OverlayDialog {
 		public void paint(GraphAssist g) {
 			ResourcePile.Entry e = (ResourcePile.Entry) object;
 			int produced = city.resourcesProduced.count(e.resource);
-			boolean enabled = produced>0;
+			int avail = city.resourcesAvail.count(e.resource);
 			if(hover) {
 				g.fill(this, Res.uiBgMid);
 				g.border(this, Res.uiBorderDark);
@@ -37,32 +37,49 @@ public class ResourceInfoDialog extends OverlayDialog {
 			e.resource.paint(g, x, y-15, null);
 			
 			x += 40;
-			g.setColor(enabled ? Color.WHITE : Color.GRAY);
+			g.setColor(avail>0 ? Color.WHITE : Color.GRAY);
 			g.setFont(Res.fontBold);
 			g.drawString(e.resource.name, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
 			
 			x += 180;
 			g.setFont(Res.font);
-			g.drawString(String.format("%+d / %d", produced, e.count), x, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);
+			g.setColor(produced>0 ? Color.WHITE : Color.GRAY);
+			g.drawString(String.format("%+d / %d", produced, city.resourcesOnMap.count(e.resource)),
+					x, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);
 			x += 80;
-			g.setColor(Color.GRAY);
-			g.drawString("-", x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			int count = city.trades.totalOut.count(e.resource);
+			if(count>0) {
+				g.setColor(Color.RED);
+				g.drawString(String.format("-%d", count), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
+			else {
+				g.setColor(Color.GRAY);
+				g.drawString("-", x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
 			x += 80;
-			g.drawString("-", x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			count = city.trades.totalIn.count(e.resource);
+			if(count>0) {
+				g.setColor(Color.WHITE);
+				g.drawString(String.format("%+d", count), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
+			else {
+				g.setColor(Color.GRAY);
+				g.drawString("-", x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
 
 			x += 120;
 			g.setFont(Res.fontLarge);
-			g.setColor(enabled ? Color.WHITE : Color.GRAY);
-			g.drawString(produced==0 ? "-" : Integer.toString(produced), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+			g.setColor(avail>0 ? Color.WHITE : Color.GRAY);
+			g.drawString(produced==0 && avail==0 ? "-" : Integer.toString(avail), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
 			g.setFont(Res.font);
 
 			x += 40;
 			for(YieldResource res : YieldResource.values()) {
 				x += 80;
-				int bonus = produced * city.effects.addResourceBonusYield(e.resource, res);
-				int base = produced * e.resource.yield.get(res);
+				int bonus = avail * city.effects.addResourceBonusYield(e.resource, res);
+				int base = avail * e.resource.yield.get(res);
 				if(base+bonus!=0) {
-					g.setColor(enabled ? res.fill : Color.GRAY);
+					g.setColor(avail>0 ? res.fill : Color.GRAY);
 					if(bonus!=0)
 						g.drawString(String.format("%+d (%+d)", base, base+bonus), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
 					else
@@ -85,7 +102,11 @@ public class ResourceInfoDialog extends OverlayDialog {
 		super(Hexpansio.instance.getBase(), 1020, 660, "CITY RESOURCES");
 		this.city = city;
 		
-		ArrayList<ResourcePile.Entry> resList = city.resourcesOnMap.getSortedList();
+		ResourcePile res = new ResourcePile();
+		res.add(city.resourcesOnMap);
+		res.add(city.resourcesAvail);
+		
+		ArrayList<ResourcePile.Entry> resList = res.getSortedList();
 		
 		list = new UIListBox(box, resList.toArray(new ResourcePile.Entry[resList.size()])) {
 			@Override
@@ -106,9 +127,9 @@ public class ResourceInfoDialog extends OverlayDialog {
 				x += 180;
 				g.drawString("Produced", x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 				x += 80;
-				g.drawString("Import", x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-				x += 80;
 				g.drawString("Export", x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
+				x += 80;
+				g.drawString("Import", x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 				
 				x += 120;
 				g.drawString("Total", x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
@@ -148,7 +169,7 @@ public class ResourceInfoDialog extends OverlayDialog {
 			g.setFont(Res.font);
 			g.drawString(String.format("%+d from tiles", city.incomeTiles.get(res)), x, y);
 			y += 15;
-			g.drawString(String.format("%+d from resources", city.incomeResources.get(res)), x, y);
+			g.drawString(String.format("%+d from resources and trade", city.incomeResources.get(res)), x, y);
 			y += 15;
 			if(res==YieldResource.food)
 				g.drawString(String.format("-%d from population", city.expences.get(res)), x, y);

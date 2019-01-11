@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world.resources;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.ui.modes.TradeMode;
@@ -31,7 +32,9 @@ public class TradeList {
 		
 		countIn = totalIn.totalCount();
 		countOut = totalOut.totalCount();
-		profit = countIn + countOut - Math.abs(countIn - countOut)*3;
+		profit = countOut;
+		if(countIn>countOut)
+			profit -= (countIn - countOut)*3;
 	}
 	
 	public int getTotalOutExcluding(TokenResource res, City otherCity) {
@@ -41,6 +44,10 @@ public class TradeList {
 				count += t.out.count(res);
 		}
 		return count;
+	}
+	
+	public Collection<Trade> getAll() {
+		return trades.values();
 	}
 	
 	public Trade get(City otherCity) {
@@ -56,7 +63,11 @@ public class TradeList {
 	}
 
 	public void accept(Trade trade) {
-		if(trade.city!=this.city || this.city.tile.distTo(trade.otherCity.tile)>TradeMode.cityRange)
+		accept(trade, true);
+	}
+
+	public void accept(Trade trade, boolean checkDist) {
+		if(trade.city!=this.city || checkDist && this.city.tile.distTo(trade.otherCity.tile)>TradeMode.cityRange)
 			return;
 		if(trade.in.isEmpty() && trade.out.isEmpty()) {
 			trades.remove(trade.otherCity.index);
@@ -67,6 +78,18 @@ public class TradeList {
 			trade.otherCity.trades.trades.put(this.city.index, trade.reverse);
 		}
 		updateTotal();
+		trade.otherCity.trades.updateTotal();
+	}
+	
+	public void cancelResource(TokenResource res) {
+		for(Trade t : trades.values()) {
+			if(t.out.count(res)>0) {
+				t.out.map.get(res.name).count = 0;
+				accept(t, false);
+				t.otherCity.updateStats();
+			}
+		}
+		city.updateStats();
 	}
 
 }

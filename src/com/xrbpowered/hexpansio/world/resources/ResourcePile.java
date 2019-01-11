@@ -1,10 +1,14 @@
 package com.xrbpowered.hexpansio.world.resources;
 
 import java.awt.Color;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.xrbpowered.hexpansio.world.ObjectIndex;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class ResourcePile {
@@ -114,6 +118,25 @@ public class ResourcePile {
 			g.setColor(e.count>=0 ? Color.WHITE : Color.RED);
 			e.resource.paint(g, x, y, format==null ? null : String.format(format, e.count));
 			x += 20;
+		}
+	}
+	
+	public static void write(ResourcePile pile, ObjectIndex<TokenResource> conv, DataOutputStream out) throws IOException {
+		ArrayList<Entry> list = pile.getSortedList();
+		out.writeByte(list.size());
+		for(Entry e : list) {
+			out.writeByte(conv.getIndex(e.resource.name));
+			out.writeByte(e.count);
+		}
+	}
+
+	public static void read(ResourcePile pile, ObjectIndex<TokenResource> conv, DataInputStream in) throws IOException {
+		int n = in.readByte();
+		for(int i=0; i<n; i++) {
+			TokenResource res = conv.get(in.readByte());
+			int count = in.readByte();
+			if(res!=null)
+				pile.add(res, count);
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class SetupTradeDialog extends OverlayDialog {
 	public final ResourcePile resourcePool = new ResourcePile();
 	public final Yield.Cache cityYield = new Yield.Cache();
 	public final Yield.Cache otherCityYield = new Yield.Cache();
-	private Trade currentTrade = null; 
+	private int countIn, countOut;
 
 	private class ArrowButton extends ClickButton {
 		public final TokenResource resource;
@@ -148,16 +148,8 @@ public class SetupTradeDialog extends OverlayDialog {
 			g.setColor(e.count==0 ? Color.GRAY : Color.WHITE);
 			if(e.count==0)
 				g.drawString("-", getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.CENTER);
-			else {
-				String s = String.format("%d", Math.abs(e.count));
-				FontMetrics fm = g.graph.getFontMetrics();
-				float w = fm.stringWidth(s);
-				g.drawString(s, getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.CENTER);
-				if(e.count>0)
-					UIScrollBar.drawRightArrow(g, (int)(getWidth()/2f+w/2f+10), y, 6);
-				else
-					UIScrollBar.drawLeftArrow(g, (int)(getWidth()/2f-w/2f-10), y, 6);
-			}
+			else
+				paintBalanceCounter(g, e.count, (int)getWidth()/2, y);
 		}
 		
 		@Override
@@ -171,6 +163,18 @@ public class SetupTradeDialog extends OverlayDialog {
 			hover = false;
 			repaint();
 		}
+	}
+	
+	private void paintBalanceCounter(GraphAssist g, int count, int x, int y) {
+		g.setFont(Res.fontLarge);
+		String s = String.format("%d", Math.abs(count));
+		FontMetrics fm = g.graph.getFontMetrics();
+		float w = fm.stringWidth(s);
+		g.drawString(s, x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+		if(count>0)
+			UIScrollBar.drawRightArrow(g, (int)(x+w/2f+10), y, 6);
+		else
+			UIScrollBar.drawLeftArrow(g, (int)(x-w/2f-10), y, 6);
 	}
 	
 	private UIListBoxBase<ResourceListItem> list;
@@ -235,23 +239,23 @@ public class SetupTradeDialog extends OverlayDialog {
 		};
 		acceptButton.setLocation(box.getWidth()-acceptButton.getWidth()-10, closeButton.getY());
 
-		resetButton = new ClickButton(box, "RESET", 100) {
+		resetButton = new ClickButton(box, "Reset", 100) {
 			@Override
 			public void onClick() {
 				reset();
 				repaint();
 			}
 		};
-		resetButton.setLocation(acceptButton.getX()-resetButton.getWidth()-5, closeButton.getY());
+		resetButton.setLocation(10+closeButton.getWidth()+5, closeButton.getY());
 
-		revertButton = new ClickButton(box, "REVERT", 100) {
+		revertButton = new ClickButton(box, "Revert", 100) {
 			@Override
 			public void onClick() {
 				revert();
 				repaint();
 			}
 		};
-		revertButton.setLocation(resetButton.getX()-revertButton.getWidth()-5, closeButton.getY());
+		revertButton.setLocation(10+closeButton.getWidth()*2+10, closeButton.getY());
 
 		viewCityButton = new ClickButton(box, "View", 60);
 		viewCityButton.setLocation(10, 60-viewCityButton.getHeight()/2);
@@ -263,12 +267,32 @@ public class SetupTradeDialog extends OverlayDialog {
 	
 	public void updateStats() {
 		cityYield.clear();
+		cityYield.add(YieldResource.happiness, City.baseHappiness);
+		cityYield.add(city.incomeTiles);
+		cityYield.subtract(city.expences);
+		
 		otherCityYield.clear();
-		for(ResourcePile.Entry e : resourcePool.getUnsorted())
+		otherCityYield.add(YieldResource.happiness, City.baseHappiness);
+		otherCityYield.add(otherCity.incomeTiles);
+		otherCityYield.subtract(otherCity.expences);
+		
+		// TODO include trade income/expenses in the calculation
+		
+		countIn = 0;
+		countOut = 0;
+		
+		for(ResourcePile.Entry e : resourcePool.getUnsorted()) {
+			if(e.count>0)
+				countOut += e.count;
+			else
+				countIn += -e.count;
 			for(YieldResource res : YieldResource.values()) {
-				cityYield.add(res, -e.count * (e.resource.yield.get(res) + city.effects.addResourceBonusYield(e.resource, res)));
-				otherCityYield.add(res, e.count * (e.resource.yield.get(res) + otherCity.effects.addResourceBonusYield(e.resource, res)));
+				cityYield.add(res, getAvailOut(e.resource, true) *
+						(e.resource.yield.get(res) + city.effects.addResourceBonusYield(e.resource, res)));
+				otherCityYield.add(res, getAvailIn(e.resource, true) *
+						(e.resource.yield.get(res) + otherCity.effects.addResourceBonusYield(e.resource, res)));
 			}
+		}
 	}
 	
 	public int getAvailOut(TokenResource resource, boolean anyOut) {
@@ -296,14 +320,14 @@ public class SetupTradeDialog extends OverlayDialog {
 	}
 	
 	public void revert() {
-		currentTrade = city.trades.get(otherCity);
-		if(currentTrade==null) {
+		Trade trade = city.trades.get(otherCity);
+		if(trade==null) {
 			revertButton.setVisible(false);
 			reset();
 		}
 		else {
 			for(ResourcePile.Entry e : resourcePool.getUnsorted())
-				e.count = currentTrade.out.count(e.resource) - currentTrade.in.count(e.resource);
+				e.count = trade.out.count(e.resource) - trade.in.count(e.resource);
 			updateStats();
 		}
 	}
@@ -318,6 +342,8 @@ public class SetupTradeDialog extends OverlayDialog {
 				in.add(e.resource, -e.count);
 		}
 		city.trades.accept(new Trade(city, otherCity, in, out));
+		city.updateStats();
+		otherCity.updateStats();
 	}
 	
 	@Override
@@ -327,13 +353,39 @@ public class SetupTradeDialog extends OverlayDialog {
 		g.drawString(city.name.toUpperCase(), 20+viewCityButton.getX()+viewCityButton.getWidth(), 60, GraphAssist.LEFT, GraphAssist.CENTER);
 		g.drawString(otherCity.name.toUpperCase(), viewOtherCityButton.getX()-20, 60, GraphAssist.RIGHT, GraphAssist.CENTER);
 
-		int y = (int)box.getHeight()-50-70;
+		int y0 = (int)box.getHeight()-50-70;
+		int y = y0;
 		g.setFont(Res.font);
 		for(YieldResource res : YieldResource.values()) {
 			y += 15;
 			g.setColor(res.fill);
 			g.drawString(String.format("%+d %s", cityYield.get(res), res.name), 20, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
 			g.drawString(String.format("%+d %s", otherCityYield.get(res), res.name), box.getWidth()-20, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+		}
+		
+		y = y0;
+		y += 15;
+		g.setColor(Color.WHITE);
+		Res.paintIncome(g, YieldResource.gold, "Profit: ", countOut, null, 230, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+		g.setColor(Color.WHITE);
+		Res.paintIncome(g, YieldResource.gold, "Profit: ", countIn, null, list.getView().getWidth()-210, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+		y += 15;
+		if(countIn>countOut) {
+			g.setColor(Color.WHITE);
+			Res.paintIncome(g, YieldResource.gold, "Cover expenses: ", -(countIn - countOut)*3, null, 230, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+		}
+		if(countOut>countIn) {
+			g.setColor(Color.WHITE);
+			Res.paintIncome(g, YieldResource.gold, "Cover expenses: ", -(countOut - countIn)*3, null, list.getView().getWidth()-210, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+		}
+
+		g.setColor(Color.WHITE);
+		Res.paintIncome(g, YieldResource.gold, "Deal balance: ", countIn+countOut-Math.abs(countIn-countOut)*3,
+				null, acceptButton.getX()-20, acceptButton.getY()+acceptButton.getHeight()/2, GraphAssist.RIGHT, GraphAssist.CENTER);
+
+		if(countIn!=countOut) {
+			g.setColor(Color.RED);
+			paintBalanceCounter(g, countOut-countIn, (int)list.getView().getWidth()/2+10, y0+10);
 		}
 
 		super.paintBoxContents(g);

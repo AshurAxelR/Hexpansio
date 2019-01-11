@@ -173,7 +173,7 @@ public class TileMode extends MapMode {
 
 	public boolean removeBuilding() {
 		if(view.selectedTile.improvement!=null && !view.selectedTile.improvement.isPermanent()) {
-			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?", "REMOVE", "CANCEL") {
+			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?", "REMOVE", "CANCEL") { // TODO show price, warn if trade is affected
 				@Override
 				public void onEnter() {
 					dismiss();

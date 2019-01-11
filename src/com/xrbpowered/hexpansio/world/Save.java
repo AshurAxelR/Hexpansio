@@ -16,7 +16,9 @@ import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
+import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
+import com.xrbpowered.hexpansio.world.resources.Trade;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -28,7 +30,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 4;
+	public static final int saveVersion = 5;
 	
 	public final String path;
 	public final File file;
@@ -64,8 +66,8 @@ public class Save {
 		out.writeByte(convTerrainType.getIndex(tile.terrain.name));
 		out.writeByte(tile.resource==null ? -1 : convResources.getIndex(tile.resource.name));
 		out.writeByte(tile.workers);
-		out.writeShort(tile.city==null ? -1 : tile.city.index);
-		out.writeShort(tile.settlement==null ? -1 : tile.settlement.city.index);
+		out.writeInt(tile.city==null ? -1 : tile.city.index);
+		out.writeInt(tile.settlement==null ? -1 : tile.settlement.city.index);
 
 		ImprovementStack.write(tile, convImprovement, out);
 	}
@@ -74,9 +76,9 @@ public class Save {
 		tile.terrain = convTerrainType.get(in.readByte());
 		tile.resource = convResources.get(in.readByte());
 		tile.workers = in.readByte();
-		int cityIndex = in.readShort();
+		int cityIndex = in.readInt();
 		tile.city = cityIndex<0 ? null : tile.region.world.cities.get(cityIndex);
-		cityIndex = in.readShort();
+		cityIndex = in.readInt();
 		tile.settlement = cityIndex<0 ? null : (BuiltSettlement)tile.region.world.cities.get(cityIndex).buildingProgress;
 		
 		ImprovementStack.read(tile, convImprovement, in);
@@ -155,6 +157,31 @@ public class Save {
 		return bp;
 	}
 	
+	protected void writeTrade(DataOutputStream out, Trade trade) throws IOException {
+		if(trade.city.index<trade.otherCity.index) {
+			out.writeInt(trade.city.index);
+			out.writeInt(trade.otherCity.index);
+			ResourcePile.write(trade.out, convResources, out);
+			ResourcePile.write(trade.in, convResources, out);
+		}
+	}
+	
+	protected boolean readTrade(DataInputStream in, World world) throws IOException {
+		int cityIndex = in.readInt();
+		if(cityIndex<0)
+			return false;
+		else {
+			City city = world.cities.get(cityIndex);
+			City otherCity = world.cities.get(in.readInt());
+			ResourcePile resOut = new ResourcePile();
+			ResourcePile.read(resOut, convResources, in);
+			ResourcePile resIn = new ResourcePile();
+			ResourcePile.read(resIn, convResources, in);
+			city.trades.accept(new Trade(city, otherCity, resIn, resOut), false);
+			return true;
+		}
+	}
+	
 	protected void writeCity(DataOutputStream out, City city) throws IOException {
 		out.writeInt(city.population);
 		out.writeInt(city.growth);
@@ -189,6 +216,12 @@ public class Save {
 			writeCity(out, city);
 		}
 
+		for(City city : world.cities) {
+			for(Trade trade : city.trades.getAll())
+				writeTrade(out, trade);
+		}
+		out.writeInt(-1);
+		
 		ArrayList<Integer> regions = world.regionIds();
 		out.writeInt(regions.size());
 		for(Integer id : regions) {
@@ -214,6 +247,8 @@ public class Save {
 			City city = new City(world, null, name);
 			readCity(in, city);
 		}
+		
+		while(readTrade(in, world));
 		
 		int numRegions = in.readInt();
 		for(int i=0; i<numRegions; i++) {
