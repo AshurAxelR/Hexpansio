@@ -34,6 +34,15 @@ public class TradeList {
 		profit = countIn + countOut - Math.abs(countIn - countOut)*3;
 	}
 	
+	public int getTotalOutExcluding(TokenResource res, City otherCity) {
+		int count = 0;
+		for(Trade t : trades.values()) {
+			if(t.otherCity!=otherCity)
+				count += t.out.count(res);
+		}
+		return count;
+	}
+	
 	public Trade get(City otherCity) {
 		return trades.get(otherCity.index);
 	}

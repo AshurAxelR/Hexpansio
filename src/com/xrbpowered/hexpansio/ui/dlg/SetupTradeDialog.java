@@ -25,13 +25,15 @@ public class SetupTradeDialog extends OverlayDialog {
 	public final ResourcePile resourcePool = new ResourcePile();
 	public final Yield.Cache cityYield = new Yield.Cache();
 	public final Yield.Cache otherCityYield = new Yield.Cache();
+	private Trade currentTrade = null; 
 
 	private class ArrowButton extends ClickButton {
 		public final TokenResource resource;
 		public final int delta;
 		
 		public ArrowButton(ResourceListItem parent, TokenResource resource, int delta) {
-			super(parent, delta>0 ? ">" : "<", 30, 30, Res.font);
+			super(parent, null, 30, 40, null);
+			setFrameSize(30, 30);
 			this.resource = resource;
 			this.delta = delta;
 		}
@@ -46,20 +48,10 @@ public class SetupTradeDialog extends OverlayDialog {
 		
 		@Override
 		public boolean isEnabled() {
-			if(delta>0) {
-				int prod = city.resourcesProduced.count(resource);
-				int avail = prod - city.trades.totalOut.count(resource);
-				int out = resourcePool.count(resource);
-				avail -= out;
-				return avail>0;
-			}
-			else {
-				int prod = otherCity.resourcesProduced.count(resource);
-				int avail = prod - otherCity.trades.totalOut.count(resource);
-				int out = resourcePool.count(resource);
-				avail -= -out;
-				return avail>0;
-			}
+			if(delta>0)
+				return getAvailOut(resource, true)>0;
+			else
+				return getAvailIn(resource, true)>0;
 		}
 		
 		@Override
@@ -133,9 +125,7 @@ public class SetupTradeDialog extends OverlayDialog {
 			g.setFont(Res.font);
 			int prod = city.resourcesProduced.count(e.resource);
 			if(prod>0) {
-				int avail = prod - city.trades.totalOut.count(e.resource);
-				int out = resourcePool.count(e.resource);
-				if(out>0) avail -= out;
+				int avail = getAvailOut(e.resource, false);
 				g.setColor(Color.WHITE);
 				g.drawString(String.format("%d / %d", avail, prod), xl, y, GraphAssist.CENTER, GraphAssist.CENTER);
 			}
@@ -145,9 +135,7 @@ public class SetupTradeDialog extends OverlayDialog {
 			}
 			prod = otherCity.resourcesProduced.count(e.resource);
 			if(prod>0) {
-				int avail = prod - otherCity.trades.totalOut.count(e.resource);
-				int out = resourcePool.count(e.resource);
-				if(out<0) avail -= -out;
+				int avail = getAvailIn(e.resource, false);
 				g.setColor(Color.WHITE);
 				g.drawString(String.format("%d / %d", avail, prod), xr, y, GraphAssist.CENTER, GraphAssist.CENTER);
 			}
@@ -189,6 +177,7 @@ public class SetupTradeDialog extends OverlayDialog {
 
 	private final ClickButton viewCityButton, viewOtherCityButton;
 	private final ClickButton closeButton;
+	private final ClickButton revertButton, resetButton, acceptButton;
 	
 	public SetupTradeDialog(City city, City otherCity) {
 		super(Hexpansio.instance.getBase(), 1020, 600, "SET UP TRADE ROUTE");
@@ -196,7 +185,6 @@ public class SetupTradeDialog extends OverlayDialog {
 		this.otherCity = otherCity;
 		resourcePool.add(city.resourcesProduced);
 		resourcePool.add(otherCity.resourcesProduced);
-		revert();
 		
 		ArrayList<ResourcePile.Entry> resList = resourcePool.getSortedList();
 		
@@ -237,11 +225,40 @@ public class SetupTradeDialog extends OverlayDialog {
 			}
 		};
 		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
-		
+
+		acceptButton = new ClickButton(box, "ACCEPT", 100) {
+			@Override
+			public void onClick() {
+				accept();
+				dismiss();
+			}
+		};
+		acceptButton.setLocation(box.getWidth()-acceptButton.getWidth()-10, closeButton.getY());
+
+		resetButton = new ClickButton(box, "RESET", 100) {
+			@Override
+			public void onClick() {
+				reset();
+				repaint();
+			}
+		};
+		resetButton.setLocation(acceptButton.getX()-resetButton.getWidth()-5, closeButton.getY());
+
+		revertButton = new ClickButton(box, "REVERT", 100) {
+			@Override
+			public void onClick() {
+				revert();
+				repaint();
+			}
+		};
+		revertButton.setLocation(resetButton.getX()-revertButton.getWidth()-5, closeButton.getY());
+
 		viewCityButton = new ClickButton(box, "View", 60);
 		viewCityButton.setLocation(10, 60-viewCityButton.getHeight()/2);
 		viewOtherCityButton = new ClickButton(box, "View", 60);
 		viewOtherCityButton.setLocation(box.getWidth()-viewOtherCityButton.getWidth()-10, viewCityButton.getY());
+		
+		revert();
 	}
 	
 	public void updateStats() {
@@ -254,6 +271,24 @@ public class SetupTradeDialog extends OverlayDialog {
 			}
 	}
 	
+	public int getAvailOut(TokenResource resource, boolean anyOut) {
+		int avail = city.resourcesProduced.count(resource);
+		avail -= city.trades.getTotalOutExcluding(resource, otherCity);
+		int out = resourcePool.count(resource);
+		if(anyOut || out>0)
+			avail -= out;
+		return avail;
+	}
+
+	public int getAvailIn(TokenResource resource, boolean anyOut) {
+		int avail = otherCity.resourcesProduced.count(resource);
+		avail -= otherCity.trades.getTotalOutExcluding(resource, city);
+		int out = resourcePool.count(resource);
+		if(anyOut || out<0)
+			avail -= -out;
+		return avail;
+	}
+
 	public void reset() {
 		for(ResourcePile.Entry e : resourcePool.getUnsorted())
 			e.count = 0;
@@ -261,14 +296,28 @@ public class SetupTradeDialog extends OverlayDialog {
 	}
 	
 	public void revert() {
-		Trade trade = city.trades.get(otherCity);
-		if(trade==null)
+		currentTrade = city.trades.get(otherCity);
+		if(currentTrade==null) {
+			revertButton.setVisible(false);
 			reset();
+		}
 		else {
 			for(ResourcePile.Entry e : resourcePool.getUnsorted())
-				e.count = trade.in.count(e.resource) - trade.out.count(e.resource);
+				e.count = currentTrade.out.count(e.resource) - currentTrade.in.count(e.resource);
 			updateStats();
 		}
+	}
+	
+	public void accept() {
+		ResourcePile in = new ResourcePile();
+		ResourcePile out = new ResourcePile();
+		for(ResourcePile.Entry e : resourcePool.getUnsorted()) {
+			if(e.count>0)
+				out.add(e.resource, e.count);
+			else if(e.count<0)
+				in.add(e.resource, -e.count);
+		}
+		city.trades.accept(new Trade(city, otherCity, in, out));
 	}
 	
 	@Override
