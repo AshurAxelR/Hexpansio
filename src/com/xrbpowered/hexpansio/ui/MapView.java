@@ -275,7 +275,7 @@ public class MapView extends UIElement {
 				g.pushTx();
 				g.translate(x0, y0);
 
-				if(tile!=null && tile==selectedTile) {
+				if(getScale()>0.25f && tile!=null && tile==selectedTile) {
 					g.graph.setStroke(borderStroke);
 					if(tile==selectedTile) {
 						g.setColor(new Color(0x99ffffff, true));

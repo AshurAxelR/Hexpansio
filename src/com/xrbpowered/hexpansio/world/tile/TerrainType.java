@@ -100,7 +100,7 @@ public class TerrainType {
 	public static final TerrainType barrenPlains = new TerrainType("Barren plains", new Color(0x9fac63)).yield(0, 1, 0)
 		.resources(0.1f, wool, clay, sand, cacti);
 	public static final TerrainType forest = new TerrainType("Forest", new Color(0x639038)).yield(2, 2, 0).feature(Feature.forest)
-			.resources(0.1f, flowers, berries, fuel);
+			.resources(0.05f, flowers, berries, berries, fuel);
 	public static final TerrainType mountains = new TerrainType("Mountains", new Color(0x9aa184)).yield(0, 2, 1).feature(Feature.mountain)
 			.resources(0.3f, wool, iron, gold, gems, stone);
 	public static final TerrainType snowpeak = new TerrainType("Snow Peak", new Color(0xb1b7bb)).yield(0, 0, 1, 1).feature(Feature.peak);
@@ -111,7 +111,7 @@ public class TerrainType {
 	public static final TerrainType swamp = new TerrainType("Swamp", new Color(0x86ae6b)).yield(1, 0, 0).feature(Feature.swamp)
 			.resources(0.15f, berries, fuel);
 	public static final TerrainType desert = new TerrainType("Desert", new Color(0xcccc99)).yield(0, 0, 1).feature(Feature.desert)
-			.resources(0.2f, sand, clay, cacti, fuel);
+			.resources(0.1f, sand, clay, cacti, fuel, fuel, fuel);
 	public static final TerrainType desertHills = new TerrainType("Desert Hills", new Color(0xb5b580)).yield(0, 1, 1).feature(Feature.desert)
 			.resources(0.15f, sand, clay, stone, cacti);
 	public static final TerrainType oasis = new TerrainType("Oasis", new Color(0x93c64f)).yield(2, 0, 2, 1)
@@ -120,7 +120,7 @@ public class TerrainType {
 			.resources(0.25f, flowers, fruits, coffee);
 
 	public static final TerrainType deepWater = new TerrainType("Deep Waters", new Color(0x648ca3)).yield(0, 0, 0).feature(Feature.water)
-			.resources(0.02f, fish, fuel);
+			.resources(0.02f, fish, fuel, fuel);
 	public static final TerrainType lagoon = new TerrainType("Lagoon", new Color(0x9bc4d5)).yield(1, 0, 2, 1).feature(Feature.water)
 			.resources(0.5f, fish, pearls, corals, kelp);
 	

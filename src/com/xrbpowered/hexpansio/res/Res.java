@@ -18,6 +18,7 @@ import com.xrbpowered.zoomui.std.UIButton;
 import com.xrbpowered.zoomui.std.UIListBox;
 import com.xrbpowered.zoomui.std.UIScrollBar;
 import com.xrbpowered.zoomui.std.UIScrollContainer;
+import com.xrbpowered.zoomui.std.text.UITextBox;
 
 public class Res {
 
@@ -86,6 +87,12 @@ public class Res {
 		UIButton.colorBorder = uiBorderDark;
 		UIButton.colorText = uiBorderDark;
 		UIButton.colorDown = uiBgBright;
+		UITextBox.font = fontLarge;
+		UITextBox.colorBackground = Color.BLACK;
+		UITextBox.colorText = Color.WHITE;
+		UITextBox.colorSelection = Color.WHITE;
+		UITextBox.colorSelectedText = Color.BLACK;
+		UITextBox.colorBorder = uiBorderLight;
 	}
 	
 	public static void paintProgress(GraphAssist g, YieldResource res, int prog, int total, int add, int x, int y, float w, float h, int halign) {

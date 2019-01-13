@@ -105,6 +105,16 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		repaint();
 	}
 	
+	public void browseCity(int delta) {
+		int index = world.cities.indexOf(view.view.selectedCity) + delta;
+		if(index<0)
+			index = world.cities.size()-1;
+		else if(index>=world.cities.size())
+			index = 0;
+		view.view.selectCity(world.cities.get(index), true);
+		repaint();
+	}
+	
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
 		switch(code) {
@@ -115,32 +125,20 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			case KeyEvent.VK_ENTER:
 				nextTurn();
 				return true;
-			case KeyEvent.VK_UP: {
+			case KeyEvent.VK_UP:
 				view.scale(view.getMinScale()/view.getScale(), 0f, 0f);
 				repaint();
 				return true;
-			}
-			case KeyEvent.VK_DOWN: {
+			case KeyEvent.VK_DOWN:
 				view.scale(view.getMaxScale()/view.getScale(), 0f, 0f);
 				repaint();
 				return true;
-			}
-			case KeyEvent.VK_LEFT: {
-				int index = world.cities.indexOf(view.view.selectedCity) - 1;
-				if(index<=0)
-					index = world.cities.size()-1;
-				view.view.selectCity(world.cities.get(index), true);
-				repaint();
+			case KeyEvent.VK_LEFT:
+				browseCity(-1);
 				return true;
-			}
-			case KeyEvent.VK_RIGHT: {
-				int index = world.cities.indexOf(view.view.selectedCity) + 1;
-				if(index>=world.cities.size())
-					index = 0;
-				view.view.selectCity(world.cities.get(index), true);
-				repaint();
+			case KeyEvent.VK_RIGHT:
+				browseCity(1);
 				return true;
-			}
 			case KeyEvent.VK_F1: {
 				float scale = getBase().getBaseScale();
 				if(scale>1f) {

@@ -83,9 +83,13 @@ public class City {
 		}
 		return list;
 	}
-	
+
 	public static String generateName(World world, Tile tile) {
 		Random random = tile==null ? new Random() : new Random(tile.getSeed(3856L));
+		return generateName(world, random);
+	}
+
+	public static String generateName(World world, Random random) {
 		int i = 0;
 		String name;
 		do {

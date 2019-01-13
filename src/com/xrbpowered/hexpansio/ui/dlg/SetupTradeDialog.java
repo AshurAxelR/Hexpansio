@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.ArrowButton;
 import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
@@ -27,15 +28,12 @@ public class SetupTradeDialog extends OverlayDialog {
 	public final Yield.Cache otherCityYield = new Yield.Cache();
 	private int countIn, countOut;
 
-	private class ArrowButton extends ClickButton {
+	private class BalanceArrowButton extends ArrowButton {
 		public final TokenResource resource;
-		public final int delta;
 		
-		public ArrowButton(ResourceListItem parent, TokenResource resource, int delta) {
-			super(parent, null, 30, 40, null);
-			setFrameSize(30, 30);
+		public BalanceArrowButton(ResourceListItem parent, TokenResource resource, int delta) {
+			super(parent, delta, 30, 40, 30);
 			this.resource = resource;
-			this.delta = delta;
 		}
 		
 		protected void paintLabel(GraphAssist g, boolean enabled, String label) {
@@ -80,14 +78,14 @@ public class SetupTradeDialog extends OverlayDialog {
 		private final ResourcePile.Entry e;
 		public boolean hover = false; 
 		
-		private final ArrowButton left, right;
+		private final BalanceArrowButton left, right;
 		
 		public ResourceListItem(UIContainer parent, ResourcePile.Entry e) {
 			super(parent);
 			this.e = e;
 			
-			left = new ArrowButton(this, e.resource, -1);
-			right = new ArrowButton(this, e.resource, 1);
+			left = new BalanceArrowButton(this, e.resource, -1);
+			right = new BalanceArrowButton(this, e.resource, 1);
 			setSize(0, 40);
 		}
 		

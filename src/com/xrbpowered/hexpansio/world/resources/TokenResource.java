@@ -86,7 +86,7 @@ public class TokenResource {
 			.requires(Improvement.quarry).terrain(0, 1, 0, 0).yield(0, 1, 0, 0);
 	public static final TokenResource cacti = new TokenResource(uncommon, "Cacti", Res.imgRes, 16)
 			.requires(Improvement.plantation).terrain(1, 0, 1, 0).yield(1, 0, 0, 0);
-	public static final TokenResource fuel = new TokenResource(rare, "Fuel", Res.imgRes, 18)
+	public static final TokenResource fuel = new TokenResource(superRare, "Fuel", Res.imgRes, 18)
 			.requires(Improvement.drill).terrain(0, 1, 1, 0).yield(0, 2, 2, 0);
 
 	public static final TokenResource fish = new TokenResource(common, "Fish", Res.imgRes, 13)
