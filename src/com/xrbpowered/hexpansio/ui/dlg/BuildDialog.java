@@ -174,6 +174,11 @@ public class BuildDialog extends OverlayDialog {
 				y += 15;
 				Res.paintCost(g, YieldResource.production, "Build cost: ", imp.buildCost, " "+Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), ""),
 						imp.buildCost, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+				if(!imp.canHurry) {
+					y += 15;
+					g.setColor(Color.WHITE);
+					g.drawString("Cannot hurry construction", x, y);
+				}
 				if(imp.upgPoints>0) {
 					y += 15;
 					g.setColor(ImprovementStack.getAvailUpgPoints(tile)>=imp.upgPoints ? Color.WHITE : Color.RED);
@@ -205,9 +210,16 @@ public class BuildDialog extends OverlayDialog {
 						g.drawString(String.format("%+d %s per worker", yield, res.name), x, y);
 					}
 				}
-				if(imp.effect!=null) {
+				if(imp.bonusResources>0) {
 					y += 15;
 					g.setColor(Color.LIGHT_GRAY);
+					g.drawString(EffectTarget.formatPluralDelta(imp.bonusResources, "Resource")+" harvested", x, y);
+				}
+				if(imp.effect!=null) {
+					y += 25;
+					g.setColor(Color.LIGHT_GRAY);
+					g.drawString("City-wide effects:", x, y);
+					y += 15;
 					g.drawString(imp.effect.getDescription(), x, y);
 				}
 				

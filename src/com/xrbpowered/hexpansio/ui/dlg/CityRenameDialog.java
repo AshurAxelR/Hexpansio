@@ -96,7 +96,7 @@ public class CityRenameDialog extends OverlayDialog {
 		}
 
 		String name = sb.toString();
-		if(!name.isEmpty() && name.equals(nameText.editor.getText())) {
+		if(!name.isEmpty() && name.equals(text)) {
 			city.rename(name);
 			dismiss();
 		}

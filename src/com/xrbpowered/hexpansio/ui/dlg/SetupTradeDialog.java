@@ -265,12 +265,12 @@ public class SetupTradeDialog extends OverlayDialog {
 	
 	public void updateStats() {
 		cityYield.clear();
-		cityYield.add(YieldResource.happiness, City.baseHappiness);
+		cityYield.add(YieldResource.happiness, city.world.baseHappiness);
 		cityYield.add(city.incomeTiles);
 		cityYield.subtract(city.expences);
 		
 		otherCityYield.clear();
-		otherCityYield.add(YieldResource.happiness, City.baseHappiness);
+		otherCityYield.add(YieldResource.happiness, city.world.baseHappiness);
 		otherCityYield.add(otherCity.incomeTiles);
 		otherCityYield.subtract(otherCity.expences);
 		

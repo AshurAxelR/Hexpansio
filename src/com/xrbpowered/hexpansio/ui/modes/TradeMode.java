@@ -41,6 +41,7 @@ public class TradeMode extends MapMode {
 		Tile hoverTile = view.hoverTile;
 		if(hoverTile.city==view.selectedCity) {
 			// TODO show city traders
+			// TODO show trade links
 			return true;
 		}
 		else if(hoverTile.isCityCenter()) {

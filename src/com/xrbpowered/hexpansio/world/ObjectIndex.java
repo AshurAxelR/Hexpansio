@@ -31,7 +31,8 @@ public class ObjectIndex<T> {
 	}
 	
 	public T get(String name) {
-		return map.get(name).object;
+		Entry e = map.get(name);
+		return e==null ? null : e.object;
 	}
 	
 	public int getIndex(String name) {

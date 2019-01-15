@@ -66,5 +66,13 @@ public class CityEffectStack extends CityEffect {
 			value += eff.addResourceBonusYield(resource, res);
 		return value;
 	}
+	
+	@Override
+	public int tileEffect(EffectTarget key, Tile tile) {
+		int value = 0;
+		for(CityEffect eff : effects)
+			value += eff.tileEffect(key, tile);
+		return value;
+	}
 
 }

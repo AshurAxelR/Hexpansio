@@ -21,6 +21,7 @@ public class ImprovementStack {
 	public int upgPoints;
 	public int workplaces;
 	public int maintenance;
+	public int bonusResources;
 	public final Yield.Cache yield = new Yield.Cache();
 	public final Yield.Cache yieldPerWorker = new Yield.Cache();
 	
@@ -59,6 +60,7 @@ public class ImprovementStack {
 		upgPoints = 0;
 		workplaces = base.workplaces;
 		maintenance = base.maintenance;
+		bonusResources = base.bonusResources;
 		yield.clear();
 		yieldPerWorker.clear();
 		yield.add(base.yield);
@@ -68,6 +70,7 @@ public class ImprovementStack {
 			upgPoints += upg.upgPoints;
 			workplaces += upg.workplaces;
 			maintenance += upg.maintenance;
+			bonusResources += upg.bonusResources;
 			yield.add(upg.yield);
 			yieldPerWorker.add(upg.yieldPerWorker);
 		}

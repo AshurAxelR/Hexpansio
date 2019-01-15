@@ -24,7 +24,6 @@ public class City {
 
 	public static final int expandRange = 3;
 	public static final int growthCostFactor = 10;
-	public static final int baseHappiness = 5;
 	public static final int cityUpgPoints = 3;
 
 	public String name;
@@ -267,7 +266,7 @@ public class City {
 					if(t.resource!=null)
 						resourcesOnMap.add(t.resource, 1);
 					if(t.hasResourceImprovement()) {
-						resourcesProduced.add(t.resource, 1);
+						resourcesProduced.add(t.resource, 1+t.improvement.bonusResources);
 					}
 				}
 			}
@@ -293,7 +292,7 @@ public class City {
 				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty);
 		
 		balance.clear();
-		balance.add(YieldResource.happiness, baseHappiness);
+		balance.add(YieldResource.happiness, world.baseHappiness);
 		balance.add(incomeTiles);
 		balance.add(incomeResources);
 		balance.subtract(expences);

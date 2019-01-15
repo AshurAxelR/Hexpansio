@@ -162,6 +162,8 @@ public class TileMode extends MapMode {
 					public void onEnter() {
 						view.world.goods -= cost;
 						view.selectedCity.buildingProgress.progress(cost);
+						view.selectedCity.updateStats();
+						view.world.updateWorldTotals();
 						dismiss();
 					}
 				};

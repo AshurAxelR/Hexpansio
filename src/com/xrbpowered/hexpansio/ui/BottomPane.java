@@ -125,7 +125,8 @@ public class BottomPane extends UIContainer {
 		g.setFont(Res.fontLarge);
 		g.drawString(mode.label.toUpperCase()+" MODE", getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 		
-		// TODO change bottom pane hints, create hover tile tooltip
+		// FIXME change bottom pane hints, create hover tile tooltip
+		// TODO message log 
 		
 		y += 25;
 		g.setFont(Res.font);

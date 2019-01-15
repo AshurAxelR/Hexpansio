@@ -90,6 +90,8 @@ public class SettleMode extends MapMode {
 			return true;
 		}
 		else if(view.selectedCity.population>1 && view.selectedCity.unemployed>0 && canSettle(hoverTile)) {
+			// TODO warn if settlement destroys resource
+			// TODO show settler link
 			TileMode.instance.switchBuildingProgress(new BuiltSettlement(view.selectedCity, hoverTile));
 			return true;
 		}

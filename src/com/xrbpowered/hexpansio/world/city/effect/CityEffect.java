@@ -31,6 +31,10 @@ public abstract class CityEffect {
 	public int addResourceBonusYield(TokenResource resource, YieldResource res) {
 		return 0;
 	}
+	
+	public int tileEffect(EffectTarget key, Tile tile) {
+		return 0;
+	}
 
 	private static class AddCityValue extends CityEffect {
 		public final EffectTarget key;

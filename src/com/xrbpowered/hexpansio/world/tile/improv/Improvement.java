@@ -32,11 +32,14 @@ public class Improvement implements Comparable<Improvement> {
 	
 	public int workplaces = 0;
 	public int maintenance = 0;
+	public int bonusResources = 0;
 	private Feature[] rejectFeatures = {Feature.water, Feature.peak};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	private boolean reqCoastalCity = false;
 	public boolean cityUnique = false;
+	public boolean canHurry = true; 
+	public boolean obsolete = false;
 	
 	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		objectIndex.put(name, this);
@@ -77,6 +80,11 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 
+	public Improvement bonusResources(int r) {
+		this.bonusResources = r;
+		return this;
+	}
+
 	public Improvement maintenance(int m) {
 		this.maintenance = m;
 		return this;
@@ -102,6 +110,11 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 
+	public Improvement cannotHurry() {
+		this.canHurry = false;
+		return this;
+	}
+
 	public Improvement requireCoastalCity() {
 		this.reqCoastalCity = true;
 		return this;
@@ -109,6 +122,11 @@ public class Improvement implements Comparable<Improvement> {
 
 	public Improvement cityUnique() {
 		this.cityUnique = true;
+		return this;
+	}
+
+	public Improvement obsolete() {
+		this.obsolete = true;
 		return this;
 	}
 
@@ -192,7 +210,7 @@ public class Improvement implements Comparable<Improvement> {
 		ArrayList<Improvement> impList = new ArrayList<>();
 		for(int i=0; i<Improvement.objectIndex.size(); i++) {
 			Improvement imp = Improvement.objectIndex.get(i);
-			if(imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) && ImprovementStack.isPrerequisite(tile, imp)) {
+			if(!imp.obsolete && imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) && ImprovementStack.isPrerequisite(tile, imp)) {
 				impList.add(imp);
 			}
 		}
@@ -232,7 +250,10 @@ public class Improvement implements Comparable<Improvement> {
 	static {
 		CityUpgrades.init();
 		FarmUpgrades.init();
+		MineUpgrades.init();
+		MarketUpgrades.init();
 		ParkUpgrades.init();
+		OtherUpgrades.init();
 	}
 
 }

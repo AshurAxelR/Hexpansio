@@ -30,6 +30,11 @@ public class BuildImprovement extends BuildingProgress {
 	}
 	
 	@Override
+	public boolean canHurry() {
+		return improvement.canHurry;
+	}
+	
+	@Override
 	public void complete() {
 		if(tile.improvement==null)
 			tile.improvement = new ImprovementStack(improvement);

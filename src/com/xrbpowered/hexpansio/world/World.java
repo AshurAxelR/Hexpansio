@@ -12,6 +12,8 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class World {
 
+	public static final int initialBaseHappiness = 5;
+
 	public static final int originwx = Region.size/2;
 	public static final int originwy = Region.size/2;
 	public static final TerrainType originTerrain = TerrainType.fertileValley;
@@ -39,9 +41,12 @@ public class World {
 	public int totalPopulation = 1;
 	public int totalGoldIn = 0;
 	public int totalGoodsIn = 0;
+	public int baseHappiness = 0;
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
+	// TODO void
+	
 	public World(Save save, long seed, TerrainGenerator terrain) {
 		this.save = save;
 		this.seed = seed;
@@ -247,12 +252,19 @@ public class World {
 		totalGoldIn = 0;
 		totalGoodsIn = 0;
 		maxDiscover = 0;
+		int prevBH = baseHappiness;
+		baseHappiness = initialBaseHappiness;
 		for(City city : cities) {
 			totalPopulation += city.population;
 			totalGoldIn += city.balance.get(YieldResource.gold);
 			if(city.buildingProgress==null)
 				totalGoodsIn += city.getExcess(city.getProduction());
-			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0); 
+			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0);
+			baseHappiness += city.effects.modifyCityValue(EffectTarget.baseHappiness, 0);
+		}
+		if(prevBH!=baseHappiness) {
+			updateCities();
+			updateWorldTotals();
 		}
 	}
 	

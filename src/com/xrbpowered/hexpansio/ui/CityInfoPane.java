@@ -125,7 +125,7 @@ public class CityInfoPane extends UIContainer {
 			g.drawString("1 population will leave", x, y);
 		}
 		g.setColor(Color.WHITE);
-		y += 20; g.drawString(String.format("%+d base happiness", City.baseHappiness), x, y);
+		y += 20; g.drawString(String.format("%+d base happiness", city.world.baseHappiness), x, y);
 		y += 15; g.drawString(String.format("%+d from tiles and resources", city.incomeTiles.get(YieldResource.happiness)+city.incomeResources.get(YieldResource.happiness)), x, y);
 		g.setColor(Color.GRAY);
 		if(city.population>1) {

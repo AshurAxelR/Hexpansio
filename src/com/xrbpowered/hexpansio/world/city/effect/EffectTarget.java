@@ -24,5 +24,6 @@ public class EffectTarget {
 
 	public static final EffectTarget upgPoints = new EffectTarget("Upg. Point", true);
 	public static final EffectTarget scouts = new EffectTarget("Scout", true);
+	public static final EffectTarget baseHappiness = new EffectTarget("Base Happiness in ALL cities", false);
 
 }

@@ -106,7 +106,7 @@ public class TileInfoPane extends UIContainer {
 			
 			y += 15;
 			g.setColor(Color.WHITE);
-			tile.resource.paint(g, x+5, y, tile.hasResourceImprovement() ? "+1" : null);
+			tile.resource.paint(g, x+5, y, tile.hasResourceImprovement() ? String.format("%+d", 1+tile.improvement.bonusResources) : null);
 			cx = x+45;
 			y += 10;
 			g.setFont(Res.fontBold);
@@ -217,6 +217,7 @@ public class TileInfoPane extends UIContainer {
 				}
 				g.setFont(Res.font);
 			}
+			// TODO show improvement info
 			y += 20;
 			upgButton.setLocation(upgButton.getX(), y);
 			removeButton.setLocation(removeButton.getX(), y);
