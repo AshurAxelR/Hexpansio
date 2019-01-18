@@ -140,7 +140,7 @@ public class Res {
 
 	public static void paintIncome(GraphAssist g, YieldResource res, String prefix, int income, String postfix,
 			float x, float y, int halign, int valign) {
-		paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.GRAY : Color.WHITE, x, y, halign, valign);
+		paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.LIGHT_GRAY : Color.WHITE, x, y, halign, valign);
 	}
 
 	public static void paintToken(GraphAssist g, float scale, ImageAtlas atlas, int subImage) {

@@ -38,5 +38,11 @@ public class Trade {
 	public Trade copy() {
 		return new Trade(city, otherCity, in.copy(), out.copy());
 	}
+	
+	public int getProfit() {
+		int countIn = in.totalCount();
+		int countOut = out.totalCount();
+		return countIn+countOut-Math.abs(countIn-countOut)*3;
+	}
 
 }

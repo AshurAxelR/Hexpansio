@@ -3,6 +3,7 @@ package com.xrbpowered.hexpansio.ui.modes;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -35,6 +36,26 @@ public class SettleMode extends MapMode {
 				view.world.distToNearestCityOrSettler(tile.wx, tile.wy)>=minCityDist && tile.terrain.canSettleOn();
 	}
 
+	@Override
+	public boolean hasOverlayLinks(Tile tile) {
+		return (view.getScale()>0.25f && tile.isCityCenter() && tile.city.isBuildingSettlement());
+	}
+	
+	@Override
+	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
+		if(view.getScale()>0.25f && (tile.isCityCenter() && tile.city.isBuildingSettlement() || tile.settlement!=null)) {
+			g.resetStroke();
+			g.setColor(Color.WHITE);
+			if(tile.isCityCenter()) {
+				view.drawLink(g, tile, tile.city.getSettlement());
+				g.graph.setStroke(MapView.borderStroke);
+			}
+			g.pushPureStroke(true);
+			g.graph.draw(MapView.tileCircle);
+			g.popPureStroke();
+		}
+	}
+	
 	@Override
 	public int paintHoverTileHint(GraphAssist g, int x, int y) {
 		String s;
@@ -91,7 +112,6 @@ public class SettleMode extends MapMode {
 		}
 		else if(view.selectedCity.population>1 && view.selectedCity.unemployed>0 && canSettle(hoverTile)) {
 			// TODO warn if settlement destroys resource
-			// TODO show settler link
 			TileMode.instance.switchBuildingProgress(new BuiltSettlement(view.selectedCity, hoverTile));
 			return true;
 		}

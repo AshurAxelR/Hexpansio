@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
@@ -25,18 +26,22 @@ import com.xrbpowered.zoomui.UIZoomView;
 
 public class MapView extends UIElement {
 
+	public static final Color cityColor = new Color(0x666666);
 	public static final Color playerColor = new Color(0x990000);
 	
 	public static Stroke borderStroke = new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10f);
+	public static Stroke borderStrokeThick = new BasicStroke(4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10f);
 
 	public static final int w = 34;
 	public static final int h = 28;
 	public static final int a = 16;
-	public static Shape hexagon = new Polygon(
+	public static final Shape hexagon = new Polygon(
 			new int[] {-w/2-a, -w/2, w/2, w/2+a, w/2, -w/2},
 			new int[] {0, -h, -h, 0, h, h},
 			6);
-	public static Shape smallHexagon = AffineTransform.getScaleInstance(0.9, 0.9).createTransformedShape(hexagon);
+	public static final Shape smallHexagon = AffineTransform.getScaleInstance(0.9, 0.9).createTransformedShape(hexagon);
+	public static final float tileCircleR = w/2+a+3;
+	public static final Shape tileCircle = new Ellipse2D.Float(-tileCircleR, -tileCircleR, tileCircleR*2, tileCircleR*2);
 
 	public static class Zoom extends UIZoomView {
 		public final MapView view;
@@ -176,6 +181,17 @@ public class MapView extends UIElement {
 		return ((UIZoomView)getParent()).getScale();
 	}
 	
+	public void drawLink(GraphAssist g, Tile t0, Tile t1) {
+		float x0 = t0.wx*(w+a);
+		float y0 = (-t0.wx+2*t0.wy)*h;
+		float dx = t1.wx*(w+a) - x0;
+		float dy = (-t1.wx+2*t1.wy)*h - y0;
+		float len = (float)Math.sqrt(dx*dx+dy*dy);
+		float rx = tileCircleR*dx/len;
+		float ry = tileCircleR*dy/len;
+		g.line(rx, ry, dx-rx, dy-ry);
+	}
+	
 	private void paintRegion(GraphAssist g, Rectangle clip, Region region) {
 		if(region==null)
 			return;
@@ -197,13 +213,22 @@ public class MapView extends UIElement {
 				if(getScale()<=0.75f && tile.city!=null && tile.city.tile==tile)
 					g.setColor(tile.city==selectedCity ? Color.WHITE : playerColor);
 				else if(tile.isCityCenter())
-					g.setColor(Color.GRAY);
+					g.setColor(cityColor);
 				else
 					g.setColor(tile.terrain.color);
 				if(getScale()>0.25f) {
 					g.graph.fill(hexagon);
 
 					g.pushAntialiasing(true);
+
+					g.graph.setStroke(getScale()>0.75f ? borderStroke : borderStrokeThick);
+					g.setColor(playerColor);
+					if(tile.isCityBorder(Dir.NW))
+						g.line(-w/2-a, 0, -w/2, -h);
+					if(tile.isCityBorder(Dir.N))
+						g.line(-w/2, -h, w/2, -h);
+					if(tile.isCityBorder(Dir.SW))
+						g.line(-w/2-a, 0, -w/2, h);
 
 					if(MapMode.active.showCityRange()) {
 						g.resetStroke();
@@ -216,16 +241,6 @@ public class MapView extends UIElement {
 							g.line(-w/2-a, 0, -w/2, h);
 					}
 					
-					g.graph.setStroke(borderStroke);
-					g.setColor(playerColor);
-					if(tile.isCityBorder(Dir.NW))
-						g.line(-w/2-a, 0, -w/2, -h);
-					if(tile.isCityBorder(Dir.N))
-						g.line(-w/2, -h, w/2, -h);
-					if(tile.isCityBorder(Dir.SW))
-						g.line(-w/2-a, 0, -w/2, h);
-
-
 					g.popAntialiasing();
 				}
 				else
@@ -269,14 +284,14 @@ public class MapView extends UIElement {
 				int my = y+(ry<<Region.sized);
 				int x0 = mx*(w+a);
 				int y0 = (-mx+2*my)*h;
-				if(x0+w/2+a<clip.x || x0-w/2-a>clip.x+clip.width || y0+h<clip.y || y0-h>clip.y+clip.height)
+				if((x0+w/2+a<clip.x || x0-w/2-a>clip.x+clip.width || y0+h<clip.y || y0-h>clip.y+clip.height) && (tile==null || !MapMode.active.hasOverlayLinks(tile)))
 					continue;
 				
 				g.pushTx();
 				g.translate(x0, y0);
 
 				if(getScale()>0.25f && tile!=null && tile==selectedTile) {
-					g.graph.setStroke(borderStroke);
+					g.graph.setStroke(getScale()>0.75f ? borderStroke : borderStrokeThick);
 					if(tile==selectedTile) {
 						g.setColor(new Color(0x99ffffff, true));
 						g.graph.draw(smallHexagon);

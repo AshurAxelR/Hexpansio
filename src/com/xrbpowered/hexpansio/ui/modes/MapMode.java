@@ -54,6 +54,10 @@ public abstract class MapMode {
 		return null;
 	}
 	
+	public boolean hasOverlayLinks(Tile tile) {
+		return false;
+	}
+	
 	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
 	}
 

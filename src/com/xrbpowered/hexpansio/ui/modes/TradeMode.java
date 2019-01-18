@@ -1,10 +1,16 @@
 package com.xrbpowered.hexpansio.ui.modes;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.dlg.SetupTradeDialog;
 import com.xrbpowered.hexpansio.world.Dir;
+import com.xrbpowered.hexpansio.world.resources.Trade;
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.zoomui.GraphAssist;
 
 public class TradeMode extends MapMode {
 
@@ -27,6 +33,36 @@ public class TradeMode extends MapMode {
 	}
 	
 	@Override
+	public boolean hasOverlayLinks(Tile tile) {
+		return (view.getScale()>0.25f && tile.city==view.selectedCity);
+	}
+	
+	@Override
+	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
+		if(view.getScale()>0.25f && isTileEnabled(tile)) {
+			Trade trade = view.selectedCity.trades.get(tile.city);
+			g.resetStroke();
+			if(tile.city==view.selectedCity) {
+				for(Trade t : view.selectedCity.trades.getAll()) {
+					int profit = t.getProfit();
+					g.setColor(profit>0 ? Color.WHITE : profit<0 ? Color.RED : Color.LIGHT_GRAY);
+					view.drawLink(g, tile, t.otherCity.tile);
+				}
+				g.graph.setStroke(MapView.borderStroke);
+			}
+			g.setColor(Color.WHITE);
+			g.pushPureStroke(true);
+			g.graph.draw(MapView.tileCircle);
+			g.popPureStroke();
+			if(trade!=null && view.getScale()>1f) {
+				g.setFont(Res.fontTiny);
+				Res.paintIncome(g, YieldResource.gold, null, trade.getProfit(), null,
+						0, -MapView.h*2/3, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
+		}
+	}
+	
+	@Override
 	public boolean showCityRange() {
 		return true;
 	}
@@ -41,7 +77,6 @@ public class TradeMode extends MapMode {
 		Tile hoverTile = view.hoverTile;
 		if(hoverTile.city==view.selectedCity) {
 			// TODO show city traders
-			// TODO show trade links
 			return true;
 		}
 		else if(hoverTile.isCityCenter()) {
