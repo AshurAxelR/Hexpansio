@@ -5,6 +5,7 @@ import static com.xrbpowered.hexpansio.world.tile.improv.Improvement.*;
 import com.xrbpowered.hexpansio.world.city.effect.YieldEffect;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 
 public abstract class MineUpgrades {
 
@@ -12,7 +13,8 @@ public abstract class MineUpgrades {
 		new Improvement(mine, "Miners' Guild", 40, 1).workplaces(2).yieldPerWorker(0, 1, 0, 0);
 		new Improvement(mine, "Strip Mine", 80, 2).requireResource().workplaces(1).maintenance(3).bonusResources(2);
 		new Improvement(mine, "Automated Mining", 60, 1).maintenance(1).bonusResources(1).yieldPerWorker(0, 2, 0, 0);
-		new Improvement(mine, "Factory", 100, 2).workplaces(3).yieldPerWorker(0, 1, 0, 0);
+		new Improvement(mine, "Factory", 100, 2).workplaces(3).yieldPerWorker(0, 1, 0, 0)
+			.reject(Feature.mountain, Feature.peak);
 		
 		new Improvement(mine, "Forge", 60, 1).cityUnique().maintenance(1)
 			.effects(new YieldEffect.Resource(0, 2, 0, 0) {

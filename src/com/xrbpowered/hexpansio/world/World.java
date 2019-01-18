@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
+import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
@@ -42,6 +43,8 @@ public class World {
 	public int totalGoldIn = 0;
 	public int totalGoodsIn = 0;
 	public int baseHappiness = 0;
+	
+	public Happiness minHappiness = Happiness.happy;
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
@@ -254,6 +257,7 @@ public class World {
 		maxDiscover = 0;
 		int prevBH = baseHappiness;
 		baseHappiness = initialBaseHappiness;
+		minHappiness = Happiness.happy;
 		for(City city : cities) {
 			totalPopulation += city.population;
 			totalGoldIn += city.balance.get(YieldResource.gold);
@@ -261,6 +265,8 @@ public class World {
 				totalGoodsIn += city.getExcess(city.getProduction());
 			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0);
 			baseHappiness += city.effects.modifyCityValue(EffectTarget.baseHappiness, 0);
+			if(city.happiness.ordinal()>minHappiness.ordinal())
+				minHappiness = city.happiness;
 		}
 		if(prevBH!=baseHappiness) {
 			updateCities();

@@ -8,7 +8,6 @@ import java.util.Date;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
-import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -75,6 +74,8 @@ public class BottomPane extends UIContainer {
 			g.drawString(new SimpleDateFormat("HH:mm").format(new Date()),
 					getWidth()/2+frameWidth/2, getHeight()-d, GraphAssist.RIGHT, GraphAssist.CENTER);
 			
+			// TODO warn: cities may require attention, next turn highlight
+			
 			super.paintFrame(g, enabled, hot);
 		}
 		
@@ -86,13 +87,10 @@ public class BottomPane extends UIContainer {
 
 	private ModeButton[] modeButtons;
 	private NextTurnButton nextTurnButton;
-	private MapView view;
 	
 	public BottomPane(UIContainer parent, final MapView view) {
 		super(parent);
 		setSize(0, 120);
-		
-		this.view = view;
 		
 		modeButtons = new ModeButton[MapMode.modes.length];
 		for(int i=0; i<modeButtons.length; i++) {
@@ -128,7 +126,7 @@ public class BottomPane extends UIContainer {
 		// FIXME change bottom pane hints, create hover tile tooltip
 		// TODO message log 
 		
-		y += 25;
+		/*y += 25;
 		g.setFont(Res.font);
 		Tile tile = view.hoverTile; 
 		if(tile!=null && tile.discovered) {
@@ -146,7 +144,7 @@ public class BottomPane extends UIContainer {
 		}
 		
 		y += 17;
-		y = mode.paintHoverTileHint(g, (int)getWidth()/2, y);
+		y = mode.paintHoverTileHint(g, (int)getWidth()/2, y);*/
 	}
 	
 }

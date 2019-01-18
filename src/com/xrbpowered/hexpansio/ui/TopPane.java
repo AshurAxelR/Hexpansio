@@ -95,25 +95,34 @@ public class TopPane extends UIContainer {
 		g.setPaint(new GradientPaint(0, 0, Res.uiBgColor, 0, getHeight(), new Color(0x336699)));
 		g.fill(this);
 		g.resetStroke();
-		//g.setStroke(getPixelScale());
 		g.hborder(this, GraphAssist.BOTTOM, Color.WHITE);
 		
 		World world = ((Hexpansio) getParent()).view.view.world;
 		if(world==null)
 			return;
 
-		int x = (int)(menuButton.getX()-10);
+		int x = (int)(menuButton.getX()-20);
+		int y = (int)getHeight()/2;
+
+		int r = 15;
+		g.setColor(Color.DARK_GRAY);
+		g.resetStroke();
+		Res.imgHappiness.draw(g, x-r, y-r, r*2, world.minHappiness.ordinal());
+		g.graph.drawOval(x-r, y-r, r*2, r*2);
+
+		x -= 30;
 
 		g.setColor(Color.WHITE);
 		g.setFont(Res.font);
 		g.drawString(String.format("Population: %d    Cities: %d    Turn: %d", world.totalPopulation, world.cities.size(), world.turn),
-				x, getHeight()/2f, GraphAssist.RIGHT, GraphAssist.CENTER);
+				x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
 		
 		x = 10;
-		
+
 		g.setFont(Res.font);
+		g.setColor(Color.WHITE);
 		g.drawString(String.format("Gold: %d (%+d)    Goods: %d (%+d)", world.gold, world.totalGoldIn, world.goods, world.totalGoodsIn),
-				x, getHeight()/2f, GraphAssist.LEFT, GraphAssist.CENTER);
+				x, y, GraphAssist.LEFT, GraphAssist.CENTER);
 		
 		City city = ((Hexpansio) getParent()).view.view.selectedCity;
 		if(city==null)
