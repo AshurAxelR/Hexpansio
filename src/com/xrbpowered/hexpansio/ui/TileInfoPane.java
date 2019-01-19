@@ -22,6 +22,8 @@ public class TileInfoPane extends UIContainer {
 	private final ClickButton upgButton;
 	private final ClickButton removeButton;
 
+	private final FrameButton upgFrame;
+
 	public TileInfoPane(UIContainer parent) {
 		super(parent);
 		setSize(250, 400);
@@ -29,8 +31,7 @@ public class TileInfoPane extends UIContainer {
 		buildButton = new ClickButton(this, "Build", (int)(getWidth()-margin*2)) {
 			@Override
 			public void onClick() {
-				new BuildDialog(getMapView().selectedTile);
-				repaint();
+				new BuildDialog(getMapView().selectedTile).repaint();
 			}
 		};
 		buildButton.setLocation(margin, 0);
@@ -39,8 +40,7 @@ public class TileInfoPane extends UIContainer {
 		upgButton = new ClickButton(this, "Upgrade", 140) {
 			@Override
 			public void onClick() {
-				new BuildDialog(getMapView().selectedTile);
-				repaint();
+				new BuildDialog(getMapView().selectedTile).repaint();
 			}
 		};
 		upgButton.setLocation(margin, 0);
@@ -60,6 +60,14 @@ public class TileInfoPane extends UIContainer {
 		};
 		removeButton.setLocation(getWidth()-removeButton.getWidth()-margin, 0);
 		removeButton.setVisible(false);
+		
+		upgFrame = new FrameButton(this, 3, 3) {
+			@Override
+			public void onClick() {
+				new BuildDialog(getMapView().selectedTile, true).repaint();
+			}
+		};
+		upgFrame.setLocation(0, 0);
 	}
 	
 	public MapView getMapView() {
@@ -144,19 +152,30 @@ public class TileInfoPane extends UIContainer {
 			return;
 		}
 
-		y += 10;
-		int wp = tile.getWorkplaces();
-		if(wp>0) {
-			y += 40;
-			g.setStroke(1.25f);
-			Res.paintWorkerBubbles(g, x, y-30, 15, tile.workers, wp, true, GraphAssist.LEFT);
-		}
-		else {
+		if(!tile.isCityCenter()) {
+			y += 10;
+			int wp = tile.getWorkplaces();
+			if(wp>0) {
+				y += 40;
+				g.setStroke(1.25f);
+				Res.paintWorkerBubbles(g, x, y-30, 15, tile.workers, wp, true, GraphAssist.LEFT);
+				g.setColor(Color.WHITE);
+				g.drawString(String.format("Workers: %d / %d", tile.workers, wp), x, y);
+			}
+			else {
+				y += 15;
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawString("Not workable", x, y);
+			}
 			y += 15;
+			g.resetStroke();
+			g.line(0, y, getWidth(), y, Res.uiBorderDark);
 		}
 
 		BuildingProgress bp = tile.city.buildingProgress==null || tile.city.buildingProgress.tile!=tile ? null : tile.city.buildingProgress;
+		upgFrame.setVisible(false);
 		if(tile.improvement==null && bp==null) {
+			y += 25;
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString("No improvement", x, y);
 			
@@ -168,7 +187,7 @@ public class TileInfoPane extends UIContainer {
 			y += buildButton.getHeight();
 		}
 		else if(tile.improvement==null) {
-			y += 5;
+			y += 30;
 			g.setColor(Color.GRAY);
 			g.setFont(Res.fontLarge);
 			g.drawString(tile.city.buildingProgress.getName(), x, y);
@@ -182,7 +201,7 @@ public class TileInfoPane extends UIContainer {
 			removeButton.setVisible(false);
 		}
 		else if(bp!=null && bp instanceof RemoveImprovement) {
-			y += 5;
+			y += 30;
 			g.setColor(Color.WHITE);
 			g.setFont(Res.fontLarge);
 			g.drawString(tile.improvement.base.name, x, y);
@@ -196,7 +215,9 @@ public class TileInfoPane extends UIContainer {
 			removeButton.setVisible(false);
 		}
 		else {
-			y += 5;
+			upgFrame.setLocation(0, y);
+			
+			y += 30;
 			g.setColor(Color.WHITE);
 			g.setFont(Res.fontLarge);
 			g.drawString(tile.improvement.base.name, x, y);
@@ -208,17 +229,29 @@ public class TileInfoPane extends UIContainer {
 				g.drawString("No upgrades", x, y);
 			}
 			else {
-				g.setColor(Color.WHITE);
+				g.setColor(Color.LIGHT_GRAY);
 				g.drawString("Upgrades:", x, y);
-				g.setFont(Res.fontBold);
 				for(Improvement upg : tile.improvement.upgrades) {
 					y += 20;
-					g.drawString(upg.name, x+20, y);
+					g.setColor(Color.GRAY);
+					g.setFont(Res.font);
+					g.drawString(Integer.toString(upg.upgPoints), x+10, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
+					g.setColor(Color.WHITE);
+					g.setFont(Res.fontBold);
+					g.drawString(upg.name, x+25, y);
 				}
 				g.setFont(Res.font);
 			}
-			// TODO show improvement info
-			y += 20;
+			
+			y += 15;
+			g.setColor(Color.WHITE);
+			g.drawString("Details...", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
+
+			y += 15;
+			upgFrame.setSize(getWidth(), y-upgFrame.getY());
+			upgFrame.setVisible(true);
+
+			y += 5;
 			upgButton.setLocation(upgButton.getX(), y);
 			removeButton.setLocation(removeButton.getX(), y);
 			buildButton.setVisible(false);

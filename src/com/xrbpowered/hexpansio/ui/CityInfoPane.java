@@ -222,7 +222,7 @@ public class CityInfoPane extends UIContainer {
 			g.setFont(Res.font);
 			y += 20;
 			g.setColor(YieldResource.production.fill);
-			g.drawString(String.format("%d/%d", bp.progress, bp.getCost()), x, y);
+			g.drawString(String.format("%d / %d", bp.progress, bp.getCost()), x, y);
 			if(city.getProduction()>0) {
 				g.drawString(Res.calcTurnsStr(bp.progress, bp.getCost(), city.getProduction(), null),
 						getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);

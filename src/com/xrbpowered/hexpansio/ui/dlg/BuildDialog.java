@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
@@ -21,6 +22,7 @@ import com.xrbpowered.zoomui.std.UIListItem;
 
 public class BuildDialog extends OverlayDialog {
 
+	public final boolean viewOnly;
 	public final Tile tile;
 	
 	private class BuildingListItem extends UIListItem {
@@ -31,7 +33,8 @@ public class BuildDialog extends OverlayDialog {
 		@Override
 		public void paint(GraphAssist g) {
 			Improvement imp = (Improvement) object;
-			boolean enabled = imp.canBuildOn(tile);
+			boolean enabled = viewOnly || imp.canBuildOn(tile);
+			boolean recomm = viewOnly && imp.prerequisite==null || !viewOnly && imp.isRecommendedFor(tile);
 			boolean sel = (index==list.getSelectedIndex());
 			if(sel && enabled) {
 				g.setPaint(new GradientPaint(0, 0, Res.uiBgBright, 0, getHeight(), Res.uiButtonTop));
@@ -48,32 +51,65 @@ public class BuildDialog extends OverlayDialog {
 				g.border(this, Res.uiBorderDark);
 			}
 			
-			g.setColor(enabled ? (imp.isRecommendedFor(tile) ? Color.YELLOW : Color.WHITE) : Color.GRAY);
+			g.setColor(enabled ? (recomm ? Color.YELLOW : Color.WHITE) : Color.GRAY);
 			g.setFont(Res.fontBold);
 			g.drawString(imp.name, 30, getHeight()/2f, GraphAssist.LEFT, GraphAssist.CENTER);
 			
-			g.setColor(enabled ? Color.WHITE : Color.GRAY);
 			g.setFont(Res.font);
+			if(imp.prerequisite!=null) {
+				g.setColor(Color.GRAY);
+				g.drawString(Integer.toString(imp.upgPoints), 15, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);
+			}
+			g.setColor(enabled ? Color.WHITE : Color.GRAY);
 			if(imp.glyph!=null)
 				g.drawString(imp.glyph, 15, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);
-			if(enabled && tile.city.getProduction()>0) {
+			if(!viewOnly && enabled && tile.city.getProduction()>0) {
 				g.drawString(Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), null),
 						getWidth()-10, getHeight()/2f, GraphAssist.RIGHT, GraphAssist.CENTER);
 			}
 		}
 	}
 	
+	private class BuildComparator implements Comparator<Improvement> {
+		@Override
+		public int compare(Improvement imp1, Improvement imp2) {
+			int res = 0;
+			res = -Boolean.compare(imp1.isRecommendedFor(tile), imp2.isRecommendedFor(tile));
+			if(res==0) {
+				res = Integer.compare(imp1.upgPoints, imp2.upgPoints);
+				if(res==0) {
+					res = -Boolean.compare(imp1.canBuildOn(tile), imp2.canBuildOn(tile));
+					if(res==0) {
+						res = imp1.compareTo(imp2);
+					}
+				}
+			}
+			return res;
+		}
+	};
+
 	private UIListBox list;
 	
 	private final ClickButton buildButton;
 	private final ClickButton closeButton;
-	
+
 	public BuildDialog(final Tile tile) {
-		super(Hexpansio.instance.getBase(), 600, 400, tile.improvement==null ? "BUILD IMPROVEMENT" : "ADD UPGRADE");
+		this(tile, false);
+	}
+
+	public BuildDialog(final Tile tile, final boolean viewOnly) {
+		super(Hexpansio.instance.getBase(), 600, 400, viewOnly ? "IMPROVEMENT INFO" : tile.improvement==null ? "BUILD IMPROVEMENT" : "ADD UPGRADE");
 		this.tile = tile;
+		this.viewOnly = viewOnly;
 		
-		ArrayList<Improvement> impList = Improvement.createBuildList(tile);
-		impList.sort(null);
+		ArrayList<Improvement> impList;
+		if(viewOnly) {
+			impList = ImprovementStack.createViewList(tile);
+		}
+		else {
+			impList = Improvement.createBuildList(tile);
+			impList.sort(new BuildComparator());
+		}
 
 		if(impList.isEmpty())
 			list = null;
@@ -86,20 +122,27 @@ public class BuildDialog extends OverlayDialog {
 			};
 			list.setSize(300, 400-60-60);
 			list.setLocation(10, 60);
+			
+			list.select(0);
 		}
 		
-		buildButton = new ClickButton(box, "START", 140) {
-			@Override
-			public boolean isEnabled() {
-				Improvement imp = selectedImprovement();
-				return imp!=null && imp.canBuildOn(tile);
-			}
-			@Override
-			public void onClick() {
-				onEnter();
-			}
-		};
-		buildButton.setLocation(box.getWidth()-buildButton.getWidth()-10, box.getHeight()-buildButton.getHeight()-10);
+		if(!viewOnly) {
+			buildButton = new ClickButton(box, "START", 140) {
+				@Override
+				public boolean isEnabled() {
+					Improvement imp = selectedImprovement();
+					return imp!=null && imp.canBuildOn(tile);
+				}
+				@Override
+				public void onClick() {
+					onEnter();
+				}
+			};
+			buildButton.setLocation(box.getWidth()-buildButton.getWidth()-10, box.getHeight()-buildButton.getHeight()-10);
+		}
+		else {
+			buildButton = null;
+		}
 
 		closeButton = new ClickButton(box, "Close", 100) {
 			@Override
@@ -107,7 +150,7 @@ public class BuildDialog extends OverlayDialog {
 				dismiss();
 			}
 		};
-		closeButton.setLocation(10, box.getHeight()-buildButton.getHeight()-10);
+		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
 	}
 	
 	@Override
@@ -148,7 +191,7 @@ public class BuildDialog extends OverlayDialog {
 		}
 		else {
 			g.setColor(Color.WHITE);
-			g.drawString("Select to build:", x, y);
+			g.drawString(viewOnly ? "Upgrades:" : "Select to build:", x, y);
 	
 			Improvement imp = list.getSelectedItem()==null ? null : (Improvement) list.getSelectedItem().object;
 			
@@ -171,18 +214,20 @@ public class BuildDialog extends OverlayDialog {
 					y += 15;
 					g.drawString("City unique", x, y);
 				}
-				y += 15;
-				Res.paintCost(g, YieldResource.production, "Build cost: ", imp.buildCost, " "+Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), ""),
-						imp.buildCost, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
-				if(!imp.canHurry) {
+				if(imp.buildCost>0) {
+					y += 15;
+					Res.paintCost(g, YieldResource.production, "Build cost: ", imp.buildCost, viewOnly ? null : " "+Res.calcTurnsStr(0, imp.buildCost, tile.city.getProduction(), ""),
+							imp.buildCost, x, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+				}
+				if(!viewOnly && !imp.canHurry) {
 					y += 15;
 					g.setColor(Color.WHITE);
 					g.drawString("Cannot hurry construction", x, y);
 				}
 				if(imp.upgPoints>0) {
 					y += 15;
-					g.setColor(ImprovementStack.getAvailUpgPoints(tile)>=imp.upgPoints ? Color.WHITE : Color.RED);
-					g.drawString(String.format("Upg. Points required: %d", imp.upgPoints), x, y);
+					g.setColor(viewOnly || ImprovementStack.getAvailUpgPoints(tile)>=imp.upgPoints ? Color.WHITE : Color.RED);
+					g.drawString(String.format(viewOnly ? "Upg. Points: %d" : "Upg. Points required: %d", imp.upgPoints), x, y);
 				}
 				
 				y += 10;
@@ -219,11 +264,14 @@ public class BuildDialog extends OverlayDialog {
 					y += 25;
 					g.setColor(Color.LIGHT_GRAY);
 					g.drawString("City-wide effects:", x, y);
-					y += 15;
-					g.drawString(imp.effect.getDescription(), x, y);
+					String[] desc = imp.effect.getDescription().split("\\n");
+					for(String s : desc) {
+						y += 15;
+						g.drawString(s, x, y);
+					}
 				}
 				
-				if(!imp.canBuildOn(tile)) {
+				if(!viewOnly && !imp.canBuildOn(tile)) {
 					y += 25;
 					g.setColor(Color.RED);
 					g.drawString(imp.requirementExplained(tile), x, y);
@@ -242,15 +290,17 @@ public class BuildDialog extends OverlayDialog {
 	
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
-		Improvement imp = Improvement.keyMap.get(code);
-		if(imp!=null && list!=null) {
-			for(int i=0; i<list.getNumItems(); i++)
-				if(list.getItem(i).object==imp) {
-					list.select(i);
-					repaint();
-					break;
-				}
-			return true;
+		if(!viewOnly) {
+			Improvement imp = Improvement.keyMap.get(code);
+			if(imp!=null && list!=null) {
+				for(int i=0; i<list.getNumItems(); i++)
+					if(list.getItem(i).object==imp) {
+						list.select(i);
+						repaint();
+						break;
+					}
+				return true;
+			}
 		}
 		return super.onKeyPressed(c, code, mods);
 	}

@@ -55,7 +55,6 @@ public class Improvement implements Comparable<Improvement> {
 	
 	@Override
 	public int compareTo(Improvement o) {
-		// TODO sort order: base, recommend?, buildable?, name
 		return name.compareTo(o.name);
 	}
 	
@@ -221,7 +220,7 @@ public class Improvement implements Comparable<Improvement> {
 			.effects(
 					CityEffect.add(EffectTarget.scouts, 1),
 					CityEffect.add(EffectTarget.upgPoints, 1),
-					CityEffect.dummy(EffectTarget.upgPoints.formatPluralDelta(City.cityUpgPoints)+" in the city tile")
+					CityEffect.dummy(EffectTarget.upgPoints.formatPluralDelta(City.cityUpgPoints)+" in the City tile")
 				);
 	
 	public static final Improvement farm = new Improvement("Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")

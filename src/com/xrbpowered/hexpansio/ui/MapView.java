@@ -156,6 +156,12 @@ public class MapView extends UIElement {
 	}
 	
 	@Override
+	public void onMouseOut() {
+		hoverTile = null;
+		repaint();
+	}
+	
+	@Override
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
 		updateHoverTile(x, y);
 		MapMode mode = MapMode.active;

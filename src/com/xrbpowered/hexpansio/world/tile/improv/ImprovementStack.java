@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.xrbpowered.hexpansio.world.ObjectIndex;
 import com.xrbpowered.hexpansio.world.World;
@@ -57,6 +58,8 @@ public class ImprovementStack {
 	}
 	
 	public void update() {
+		this.upgrades.sort(viewComparator);
+		
 		upgPoints = 0;
 		workplaces = base.workplaces;
 		maintenance = base.maintenance;
@@ -116,6 +119,30 @@ public class ImprovementStack {
 	
 	public static int getAvailUpgPoints(Tile tile) {
 		return tile.city.maxUpgPointsForTile(tile)-(tile.improvement==null ? 0 : tile.improvement.upgPoints);
+	}
+	
+	public static final Comparator<Improvement> viewComparator = new Comparator<Improvement>() {
+		@Override
+		public int compare(Improvement imp1, Improvement imp2) {
+			int res = 0;
+			res = -Boolean.compare(imp1.prerequisite==null, imp2.prerequisite==null);
+			if(res==0) {
+				res = Integer.compare(imp1.upgPoints, imp2.upgPoints);
+				if(res==0) {
+					res = imp1.compareTo(imp2);
+				}
+			}
+			return res;
+		}
+	};
+
+	public static ArrayList<Improvement> createViewList(Tile tile) {
+		ArrayList<Improvement> impList = new ArrayList<>();
+		if(tile!=null && tile.improvement!=null) {
+			impList.add(tile.improvement.base);
+			impList.addAll(tile.improvement.upgrades);
+		}
+		return impList;
 	}
 	
 	public static void write(Tile tile, ObjectIndex<Improvement> conv, DataOutputStream out) throws IOException {
