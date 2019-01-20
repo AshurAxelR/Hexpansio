@@ -134,8 +134,9 @@ public class CityInfoPane extends UIContainer {
 		y += 20; g.drawString(String.format("%+d base happiness", city.world.baseHappiness), x, y);
 		y += 15; g.drawString(String.format("%+d from tiles and resources", city.incomeTiles.get(YieldResource.happiness)+city.incomeResources.get(YieldResource.happiness)), x, y);
 		g.setColor(Color.GRAY);
-		if(city.population>1) {
-			y += 15; g.drawString(String.format("%d from population", -(city.population-1)), x, y);
+		int u = city.getPopulationUnhappiness();
+		if(u>0) {
+			y += 15; g.drawString(String.format("%d from population", -u), x, y);
 		}
 		if(city.world.cities.size()>1) {
 			y += 15; g.drawString(String.format("%d from number of cities", -city.world.cities.size()+1), x, y);
@@ -150,8 +151,9 @@ public class CityInfoPane extends UIContainer {
 		if(city.balance.get(YieldResource.food)<0) {
 			y += 15; g.drawString(String.format("%d from starvation", -city.population), x, y);
 		}
-		if(city.adjVoid>0) {
-			y += 15; g.drawString(String.format("%d from void", -city.adjVoid), x, y);
+		u = city.getVoidUnhappiness();
+		if(u>0) {
+			y += 15; g.drawString(String.format("%d from void", -u), x, y);
 		}
 
 		y += 15;

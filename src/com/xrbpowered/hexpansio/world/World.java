@@ -234,10 +234,11 @@ public class World {
 		}
 		newCities.clear();
 		
-		if(turn==voidStartTurn)
+		if(turn==voidStartTurn-1)
 			startVoid();
-		if(hasVoid()) {
-			for(Region r : regions.values())
+		else if(hasVoid()) {
+			ArrayList<Region> regions = new ArrayList<>(this.regions.values());
+			for(Region r : regions)
 				r.spreadVoid();
 		}
 		
@@ -286,7 +287,7 @@ public class World {
 	}
 	
 	public boolean hasVoid() {
-		return turn>voidStartTurn;
+		return turn>=voidStartTurn;
 	}
 	
 	public void startVoid() {

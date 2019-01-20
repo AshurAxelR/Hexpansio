@@ -17,6 +17,7 @@ import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.CityUpgrades;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
@@ -261,8 +262,8 @@ public class City {
 		workplaces = 0;
 		adjVoid = 0;
 		int workers = 0;
-		for(int x=-expandRange; x<=expandRange; x++)
-			for(int y=-expandRange; y<=expandRange; y++) {
+		for(int x=-expandRange-1; x<=expandRange+1; x++)
+			for(int y=-expandRange-1; y<=expandRange+1; y++) {
 				Tile t = world.getTile(tile.wx+x, tile.wy+y);
 				if(t!=null && t.isVoid()) {
 					if(t.city==this || t.countAdjCityTiles(this)>0)
@@ -301,9 +302,23 @@ public class City {
 		}
 	}
 
+	public int getPopulationUnhappiness() {
+		int u = population-1;
+		if(ImprovementStack.cityContains(tile, CityUpgrades.highrise))
+			u = (int)(u * (1f - CityUpgrades.highriseEffect));
+		return u;
+	}
+	
+	public int getVoidUnhappiness() {
+		int u = adjVoid;
+		if(ImprovementStack.cityContains(tile, CityUpgrades.beaconOfHope))
+			u = (int)(u * (1f - CityUpgrades.beaconOfHopeEffect));
+		return u;
+	}
+	
 	protected void updateBalance() {
 		expences.add(YieldResource.happiness,
-				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty + adjVoid);
+				getPopulationUnhappiness() + unemployed*unemployed + (world.cities.size()-1) + world.poverty + getVoidUnhappiness());
 		
 		balance.clear();
 		balance.add(YieldResource.happiness, world.baseHappiness);

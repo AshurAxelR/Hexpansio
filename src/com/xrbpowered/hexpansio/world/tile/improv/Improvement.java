@@ -33,13 +33,16 @@ public class Improvement implements Comparable<Improvement> {
 	public int workplaces = 0;
 	public int maintenance = 0;
 	public int bonusResources = 0;
-	private Feature[] rejectFeatures = {Feature.water, Feature.peak};
+	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.thevoid};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	private boolean reqCoastalCity = false;
+	private int reqPopulation = 0;
+	public Improvement cityPrerequisite = null;
+
 	public boolean cityUnique = false;
-	public boolean canHurry = true; 
-	public boolean obsolete = false;
+	public boolean canHurry = true;
+	public boolean voidUnlock = false;
 	
 	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		objectIndex.put(name, this);
@@ -114,18 +117,28 @@ public class Improvement implements Comparable<Improvement> {
 		return this;
 	}
 
+	public Improvement voidUnlock() {
+		this.voidUnlock = true;
+		return this;
+	}
+
 	public Improvement requireCoastalCity() {
 		this.reqCoastalCity = true;
 		return this;
 	}
 
-	public Improvement cityUnique() {
-		this.cityUnique = true;
+	public Improvement requirePopulation(int pop) {
+		this.reqPopulation = pop;
 		return this;
 	}
 
-	public Improvement obsolete() {
-		this.obsolete = true;
+	public Improvement cityPrerequisite(Improvement imp) {
+		this.cityPrerequisite = imp;
+		return this;
+	}
+
+	public Improvement cityUnique() {
+		this.cityUnique = true;
 		return this;
 	}
 
@@ -151,10 +164,12 @@ public class Improvement implements Comparable<Improvement> {
 	public boolean canBuildOn(Tile tile) {
 		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
 				(!cityUnique || !ImprovementStack.cityContains(tile, this)) &&
+				(cityPrerequisite==null || ImprovementStack.cityContains(tile, cityPrerequisite)) &&
 				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
 				(!reqResource || tile.resource!=null && tile.resource.improvement==this.getBase()) &&
 				(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water) &&
+				(tile.city.population>=reqPopulation) &&
 				(upgPoints==0 || upgPoints<=ImprovementStack.getAvailUpgPoints(tile));
 	}
 	
@@ -164,6 +179,9 @@ public class Improvement implements Comparable<Improvement> {
 		}
 		else if(!(!cityUnique || !ImprovementStack.cityContains(tile, this))) {
 			return "Already built in this city";
+		}
+		else if(!(cityPrerequisite==null || ImprovementStack.cityContains(tile, cityPrerequisite))) {
+			return String.format("Requires %s", cityPrerequisite.name);
 		}
 		else if(!(reqFeatures==null || tile.terrain.hasFeature(reqFeatures))) {
 			StringBuilder sb = new StringBuilder();
@@ -184,6 +202,9 @@ public class Improvement implements Comparable<Improvement> {
 		}
 		else if(!(tile.city.coastalCity || !reqCoastalCity && tile.terrain.feature!=Feature.water)) {
 			return "Requires coastal city";
+		}
+		else if(!(tile.city.population>=reqPopulation)) {
+			return String.format("Requires %d population", reqPopulation);
 		}
 		else if(!(upgPoints==0 || upgPoints<=ImprovementStack.getAvailUpgPoints(tile))) {
 			return "Not enough upgrade points";
@@ -209,7 +230,9 @@ public class Improvement implements Comparable<Improvement> {
 		ArrayList<Improvement> impList = new ArrayList<>();
 		for(int i=0; i<Improvement.objectIndex.size(); i++) {
 			Improvement imp = Improvement.objectIndex.get(i);
-			if(!imp.obsolete && imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) && ImprovementStack.isPrerequisite(tile, imp)) {
+			if(imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) &&
+					(!imp.voidUnlock || tile.region.world.hasVoid()) &&
+					ImprovementStack.isPrerequisite(tile, imp)) {
 				impList.add(imp);
 			}
 		}
@@ -232,20 +255,24 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement gatherer = new Improvement("Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
 			.yield(1, 1, 0, 0).require(Feature.forest, Feature.swamp);
 	public static final Improvement market = new Improvement("Market", 60).hotkey(KeyEvent.VK_T).setGlyph("T")
-			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak);
+			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.thevoid);
 	public static final Improvement park = new Improvement("Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
-			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert);
+			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert, Feature.thevoid);
 	public static final Improvement pasture = new Improvement("Pasture", 30).hotkey(KeyEvent.VK_U).setGlyph("U")
-			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak);
+			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak, Feature.thevoid);
 	public static final Improvement plantation = new Improvement("Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
-			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak).requireResource();
+			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak, Feature.thevoid).requireResource();
 	public static final Improvement quarry = new Improvement("Quarry", 30).hotkey(KeyEvent.VK_Y).setGlyph("Y")
 			.yield(0, 1, 1, 0).requireResource();
 	public static final Improvement boat = new Improvement("Fishing Boat", 20).hotkey(KeyEvent.VK_B).setGlyph("B")
 			.reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
 	public static final Improvement drill = new Improvement("Drill", 80).hotkey(KeyEvent.VK_I).setGlyph("I")
-			.reject((Feature[])null).yield(0, 2, 1, 0).requireResource();
-	
+			.reject(Feature.thevoid).yield(0, 2, 1, 0).requireResource();
+
+	public static final Improvement voidworks = new Improvement("Voidworks", 80).hotkey(KeyEvent.VK_V).setGlyph("V")
+			.voidUnlock().cityPrerequisite(CityUpgrades.beaconOfHope)
+			.reject((Feature[])null).require(Feature.thevoid).yield(0, 1, 1, 0).workplaces(1);
+
 	static {
 		CityUpgrades.init();
 		FarmUpgrades.init();

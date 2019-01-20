@@ -76,9 +76,9 @@ public class BuildDialog extends OverlayDialog {
 			int res = 0;
 			res = -Boolean.compare(imp1.isRecommendedFor(tile), imp2.isRecommendedFor(tile));
 			if(res==0) {
-				res = Integer.compare(imp1.upgPoints, imp2.upgPoints);
+				res = -Boolean.compare(imp1.canBuildOn(tile), imp2.canBuildOn(tile));
 				if(res==0) {
-					res = -Boolean.compare(imp1.canBuildOn(tile), imp2.canBuildOn(tile));
+					res = Integer.compare(imp1.upgPoints, imp2.upgPoints);
 					if(res==0) {
 						res = imp1.compareTo(imp2);
 					}

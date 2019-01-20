@@ -43,7 +43,7 @@ public class SettleMode extends MapMode {
 	
 	@Override
 	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
-		if(view.getScale()>0.25f && (tile.isCityCenter() && tile.city.isBuildingSettlement() || tile.settlement!=null)) {
+		if(view.getScale()>0.25f && tile!=null && (tile.isCityCenter() && tile.city.isBuildingSettlement() || tile.settlement!=null)) {
 			g.resetStroke();
 			g.setColor(Color.WHITE);
 			if(tile.isCityCenter()) {

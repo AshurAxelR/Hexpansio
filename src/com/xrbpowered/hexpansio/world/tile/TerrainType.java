@@ -136,7 +136,7 @@ public class TerrainType {
 	public static final TerrainType lagoon = new TerrainType("Lagoon", new Color(0x9bc4d5)).yield(1, 0, 2, 1).feature(Feature.water)
 			.resources(0.5f, fish, pearls, corals, kelp);
 
-	public static final TerrainType voidEdge = new TerrainType("Void Edge", new Color(0x775566)).workplaces(0).feature(Feature.thevoid);
+	public static final TerrainType voidEdge = new TerrainType("Void Storm", new Color(0x775566)).workplaces(0).feature(Feature.thevoid);
 	public static final TerrainType deepVoid = new TerrainType("Deep Void", new Color(0x442233)).workplaces(0).feature(Feature.thevoid);
 
 }
