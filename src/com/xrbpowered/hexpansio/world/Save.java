@@ -74,6 +74,8 @@ public class Save {
 
 	protected void readTile(DataInputStream in, Tile tile) throws IOException {
 		tile.terrain = convTerrainType.get(in.readByte());
+		if(tile.isVoid())
+			tile.region.hasVoid = true;
 		tile.resource = convResources.get(in.readByte());
 		tile.workers = in.readByte();
 		int cityIndex = in.readInt();

@@ -1,9 +1,11 @@
 package com.xrbpowered.hexpansio.world;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.utils.RandomUtils;
 
 public class Region {
 
@@ -16,6 +18,8 @@ public class Region {
 	public final int rx, ry;
 	
 	public final ArrayList<City> cities = new ArrayList<>();
+	
+	public boolean hasVoid = false;
 	
 	public Region(World world, int rx, int ry) {
 		this.world = world;
@@ -33,5 +37,17 @@ public class Region {
 	
 	public static int getId(int rx, int ry) {
 		return (rx<<16) | (ry & 0xffff);
+	}
+	
+	public void spreadVoid() {
+		if(hasVoid) {
+			Random random = new Random(RandomUtils.seedXY(world.seed+world.turn, rx, ry));
+			int d = 2;
+			for(int x=0; x<size; x+=d)
+				for(int y=0; y<size; y+=d) {
+					int n = random.nextInt(d*d);
+					tiles[x+n/d][y+n%d].spreadVoid();
+				}
+		}
 	}
 }

@@ -54,6 +54,7 @@ public class City {
 	public final ResourcePile resourcesAvail = new ResourcePile();
 	
 	public int unemployed, workplaces;
+	public int adjVoid;
 	public Happiness happiness = Happiness.content;
 	
 	public City(World world, Tile tile, String name) {
@@ -151,6 +152,14 @@ public class City {
 
 	public int getProduction() {
 		return balance.get(YieldResource.production)*(100-happiness.prodPenalty)/100;
+	}
+	
+	public int getVoidResist() {
+		int h = balance.get(YieldResource.happiness);
+		if(h<=0)
+			return 0;
+		else
+			return 100 - 100 / (h*h+1);
 	}
 
 	public int getExcess(int prod) {
@@ -250,10 +259,15 @@ public class City {
 		incomeTiles.clear();
 		expences.clear();
 		workplaces = 0;
+		adjVoid = 0;
 		int workers = 0;
 		for(int x=-expandRange; x<=expandRange; x++)
 			for(int y=-expandRange; y<=expandRange; y++) {
 				Tile t = world.getTile(tile.wx+x, tile.wy+y);
+				if(t!=null && t.isVoid()) {
+					if(t.city==this || t.countAdjCityTiles(this)>0)
+						adjVoid++;
+				}
 				if(t!=null && t.city==this) {
 					numTiles++;
 					workplaces += t.getWorkplaces();
@@ -289,7 +303,7 @@ public class City {
 
 	protected void updateBalance() {
 		expences.add(YieldResource.happiness,
-				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty);
+				(population-1) + unemployed*unemployed + (world.cities.size()-1) + world.poverty + adjVoid);
 		
 		balance.clear();
 		balance.add(YieldResource.happiness, world.baseHappiness);

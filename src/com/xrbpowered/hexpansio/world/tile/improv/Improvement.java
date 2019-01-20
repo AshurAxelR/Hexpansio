@@ -172,12 +172,12 @@ public class Improvement implements Comparable<Improvement> {
 					sb.append(" or ");
 				else if(i>0)
 					sb.append(", ");
-				sb.append(reqFeatures[i].name());
+				sb.append(reqFeatures[i].name);
 			}
 			return String.format("Requires %s terrain", sb.toString());
 		}
 		else if(tile.terrain.hasFeature(rejectFeatures)) {
-			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name());
+			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name);
 		}
 		else if(!(!reqResource || tile.resource!=null && tile.resource.improvement==this.getBase())) {
 			return "Requires appropriate resource";

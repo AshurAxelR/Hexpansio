@@ -1,5 +1,7 @@
 package com.xrbpowered.hexpansio.world.tile;
 
+import java.util.Random;
+
 import com.xrbpowered.hexpansio.ui.modes.ScoutMode;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
@@ -29,6 +31,8 @@ public class Tile {
 	public final int x, y, wx, wy;
 
 	public boolean areaDiscovered = false;
+	
+	public int voidTurn = -1;
 	
 	public final Yield yield = new Yield() {
 		@Override
@@ -147,6 +151,60 @@ public class Tile {
 	public boolean isRangeBorder(Dir d, Tile dst, int range) {
 		Tile t = getAdj(d);
 		return t!=null && (distTo(dst)<=range) != (t.distTo(dst)<=range);
+	}
+	
+	public boolean isVoid() {
+		return terrain.feature==Feature.thevoid;
+	}
+	
+	public void makeVoid() {
+		if(isCityCenter())
+			return; // TODO consume city?
+		
+		if(settlement!=null)
+			settlement.cancel();
+		unassignWorkers();
+		improvement = null;
+		terrain = TerrainType.voidEdge;
+		resource = null;
+		
+		voidTurn = region.world.turn;
+		region.hasVoid = true;
+		region.world.discoverArea(wx, wy, 1);
+	}
+	
+	public void checkVoidDepth() {
+		if(terrain==TerrainType.voidEdge) {
+			if(countAdjTerrain(Feature.thevoid)==6)
+				terrain = TerrainType.deepVoid;
+		}
+	}
+	
+	public void spreadVoid() {
+		int turn = region.world.turn;
+		if(terrain==TerrainType.voidEdge && voidTurn<turn) {
+			Random random = new Random(this.getSeed(turn + 4983L));
+			int[] dw = new int[6];
+			int countVoid = 0;
+			for(int d=0; d<6; d++) {
+				boolean isVoid = getAdj(Dir.values()[d]).isVoid();
+				if(isVoid)
+					countVoid++;
+				dw[d] = isVoid ? 0 : 1;
+			}
+			if(countVoid<6) {
+				Dir dir = Dir.values()[RandomUtils.weighted(random, dw)];
+				Tile t = getAdj(dir);
+				if(t.city==null || random.nextInt(100)>t.city.getVoidResist())
+					t.makeVoid();
+				if(random.nextInt(2)==0) // TODO void dies out?
+					terrain = TerrainType.deepVoid;
+				checkVoidDepth();
+			}
+			else {
+				terrain = TerrainType.deepVoid;
+			}
+		}
 	}
 	
 	public static class DummyTile extends Tile {

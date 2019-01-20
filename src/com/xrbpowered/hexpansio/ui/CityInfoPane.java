@@ -10,6 +10,7 @@ import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -124,6 +125,11 @@ public class CityInfoPane extends UIContainer {
 			g.setColor(Color.RED);
 			g.drawString("1 population will leave", x, y);
 		}
+		if(city.world.hasVoid()) {
+			y += 15;
+			g.setColor(TerrainType.voidColor);
+			g.drawString(String.format("Void resistance: %d%%", city.getVoidResist()), x, y);
+		}
 		g.setColor(Color.WHITE);
 		y += 20; g.drawString(String.format("%+d base happiness", city.world.baseHappiness), x, y);
 		y += 15; g.drawString(String.format("%+d from tiles and resources", city.incomeTiles.get(YieldResource.happiness)+city.incomeResources.get(YieldResource.happiness)), x, y);
@@ -143,6 +149,9 @@ public class CityInfoPane extends UIContainer {
 		}
 		if(city.balance.get(YieldResource.food)<0) {
 			y += 15; g.drawString(String.format("%d from starvation", -city.population), x, y);
+		}
+		if(city.adjVoid>0) {
+			y += 15; g.drawString(String.format("%d from void", -city.adjVoid), x, y);
 		}
 
 		y += 15;
