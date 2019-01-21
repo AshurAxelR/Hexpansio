@@ -131,11 +131,15 @@ public class TileMode extends MapMode {
 				@Override
 				public void onEnter() {
 					city.setBuilding(bp);
+					city.updateStats();
+					city.world.updateWorldTotals();
 					dismiss();
 				}
 				@Override
 				public void onCancel() {
 					bp.cancel();
+					city.updateStats();
+					city.world.updateWorldTotals();
 					dismiss();
 				}
 			};

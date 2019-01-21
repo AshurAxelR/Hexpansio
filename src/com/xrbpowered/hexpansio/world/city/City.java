@@ -134,8 +134,6 @@ public class City {
 		if(buildingProgress!=null)
 			buildingProgress.cancel();
 		buildingProgress = b;
-		updateStats();
-		world.updateWorldTotals();
 	}
 	
 	public boolean isBuildingSettlement() {
@@ -164,7 +162,7 @@ public class City {
 	}
 
 	public int getExcess(int prod) {
-		return prod/4;
+		return prod/2;
 	}
 	
 	public int maxUpgPointsForTile(Tile tile) {

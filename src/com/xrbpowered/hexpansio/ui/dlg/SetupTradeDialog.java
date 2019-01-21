@@ -177,7 +177,6 @@ public class SetupTradeDialog extends OverlayDialog {
 	
 	private UIListBoxBase<ResourceListItem> list;
 
-	private final ClickButton viewCityButton, viewOtherCityButton;
 	private final ClickButton closeButton;
 	private final ClickButton revertButton, resetButton, acceptButton;
 	
@@ -255,11 +254,6 @@ public class SetupTradeDialog extends OverlayDialog {
 		};
 		revertButton.setLocation(10+closeButton.getWidth()*2+10, closeButton.getY());
 
-		viewCityButton = new ClickButton(box, "View", 60);
-		viewCityButton.setLocation(10, 60-viewCityButton.getHeight()/2);
-		viewOtherCityButton = new ClickButton(box, "View", 60);
-		viewOtherCityButton.setLocation(box.getWidth()-viewOtherCityButton.getWidth()-10, viewCityButton.getY());
-		
 		revert();
 	}
 	
@@ -274,7 +268,7 @@ public class SetupTradeDialog extends OverlayDialog {
 		otherCityYield.add(otherCity.incomeTiles);
 		otherCityYield.subtract(otherCity.expences);
 		
-		// TODO include trade income/expenses in the calculation
+		// FIXME include trade income/expenses in the calculation
 		
 		countIn = 0;
 		countOut = 0;
@@ -348,8 +342,8 @@ public class SetupTradeDialog extends OverlayDialog {
 	protected void paintBoxContents(GraphAssist g) {
 		g.setColor(Color.WHITE);
 		g.setFont(Res.fontLarge);
-		g.drawString(city.name.toUpperCase(), 20+viewCityButton.getX()+viewCityButton.getWidth(), 60, GraphAssist.LEFT, GraphAssist.CENTER);
-		g.drawString(otherCity.name.toUpperCase(), viewOtherCityButton.getX()-20, 60, GraphAssist.RIGHT, GraphAssist.CENTER);
+		g.drawString(city.name.toUpperCase(), 20, 60, GraphAssist.LEFT, GraphAssist.CENTER);
+		g.drawString(otherCity.name.toUpperCase(), box.getWidth()-20, 60, GraphAssist.RIGHT, GraphAssist.CENTER);
 
 		int y0 = (int)box.getHeight()-50-70;
 		int y = y0;

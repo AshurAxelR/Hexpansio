@@ -269,7 +269,7 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement drill = new Improvement("Drill", 80).hotkey(KeyEvent.VK_I).setGlyph("I")
 			.reject(Feature.thevoid).yield(0, 2, 1, 0).requireResource();
 
-	public static final Improvement voidworks = new Improvement("Voidworks", 80).hotkey(KeyEvent.VK_V).setGlyph("V")
+	public static final Improvement voidworks = new Improvement("Voidworks", 20).hotkey(KeyEvent.VK_V).setGlyph("V")
 			.voidUnlock().cityPrerequisite(CityUpgrades.beaconOfHope)
 			.reject((Feature[])null).require(Feature.thevoid).yield(0, 1, 1, 0).workplaces(1);
 

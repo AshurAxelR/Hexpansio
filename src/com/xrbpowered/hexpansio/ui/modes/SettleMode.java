@@ -116,7 +116,7 @@ public class SettleMode extends MapMode {
 			return true;
 		}
 		else if(hoverTile!=null && hoverTile.settlement!=null) {
-			hoverTile.settlement.city.setBuilding(null);
+			TileMode.instance.switchBuildingProgress(null);
 			return true;
 		}
 		return false;

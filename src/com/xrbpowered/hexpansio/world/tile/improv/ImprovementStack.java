@@ -84,6 +84,8 @@ public class ImprovementStack {
 	}
 
 	public static boolean tileContains(Tile tile, Improvement imp) {
+		if(imp==null)
+			return false;
 		if(tile.improvement!=null) {
 			if(tile.improvement.base==imp)
 				return true;
@@ -96,6 +98,8 @@ public class ImprovementStack {
 	}
 
 	public static boolean cityContains(Tile tile, Improvement imp) {
+		if(imp==null)
+			return false;
 		World world = tile.region.world;
 		for(int x=-City.expandRange; x<=City.expandRange; x++)
 			for(int y=-City.expandRange; y<=City.expandRange; y++) {

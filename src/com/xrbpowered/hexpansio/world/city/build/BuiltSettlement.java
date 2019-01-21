@@ -43,7 +43,5 @@ public class BuiltSettlement extends BuildingProgress {
 	public void cancel() {
 		tile.settlement = null;
 		city.unemployed++;
-		city.updateStats();
-		city.world.updateWorldTotals();
 	}
 }

@@ -162,7 +162,9 @@ public class Tile {
 			return; // TODO consume city?
 		
 		if(settlement!=null)
-			settlement.cancel();
+			settlement.city.setBuilding(null);
+		if(city!=null && city.buildingProgress!=null && city.buildingProgress.tile==this)
+			city.setBuilding(null);
 		unassignWorkers();
 		improvement = null;
 		terrain = TerrainType.voidEdge;

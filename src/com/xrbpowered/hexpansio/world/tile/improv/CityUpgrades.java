@@ -12,19 +12,18 @@ public abstract class CityUpgrades {
 
 	public static final float beaconOfHopeEffect = 0.8f;
 	public static final float highriseEffect = 0.5f;
-	
-	public static final Improvement beaconOfHope = new Improvement(cityCenter, "Beacon of Hope", 100, 0).maintenance(5).yield(0, 0, 0, 5).voidUnlock()
+
+	public static final Improvement beaconOfHope = new Improvement(cityCenter, "Beacon of Hope", 50, 0).maintenance(5).yield(0, 0, 0, 2).voidUnlock()
 			.effects(
 					CityEffect.dummy(String.format("Unhappiness from void -%d%%", (int)(beaconOfHopeEffect*100f))),
 					CityEffect.dummy("Allows building Voidworks")
 				);
-
-	public static final Improvement highrise = new Improvement(cityCenter, "Highrise", 300, 3).requirePopulation(15).cannotHurry().maintenance(10)
-			.effects(CityEffect.dummy(String.format("Unhappiness from population -%d%%", (int)(highriseEffect*100f))));
+	
+	public static Improvement highrise = null;
 
 	public static void init() {
-		new Improvement(cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
-		new Improvement(cityCenter, "Utopia", 400, 2).requirePopulation(10).cannotHurry().maintenance(10).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
+		Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+		new Improvement(townHall, "Utopia", 300, 2).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
 		
 		new Improvement(cityCenter, "Harbour", 40, 1).maintenance(2).requireCoastalCity()
 			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
@@ -61,6 +60,10 @@ public abstract class CityUpgrades {
 					return "+1 Happiness from water tiles";
 				}
 			});
+		
+		highrise = new Improvement(townHall, "Highrise", 300, 3).requirePopulation(15).cannotHurry().maintenance(10)
+				.effects(CityEffect.dummy(String.format("Unhappiness from population -%d%%", (int)(highriseEffect*100f))));
+
 	}
 	
 }
