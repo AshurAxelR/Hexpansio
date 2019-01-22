@@ -232,7 +232,7 @@ public class Improvement implements Comparable<Improvement> {
 			Improvement imp = Improvement.objectIndex.get(i);
 			if(imp!=Improvement.cityCenter && !ImprovementStack.tileContains(tile, imp) &&
 					(!imp.voidUnlock || tile.region.world.hasVoid()) &&
-					ImprovementStack.isPrerequisite(tile, imp)) {
+					(imp.prerequisite==null && tile.improvement==null || imp.prerequisite!=null && ImprovementStack.tileContains(tile, imp.prerequisite.getBase()))) {
 				impList.add(imp);
 			}
 		}
@@ -254,7 +254,7 @@ public class Improvement implements Comparable<Improvement> {
 			.yield(0, 2, 0, 0).require(Feature.forest);
 	public static final Improvement gatherer = new Improvement("Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
 			.yield(1, 1, 0, 0).require(Feature.forest, Feature.swamp);
-	public static final Improvement market = new Improvement("Market", 60).hotkey(KeyEvent.VK_T).setGlyph("T")
+	public static final Improvement market = new Improvement("Market", 50).hotkey(KeyEvent.VK_T).setGlyph("T")
 			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.thevoid);
 	public static final Improvement park = new Improvement("Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
 			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert, Feature.thevoid);
@@ -266,7 +266,7 @@ public class Improvement implements Comparable<Improvement> {
 			.yield(0, 1, 1, 0).requireResource();
 	public static final Improvement boat = new Improvement("Fishing Boat", 20).hotkey(KeyEvent.VK_B).setGlyph("B")
 			.reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
-	public static final Improvement drill = new Improvement("Drill", 80).hotkey(KeyEvent.VK_I).setGlyph("I")
+	public static final Improvement drill = new Improvement("Drill", 60).hotkey(KeyEvent.VK_I).setGlyph("I")
 			.reject(Feature.thevoid).yield(0, 2, 1, 0).requireResource();
 
 	public static final Improvement voidworks = new Improvement("Voidworks", 20).hotkey(KeyEvent.VK_V).setGlyph("V")

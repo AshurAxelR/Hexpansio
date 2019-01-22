@@ -1,5 +1,6 @@
 img_src/
 *.save
+/*.html
 
 # Compiled class file
 *.class

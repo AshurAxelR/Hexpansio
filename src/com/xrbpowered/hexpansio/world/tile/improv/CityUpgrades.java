@@ -13,6 +13,8 @@ public abstract class CityUpgrades {
 	public static final float beaconOfHopeEffect = 0.8f;
 	public static final float highriseEffect = 0.5f;
 
+	public static final Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+	
 	public static final Improvement beaconOfHope = new Improvement(cityCenter, "Beacon of Hope", 50, 0).maintenance(5).yield(0, 0, 0, 2).voidUnlock()
 			.effects(
 					CityEffect.dummy(String.format("Unhappiness from void -%d%%", (int)(beaconOfHopeEffect*100f))),
@@ -22,10 +24,9 @@ public abstract class CityUpgrades {
 	public static Improvement highrise = null;
 
 	public static void init() {
-		Improvement townHall = new Improvement(cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
-		new Improvement(townHall, "Utopia", 300, 2).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
+		new Improvement(townHall, "Utopia", 200, 1).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
 		
-		new Improvement(cityCenter, "Harbour", 40, 1).maintenance(2).requireCoastalCity()
+		new Improvement(cityCenter, "Harbour", 60, 1).maintenance(2).requireCoastalCity()
 			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
 				@Override
 				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {
@@ -37,7 +38,7 @@ public abstract class CityUpgrades {
 				}
 			});
 
-		new Improvement(cityCenter, "Solar Power", 80, 1).maintenance(3)
+		new Improvement(cityCenter, "Solar Power", 40, 1).maintenance(2)
 		.effects(new YieldEffect.Tile(0, 1, 0, 0) {
 			@Override
 			public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {

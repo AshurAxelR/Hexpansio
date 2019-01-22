@@ -10,12 +10,9 @@ import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 public abstract class OtherUpgrades {
 
 	public static void init() {
-		new Improvement(lumberMill, "Forestry", 60, 1).yield(1, 1, 0, 0);
+		new Improvement(lumberMill, "Forester", 40, 1).yield(1, 1, 0, 0);
 		new Improvement(lumberMill, "Sawmill", 60, 1).yield(0, 2, 0, 0);
 
-		new Improvement(gatherer, "Cabin", 40, 1).yield(1, 1, 0, 0).bonusResources(1);
-		new Improvement(gatherer, "Pathfinder", 40, 1).yield(1, 1, 0, 0);
-		
 		new Improvement(pasture, "Animal Housing", 60, 1).yield(1, 1, 0, 0).bonusResources(1);
 		new Improvement(pasture, "Stables", 60, 1).maintenance(1).yield(0, 1, 0, 1);
 		new Improvement(pasture, "Mountaineer", 40, 1).yield(0, 1, 0, 1)
@@ -30,7 +27,7 @@ public abstract class OtherUpgrades {
 		new Improvement(quarry, "Excavator", 60, 1).yield(0, 1, 1, 0).bonusResources(1);
 		new Improvement(quarry, "Deep Quarry", 40, 1).workplaces(1).yieldPerWorker(0, 1, 0, 0);
 		new Improvement(quarry, "Giant Excavator", 120, 2).maintenance(1).yield(0, 3, 0, 0).bonusResources(2);
-		new Improvement(quarry, "Civil Engineering", 80, 2).cityUnique().workplaces(2).maintenance(1)
+		new Improvement(quarry, "Civil Engineering", 80, 2).cityUnique().workplaces(2).maintenance(1).cityPrerequisite(CityUpgrades.townHall)
 			.effects(new YieldEffect.Resource(0, 1, 0, 0) {
 				@Override
 				public int addResourceBonusYield(TokenResource resource, YieldResource res) {
@@ -44,6 +41,8 @@ public abstract class OtherUpgrades {
 
 		new Improvement(boat, "Extra Boats", 60, 1).workplaces(1).yieldPerWorker(1, 0, 1, 0).bonusResources(1)
 			.reject((Feature[])null);
+		new Improvement(boat, "Luxury Yacht", 60, 1).maintenance(3).yield(0, 0, 0, 3)
+		.reject((Feature[])null);
 		new Improvement(boat, "Marine Industry", 80, 1).yield(0, 3, 0, 0)
 			.reject((Feature[])null);
 
