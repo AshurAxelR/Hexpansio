@@ -9,6 +9,8 @@ import com.xrbpowered.utils.RandomUtils;
 
 public class Region {
 
+	public static final int voidBlockSide = 4;
+	
 	public static final int size = 64;
 	public static final int sized = 6;
 
@@ -42,11 +44,13 @@ public class Region {
 	public void spreadVoid() {
 		if(hasVoid) {
 			Random random = new Random(RandomUtils.seedXY(world.seed+world.turn, rx, ry));
-			int d = 2;
+			int d = voidBlockSide;
 			for(int x=0; x<size; x+=d)
 				for(int y=0; y<size; y+=d) {
-					int n = random.nextInt(d*d);
-					tiles[x+n/d][y+n%d].spreadVoid();
+					for(int i=0; i<world.settings.voidSpreadSpeed; i++) {
+						int c = random.nextInt(d*d);
+						tiles[x+c/d][y+c%d].spreadVoid();
+					}
 				}
 		}
 	}

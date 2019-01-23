@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio;
 
+import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
@@ -14,6 +15,7 @@ import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
 import com.xrbpowered.hexpansio.world.World;
+import com.xrbpowered.hexpansio.world.WorldSettings;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.KeyInputHandler;
 import com.xrbpowered.zoomui.UIContainer;
@@ -27,16 +29,15 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	
 	public static boolean saveOnExit = false;
 	
-	private World world = loadOrCreateWorld();
+	private static Save save = new Save("./hexpansion.save"); 
+	private static World world = null;
 	
-	public static World loadOrCreateWorld() {
-		Save save = new Save("./hexpansion.save");
-		if(save.exists()) {
-			World world = save.read();
-			if(world!=null)
-				return world;
-		}
-		return save.startNew(System.currentTimeMillis());
+	public static World getWorld() {
+		return world;
+	}
+	
+	public static boolean saveExists() {
+		return save.exists();
 	}
 	
 	public final TopPane top;
@@ -48,9 +49,11 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public Hexpansio(UIContainer parent) {
 		super(parent);
 		instance = this;
+		setVisible(false);
 		
 		view = MapView.createMapView(this);
-		view.view.setWorld(world);
+		if(world!=null)
+			view.view.setWorld(world);
 		cityInfo = new CityInfoPane(this);
 		tileInfo = new TileInfoPane(this);
 		top = new TopPane(this);
@@ -77,24 +80,30 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		super.layout();
 	}
 	
-	public World getWorld() {
-		return world;
+	private void setWorld(World world) {
+		Hexpansio.world = world;
+		if(world!=null) {
+			view.view.setWorld(world);
+			setVisible(true);
+		}
+		else {
+			setVisible(false);
+		}
 	}
 	
-	public void newGame() {
-		world.save.delete();
-		world = world.save.startNew(System.currentTimeMillis());
-		view.view.setWorld(world);
+	public void newGame(WorldSettings settings) {
+		save.delete();
+		setWorld(save.startNew(settings));
 	}
 	
 	public void saveGame() {
-		world.save.write();
+		if(world!=null)
+			save.write();
 	}
 	
 	public void loadGame() {
-		if(world.save.exists()) {
-			world = world.save.read();
-			view.view.setWorld(world);
+		if(saveExists()) {
+			setWorld(save.read());
 		}
 	}
 	
@@ -123,21 +132,26 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				repaint();
 				return true;
 			case KeyEvent.VK_ENTER:
-				nextTurn();
+				if(world!=null)
+					nextTurn();
 				return true;
 			case KeyEvent.VK_UP:
-				view.scale(view.getMinScale()/view.getScale(), 0f, 0f);
+				if(world!=null)
+					view.scale(view.getMinScale()/view.getScale(), 0f, 0f);
 				repaint();
 				return true;
 			case KeyEvent.VK_DOWN:
-				view.scale(view.getMaxScale()/view.getScale(), 0f, 0f);
+				if(world!=null)
+					view.scale(view.getMaxScale()/view.getScale(), 0f, 0f);
 				repaint();
 				return true;
 			case KeyEvent.VK_LEFT:
-				browseCity(-1);
+				if(world!=null)
+					browseCity(-1);
 				return true;
 			case KeyEvent.VK_RIGHT:
-				browseCity(1);
+				if(world!=null)
+					browseCity(1);
 				return true;
 			case KeyEvent.VK_F1: {
 				float scale = getBase().getBaseScale();
@@ -155,21 +169,21 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				}
 				return true;
 			}
-			case KeyEvent.VK_F4: 
+			/*case KeyEvent.VK_F4: // TODO parse cheats 
 				if(mods==UIElement.modCtrlMask) {
 					world.debugDiscover(5);
 					repaint();
 					return true;
 				}
 				else
-					return false;
+					return true;*/
 			default:
 				if(MapMode.checkHotkey(code)) {
 					repaint();
 					return true;
 				}
 				else
-					return false;
+					return true;
 		}
 	}
 
@@ -204,8 +218,17 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			}
 		};
 		frame.maximize();
+		new UIElement(frame.getContainer()) {
+			@Override
+			public void paint(GraphAssist g) {
+				g.fill(this, Color.BLACK);
+			}
+		};
 		new Hexpansio(frame.getContainer());
+		new GameMenu();
 		frame.show();
+		
+		System.out.printf("Difficulty: %d\n", new WorldSettings().getDifficultyRating());
 	}
 
 }

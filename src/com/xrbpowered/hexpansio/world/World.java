@@ -14,17 +14,11 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class World {
 
-	public static final int initialBaseHappiness = 5;
-	
-	public static final int voidStartTurn = 20;
-	public static final int voidStartSources = 3;
-	public static final int voidMinDistance = 8; 
-	public static final int voidMaxDistance = 16; 
-
 	public static final int originwx = Region.size/2;
 	public static final int originwy = Region.size/2;
 	public static final TerrainType originTerrain = TerrainType.fertileValley;
 	
+	public final WorldSettings settings;
 	public final long seed;
 	public int cityNameBaseLength = 1;
 
@@ -54,9 +48,10 @@ public class World {
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
-	public World(Save save, long seed, TerrainGenerator terrain) {
+	public World(Save save, WorldSettings settings, TerrainGenerator terrain) {
 		this.save = save;
-		this.seed = seed;
+		this.settings = settings;
+		this.seed = settings.getSeed();
 		this.terrainGenerator = terrain;
 	}
 	
@@ -234,7 +229,7 @@ public class World {
 		}
 		newCities.clear();
 		
-		if(turn==voidStartTurn-1)
+		if(settings.voidEnabled && turn==settings.voidStartTurn-1)
 			startVoid();
 		else if(hasVoid()) {
 			ArrayList<Region> regions = new ArrayList<>(this.regions.values());
@@ -268,7 +263,7 @@ public class World {
 		totalGoodsIn = 0;
 		maxDiscover = 0;
 		int prevBH = baseHappiness;
-		baseHappiness = initialBaseHappiness;
+		baseHappiness = settings.initialBaseHappiness;
 		minHappiness = Happiness.happy;
 		for(City city : cities) {
 			totalPopulation += city.population;
@@ -287,20 +282,20 @@ public class World {
 	}
 	
 	public boolean hasVoid() {
-		return turn>=voidStartTurn;
+		return settings.voidEnabled && turn>=settings.voidStartTurn;
 	}
 	
 	public void startVoid() {
 		Random random = new Random(seed+4983L);
-		int toAdd = voidStartSources;
-		for(int r = (voidMaxDistance+voidMinDistance)/2;; r+=2) {
+		int toAdd = settings.voidStartSources;
+		for(int r = (settings.voidMaxDistance+settings.voidMinDistance)/2;; r+=2) {
 			Dir d = Dir.values()[random.nextInt(6)];
 			Dir dc = d.cw(2);
 			int i = random.nextInt(r);
 			int wx = originwx + r*d.dx + i*dc.dx;
 			int wy = originwy +r*d.dy + i*dc.dy;
 			int dist = distToNearestCity(wx, wy);
-			if(dist>=voidMinDistance && dist<=voidMaxDistance) {
+			if(dist>=settings.voidMinDistance && dist<=settings.voidMaxDistance) {
 				startVoidAt(wx, wy);
 				toAdd--;
 				if(toAdd==0)

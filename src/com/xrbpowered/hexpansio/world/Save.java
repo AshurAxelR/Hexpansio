@@ -30,7 +30,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 5;
+	public static final int saveVersion = 6;
 	
 	public final String path;
 	public final File file;
@@ -282,7 +282,7 @@ public class Save {
 			convResources = TokenResource.objectIndex.write(out);
 			convImprovement = Improvement.objectIndex.write(out);
 			
-			out.writeLong(world.seed);
+			WorldSettings.write(out, world.settings);
 			writeWorld(out, world);
 			
 			zip.closeEntry();
@@ -295,9 +295,9 @@ public class Save {
 		}
 	}
 	
-	public World startNew(long seed) {
+	public World startNew(WorldSettings settings) {
 		System.out.println("New world");
-		this.world = new World(this, seed, terrainGenerator()).create();
+		this.world = new World(this, settings, terrainGenerator()).create();
 		return this.world;
 	}
 	
@@ -320,8 +320,8 @@ public class Save {
 			convResources = TokenResource.objectIndex.read(in);
 			convImprovement = Improvement.objectIndex.read(in);
 			
-			long seed = in.readLong();
-			world = new World(this, seed, terrainGenerator());
+			WorldSettings settings = WorldSettings.read(in);
+			world = new World(this, settings, terrainGenerator());
 			readWorld(in, world);
 
 			zip.close();

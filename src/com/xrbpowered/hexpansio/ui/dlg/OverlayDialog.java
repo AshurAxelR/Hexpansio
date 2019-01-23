@@ -62,7 +62,8 @@ public class OverlayDialog extends UIContainer implements KeyInputHandler {
 			onEnter();
 			return true;
 		}
-		return false;
+		else
+			return true;
 	}
 	
 	public void onEnter() {

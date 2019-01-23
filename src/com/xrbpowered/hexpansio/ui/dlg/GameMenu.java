@@ -32,7 +32,15 @@ public class GameMenu extends OverlayDialog {
 		int y = 180;
 		resumeButton = new ClickButton(box, "RESUME", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
+			public boolean isEnabled() {
+				return Hexpansio.getWorld()!=null || Hexpansio.saveExists();
+			}
+			@Override
 			public void onClick() {
+				if(!isEnabled())
+					return;
+				if(Hexpansio.getWorld()==null)
+					Hexpansio.instance.loadGame();
 				dismiss();
 			}
 		};
@@ -41,7 +49,13 @@ public class GameMenu extends OverlayDialog {
 
 		saveButton = new ClickButton(box, "SAVE GAME", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
+			public boolean isEnabled() {
+				return Hexpansio.getWorld()!=null;
+			}
+			@Override
 			public void onClick() {
+				if(!isEnabled())
+					return;
 				Hexpansio.instance.saveGame();
 				dismiss();
 			}
@@ -52,7 +66,7 @@ public class GameMenu extends OverlayDialog {
 		loadButton = new ClickButton(box, "RELOAD GAME", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
 			public boolean isEnabled() {
-				return Hexpansio.instance.getWorld().save.exists();
+				return Hexpansio.saveExists();
 			}
 			@Override
 			public void onClick() {
@@ -74,14 +88,20 @@ public class GameMenu extends OverlayDialog {
 		newButton = new ClickButton(box, "START NEW", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
 			public void onClick() {
-				new ConfirmationDialog(0, "NEW GAME", "Reset all progress and start new world?", "START", "CANCEL") {
-					@Override
-					public void onEnter() {
-						Hexpansio.instance.newGame();
-						dismiss();
-						GameMenu.this.dismiss();
-					}
-				}.repaint();
+				if(Hexpansio.getWorld()!=null) {
+					new ConfirmationDialog(0, "NEW GAME", "Reset all progress and start new world?", "START", "CANCEL") {
+						@Override
+						public void onEnter() {
+							new GameWorldSettingsDialog();
+							dismiss();
+							GameMenu.this.dismiss();
+						}
+					}.repaint();
+				}
+				else {
+					new GameWorldSettingsDialog();
+					dismiss();
+				}
 			}
 		};
 		newButton.setLocation(100, y);
@@ -94,6 +114,14 @@ public class GameMenu extends OverlayDialog {
 			}
 		};
 		exitButton.setLocation(100, y);
+	}
+	
+	@Override
+	public boolean onMouseDown(float x, float y, Button button, int mods) {
+		if(Hexpansio.getWorld()!=null)
+			return super.onMouseDown(x, y, button, mods);
+		else
+			return true;
 	}
 	
 	private static Paint titleBg = null;

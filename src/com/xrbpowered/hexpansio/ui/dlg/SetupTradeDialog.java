@@ -36,14 +36,6 @@ public class SetupTradeDialog extends OverlayDialog {
 			this.resource = resource;
 		}
 		
-		protected void paintLabel(GraphAssist g, boolean enabled, String label) {
-			g.setColor(enabled ? Color.WHITE : Color.GRAY);
-			if(delta>0)
-				UIScrollBar.drawRightArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
-			else
-				UIScrollBar.drawLeftArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
-		}
-		
 		@Override
 		public boolean isEnabled() {
 			if(delta>0)

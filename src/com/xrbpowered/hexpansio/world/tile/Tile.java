@@ -199,8 +199,10 @@ public class Tile {
 				Tile t = getAdj(dir);
 				if(t.city==null || random.nextInt(100)>t.city.getVoidResist())
 					t.makeVoid();
-				if(random.nextInt(2)==0) // TODO void dies out?
+				if(random.nextInt(2)==0)
 					terrain = TerrainType.deepVoid;
+				else
+					voidTurn = turn;
 				checkVoidDepth();
 			}
 			else {
