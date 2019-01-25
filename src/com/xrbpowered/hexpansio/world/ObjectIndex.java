@@ -24,19 +24,19 @@ public class ObjectIndex<T> {
 	private final HashMap<String, Entry> map = new HashMap<>();
 	private final ArrayList<Entry> list = new ArrayList<>();
 
-	public void put(String name, T object) {
-		if(map.containsKey(name))
-			throw new RuntimeException("Duplicate index entry: "+name);
-		new Entry(name, object);
+	public void put(String key, T object) {
+		if(map.containsKey(key))
+			throw new RuntimeException("Duplicate index entry: "+key);
+		new Entry(key, object);
 	}
 	
-	public T get(String name) {
-		Entry e = map.get(name);
+	public T get(String key) {
+		Entry e = map.get(key);
 		return e==null ? null : e.object;
 	}
 	
-	public int getIndex(String name) {
-		return map.get(name).index;
+	public int getIndex(String key) {
+		return map.get(key).index;
 	}
 	
 	public T get(int index) {
@@ -62,11 +62,11 @@ public class ObjectIndex<T> {
 		ObjectIndex<T> conv = new ObjectIndex<>();
 		int num = in.readInt();
 		for(int i=0; i<num; i++) {
-			String name = in.readUTF();
-			T object = get(name);
+			String key = in.readUTF();
+			T object = get(key);
 			if(object==null)
-				throw new IOException("Index entry does not exist: "+name);
-			conv.put(name, object);
+				throw new IOException("Index entry does not exist: "+key);
+			conv.put(key, object);
 		}
 		return conv;
 	}

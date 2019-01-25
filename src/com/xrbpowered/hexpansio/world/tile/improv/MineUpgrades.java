@@ -10,13 +10,13 @@ import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 public abstract class MineUpgrades {
 
 	public static void init() {
-		new Improvement(mine, "Miners' Guild", 40, 1).workplaces(2).yieldPerWorker(0, 1, 0, 0);
-		new Improvement(mine, "Strip Mine", 80, 2).requireResource().workplaces(1).maintenance(3).bonusResources(2);
-		new Improvement(mine, "Automated Mining", 60, 1).maintenance(1).bonusResources(1).yieldPerWorker(0, 2, 0, 0);
-		new Improvement(mine, "Factory", 100, 2).workplaces(3).yieldPerWorker(0, 1, 0, 0)
+		new Improvement("mine.guild", mine, "Miners' Guild", 40, 1).workplaces(2).yieldPerWorker(0, 1, 0, 0);
+		new Improvement("mine.strip", mine, "Strip Mine", 80, 2).requireResource().workplaces(1).maintenance(3).bonusResources(2);
+		new Improvement("mine.auto", mine, "Automated Mining", 60, 1).maintenance(1).bonusResources(1).yieldPerWorker(0, 2, 0, 0);
+		new Improvement("mine.factory", mine, "Factory", 100, 2).workplaces(3).yieldPerWorker(0, 1, 0, 0)
 			.reject(Feature.mountain, Feature.peak);
 		
-		new Improvement(mine, "Forge", 60, 1).cityUnique().maintenance(1)
+		new Improvement("mine.forge", mine, "Forge", 60, 1).cityUnique().maintenance(1)
 			.effects(new YieldEffect.Resource(0, 2, 0, 0) {
 				@Override
 				public int addResourceBonusYield(TokenResource resource, YieldResource res) {
@@ -28,7 +28,7 @@ public abstract class MineUpgrades {
 				}
 			});
 		
-		new Improvement(mine, "Jewelcrafts", 100, 2).cityUnique().workplaces(1).yieldPerWorker(0, 0, 1, 0)
+		new Improvement("mine.jewelcrafts", mine, "Jewelcrafts", 100, 2).cityUnique().workplaces(1).yieldPerWorker(0, 0, 1, 0)
 			.effects(new YieldEffect.Resource(0, 0, 2, 0) {
 				@Override
 				public int addResourceBonusYield(TokenResource resource, YieldResource res) {

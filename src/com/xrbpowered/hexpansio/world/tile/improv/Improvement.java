@@ -16,8 +16,9 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 public class Improvement implements Comparable<Improvement> {
 
 	public static final ObjectIndex<Improvement> objectIndex = new ObjectIndex<>();
-	public static final HashMap<Integer, Improvement> keyMap = new HashMap<>();
+	public static final HashMap<Integer, Improvement> hotkeyMap = new HashMap<>();
 	
+	public final String id;
 	public final Improvement prerequisite;
 	public final String name;
 	public final int buildCost;
@@ -33,7 +34,7 @@ public class Improvement implements Comparable<Improvement> {
 	public int workplaces = 0;
 	public int maintenance = 0;
 	public int bonusResources = 0;
-	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.thevoid};
+	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.volcano, Feature.thevoid};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	private boolean reqCoastalCity = false;
@@ -44,16 +45,17 @@ public class Improvement implements Comparable<Improvement> {
 	public boolean canHurry = true;
 	public boolean voidUnlock = false;
 	
-	public Improvement(Improvement prerequisite, String name, int buildCost, int upgPoints) {
-		objectIndex.put(name, this);
+	public Improvement(String id, Improvement prerequisite, String name, int buildCost, int upgPoints) {
+		this.id = id;
+		objectIndex.put(id, this);
 		this.prerequisite = prerequisite;
 		this.name = name;
 		this.buildCost = buildCost;
 		this.upgPoints = upgPoints;
 	}
 
-	public Improvement(String name, int buildCost) {
-		this(null, name, buildCost, 0);
+	public Improvement(String id, String name, int buildCost) {
+		this(id, null, name, buildCost, 0);
 	}
 	
 	@Override
@@ -78,7 +80,7 @@ public class Improvement implements Comparable<Improvement> {
 
 	public Improvement hotkey(int key) {
 		this.hotkey = key;
-		keyMap.put(key, this);
+		hotkeyMap.put(key, this);
 		return this;
 	}
 
@@ -239,37 +241,37 @@ public class Improvement implements Comparable<Improvement> {
 		return impList;
 	}
 	
-	public static final Improvement cityCenter = new Improvement("City", 0).workplaces(0).yield(1, 1, 1, 0)
+	public static final Improvement cityCenter = new Improvement("city", "City", 0).workplaces(0).yield(1, 1, 1, 0)
 			.effects(
 					CityEffect.add(EffectTarget.scouts, 1),
 					CityEffect.add(EffectTarget.upgPoints, 1),
 					CityEffect.dummy(EffectTarget.upgPoints.formatPluralDelta(City.cityUpgPoints)+" in the City tile")
 				);
 	
-	public static final Improvement farm = new Improvement("Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")
+	public static final Improvement farm = new Improvement("farm", "Farm", 30).hotkey(KeyEvent.VK_F).setGlyph("F")
 			.yield(2, 0, 0, 0).reject(Feature.values());
-	public static final Improvement mine = new Improvement("Mine", 40).hotkey(KeyEvent.VK_M).setGlyph("M")
+	public static final Improvement mine = new Improvement("mine", "Mine", 40).hotkey(KeyEvent.VK_M).setGlyph("M")
 			.maintenance(1).yield(0, 3, 0, 0).requireResource();
-	public static final Improvement lumberMill = new Improvement("Lumber Mill", 60).hotkey(KeyEvent.VK_L).setGlyph("L")
+	public static final Improvement lumberMill = new Improvement("lumbermill", "Lumber Mill", 60).hotkey(KeyEvent.VK_L).setGlyph("L")
 			.yield(0, 2, 0, 0).require(Feature.forest);
-	public static final Improvement gatherer = new Improvement("Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
+	public static final Improvement gatherer = new Improvement("gatherer", "Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
 			.yield(1, 1, 0, 0).require(Feature.forest, Feature.swamp);
-	public static final Improvement market = new Improvement("Market", 50).hotkey(KeyEvent.VK_T).setGlyph("T")
-			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.thevoid);
-	public static final Improvement park = new Improvement("Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
-			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert, Feature.thevoid);
-	public static final Improvement pasture = new Improvement("Pasture", 30).hotkey(KeyEvent.VK_U).setGlyph("U")
-			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak, Feature.thevoid);
-	public static final Improvement plantation = new Improvement("Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
-			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak, Feature.thevoid).requireResource();
-	public static final Improvement quarry = new Improvement("Quarry", 30).hotkey(KeyEvent.VK_Y).setGlyph("Y")
-			.yield(0, 1, 1, 0).reject(Feature.water, Feature.forest, Feature.peak, Feature.thevoid);
-	public static final Improvement boat = new Improvement("Fishing Boat", 20).hotkey(KeyEvent.VK_B).setGlyph("B")
+	public static final Improvement market = new Improvement("market", "Market", 50).hotkey(KeyEvent.VK_T).setGlyph("T")
+			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.volcano, Feature.thevoid);
+	public static final Improvement park = new Improvement("park", "Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
+			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert, Feature.volcano, Feature.thevoid);
+	public static final Improvement pasture = new Improvement("pasture", "Pasture", 30).hotkey(KeyEvent.VK_U).setGlyph("U")
+			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak, Feature.volcano, Feature.thevoid);
+	public static final Improvement plantation = new Improvement("plantation", "Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
+			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak, Feature.volcano, Feature.thevoid).requireResource();
+	public static final Improvement quarry = new Improvement("quarry", "Quarry", 30).hotkey(KeyEvent.VK_Y).setGlyph("Y")
+			.yield(0, 1, 1, 0).reject(Feature.water, Feature.forest, Feature.peak, Feature.volcano, Feature.thevoid);
+	public static final Improvement boat = new Improvement("boat", "Fishing Boat", 20).hotkey(KeyEvent.VK_B).setGlyph("B")
 			.reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
-	public static final Improvement drill = new Improvement("Drill", 60).hotkey(KeyEvent.VK_I).setGlyph("I")
+	public static final Improvement drill = new Improvement("drill", "Drill", 60).hotkey(KeyEvent.VK_I).setGlyph("I")
 			.reject(Feature.thevoid).yield(0, 2, 1, 0).requireResource();
 
-	public static final Improvement voidworks = new Improvement("Voidworks", 20).hotkey(KeyEvent.VK_V).setGlyph("V")
+	public static final Improvement voidworks = new Improvement("voidworks", "Voidworks", 20).hotkey(KeyEvent.VK_V).setGlyph("V")
 			.voidUnlock().cityPrerequisite(CityUpgrades.beaconOfHope)
 			.reject((Feature[])null).require(Feature.thevoid).yield(0, 1, 1, 0).workplaces(1);
 

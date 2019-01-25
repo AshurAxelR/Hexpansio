@@ -154,10 +154,10 @@ public class ImprovementStack {
 			out.writeShort(-1);
 		}
 		else {
-			out.writeShort(conv.getIndex(tile.improvement.base.name));
+			out.writeShort(conv.getIndex(tile.improvement.base.id));
 			out.writeByte(tile.improvement.upgrades.size());
 			for(Improvement upg : tile.improvement.upgrades)
-				out.writeShort(conv.getIndex(upg.name));
+				out.writeShort(conv.getIndex(upg.id));
 		}
 	}
 

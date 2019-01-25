@@ -63,8 +63,8 @@ public class Save {
 	}
 
 	protected void writeTile(DataOutputStream out, Tile tile) throws IOException {
-		out.writeByte(convTerrainType.getIndex(tile.terrain.name));
-		out.writeByte(tile.resource==null ? -1 : convResources.getIndex(tile.resource.name));
+		out.writeByte(convTerrainType.getIndex(tile.terrain.id));
+		out.writeByte(tile.resource==null ? -1 : convResources.getIndex(tile.resource.id));
 		out.writeByte(tile.workers);
 		out.writeInt(tile.city==null ? -1 : tile.city.index);
 		out.writeInt(tile.settlement==null ? -1 : tile.settlement.city.index);
@@ -128,7 +128,7 @@ public class Save {
 				x = removeImprovement;
 			else {
 				Improvement imp = ((BuildImprovement) bp).improvement;
-				x = convImprovement.getIndex(imp.name);
+				x = convImprovement.getIndex(imp.id);
 			}
 			out.writeShort(x);
 			

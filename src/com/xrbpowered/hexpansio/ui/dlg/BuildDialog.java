@@ -292,7 +292,7 @@ public class BuildDialog extends OverlayDialog {
 	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
 		if(!viewOnly) {
-			Improvement imp = Improvement.keyMap.get(code);
+			Improvement imp = Improvement.hotkeyMap.get(code);
 			if(imp!=null && list!=null) {
 				for(int i=0; i<list.getNumItems(); i++)
 					if(list.getItem(i).object==imp) {

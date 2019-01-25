@@ -233,7 +233,7 @@ public class TileMode extends MapMode {
 			}
 		}
 		
-		Improvement imp = Improvement.keyMap.get(code);
+		Improvement imp = Improvement.hotkeyMap.get(code);
 		if(imp!=null && canBuild(tile) && imp.canBuildOn(tile)) {
 			switchBuildingProgress(new BuildImprovement(tile, imp));
 			return true;

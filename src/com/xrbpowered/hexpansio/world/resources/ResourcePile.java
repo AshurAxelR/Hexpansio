@@ -125,7 +125,7 @@ public class ResourcePile {
 		ArrayList<Entry> list = pile.getSortedList();
 		out.writeByte(list.size());
 		for(Entry e : list) {
-			out.writeByte(conv.getIndex(e.resource.name));
+			out.writeByte(conv.getIndex(e.resource.id));
 			out.writeByte(e.count);
 		}
 	}
