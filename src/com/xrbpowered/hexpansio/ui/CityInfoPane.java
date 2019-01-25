@@ -127,7 +127,7 @@ public class CityInfoPane extends UIContainer {
 		}
 		if(city.world.hasVoid()) {
 			y += 15;
-			g.setColor(TerrainType.voidColor);
+			g.setColor(TerrainType.Feature.thevoid.color);
 			g.drawString(String.format("Void resistance: %d%%", city.getVoidResist()), x, y);
 		}
 		g.setColor(Color.WHITE);

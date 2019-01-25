@@ -111,6 +111,15 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		world.nextTurn();
 		System.out.printf("Turn %d\n", world.turn);
 		// saveGame();
+		if(view.view.selectedCity.population==0) {
+			if(world.cities.isEmpty()) {
+				// TODO show game over message
+				setWorld(null);
+			}
+			else {
+				view.view.selectCity(world.cities.get(0));
+			}
+		}
 		repaint();
 	}
 	

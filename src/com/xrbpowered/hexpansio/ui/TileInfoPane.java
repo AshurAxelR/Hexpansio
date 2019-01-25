@@ -9,8 +9,6 @@ import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
-import com.xrbpowered.hexpansio.world.tile.TerrainType;
-import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.Improvement;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -95,7 +93,7 @@ public class TileInfoPane extends UIContainer {
 		g.setFont(Res.font);
 		if(tile.terrain.feature!=null) {
 			y += 15;
-			g.setColor(tile.terrain.feature==Feature.thevoid ? TerrainType.voidColor : Color.LIGHT_GRAY);
+			g.setColor(tile.terrain.feature.color);
 			g.drawString(tile.terrain.feature.name, getWidth()/2, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 		}
 

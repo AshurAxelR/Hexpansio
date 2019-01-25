@@ -15,6 +15,7 @@ import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.TradeList;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
+import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.hexpansio.world.tile.improv.CityUpgrades;
@@ -37,7 +38,7 @@ public class City {
 
 	public boolean availExpand = true;
 
-	public final int index;
+	public final int id;
 	public final World world;
 	public Tile tile = null;
 	public boolean coastalCity = false;
@@ -58,14 +59,14 @@ public class City {
 	public int adjVoid;
 	public Happiness happiness = Happiness.content;
 	
-	public City(World world, Tile tile, String name) {
+	public City(int id, World world, Tile tile, String name) {
+		this.id = id;
 		this.world = world;
 		
 		if(name==null || !rename(name))
 			rename(generateName(world, tile));
 		
-		this.index = world.cities.size();
-		world.cities.add(this);
+		world.registerNewCity(this);
 		
 		if(tile!=null) {
 			setTile(tile);
@@ -120,6 +121,22 @@ public class City {
 		if(tile.improvement==null)
 			tile.improvement = new ImprovementStack(Improvement.cityCenter);
 		coastalCity = tile.countAdjTerrain(Feature.water)>0;
+	}
+	
+	public void destroyCity() {
+		population = 0;
+		setBuilding(null);
+		trades.cancelAll();
+		for(int x=-expandRange; x<=expandRange; x++)
+			for(int y=-expandRange; y<=expandRange; y++) {
+				Tile t = world.getTile(tile.wx+x, tile.wy+y);
+				if(t!=null && t.city==this) {
+					if(t.isCityCenter())
+						t.terrain = TerrainType.ruins;
+					t.improvement = null;
+					t.city = null;
+				}
+			}
 	}
 	
 	public void addTile(int wx, int wy) {
@@ -197,18 +214,15 @@ public class City {
 	private void reducePopulation() {
 		if(isBuildingSettlement())
 			buildingProgress.cancel();
-		if(population>1) {
-			population--;
-			if(unemployed>0)
-				unemployed--;
-			else
-				unassignWorker();
-			if(growth<0)
-				growth += getTargetGrowth();
-		}
-		else {
+		population--;
+		if(unemployed>0)
+			unemployed--;
+		else
+			unassignWorker();
+		if(growth<0)
+			growth += getTargetGrowth();
+		if(population<1)
 			growth = 0;
-		}
 	}
 	
 	public void nextTurn() {
@@ -226,7 +240,7 @@ public class City {
 		if(growth<0) {
 			reducePopulation();
 		}
-		else {
+		else if(population>0){
 			while(growth>=getTargetGrowth()) {
 				growth -= getTargetGrowth();
 				population++;

@@ -66,8 +66,8 @@ public class Save {
 		out.writeByte(convTerrainType.getIndex(tile.terrain.id));
 		out.writeByte(tile.resource==null ? -1 : convResources.getIndex(tile.resource.id));
 		out.writeByte(tile.workers);
-		out.writeInt(tile.city==null ? -1 : tile.city.index);
-		out.writeInt(tile.settlement==null ? -1 : tile.settlement.city.index);
+		out.writeInt(tile.city==null ? -1 : tile.city.id);
+		out.writeInt(tile.settlement==null ? -1 : tile.settlement.city.id);
 
 		ImprovementStack.write(tile, convImprovement, out);
 	}
@@ -80,10 +80,10 @@ public class Save {
 			tile.region.hasVoid = true;
 		tile.resource = convResources.get(in.readByte());
 		tile.workers = in.readByte();
-		int cityIndex = in.readInt();
-		tile.city = cityIndex<0 ? null : tile.region.world.cities.get(cityIndex);
-		cityIndex = in.readInt();
-		tile.settlement = cityIndex<0 ? null : (BuiltSettlement)tile.region.world.cities.get(cityIndex).buildingProgress;
+		int cityId = in.readInt();
+		tile.city = tile.region.world.cityById(cityId);
+		cityId = in.readInt();
+		tile.settlement = cityId<0 ? null : (BuiltSettlement)tile.region.world.cityById(cityId).buildingProgress;
 		
 		ImprovementStack.read(tile, convImprovement, in);
 		if(tile.isCityCenter())
@@ -164,21 +164,21 @@ public class Save {
 	}
 	
 	protected void writeTrade(DataOutputStream out, Trade trade) throws IOException {
-		if(trade.city.index<trade.otherCity.index) {
-			out.writeInt(trade.city.index);
-			out.writeInt(trade.otherCity.index);
+		if(trade.city.id<trade.otherCity.id) {
+			out.writeInt(trade.city.id);
+			out.writeInt(trade.otherCity.id);
 			ResourcePile.write(trade.out, convResources, out);
 			ResourcePile.write(trade.in, convResources, out);
 		}
 	}
 	
 	protected boolean readTrade(DataInputStream in, World world) throws IOException {
-		int cityIndex = in.readInt();
-		if(cityIndex<0)
+		int cityId = in.readInt();
+		if(cityId<0)
 			return false;
 		else {
-			City city = world.cities.get(cityIndex);
-			City otherCity = world.cities.get(in.readInt());
+			City city = world.cityById(cityId);
+			City otherCity = world.cityById(in.readInt());
 			ResourcePile resOut = new ResourcePile();
 			ResourcePile.read(resOut, convResources, in);
 			ResourcePile resIn = new ResourcePile();
@@ -218,6 +218,7 @@ public class Save {
 
 		out.writeInt(world.cities.size());
 		for(City city : world.cities) {
+			out.writeInt(city.id);
 			out.writeUTF(city.name);
 			writeCity(out, city);
 		}
@@ -249,8 +250,9 @@ public class Save {
 
 		int numCities = in.readInt();
 		for(int i=0; i<numCities; i++) {
+			int cityId = in.readInt();
 			String name = in.readUTF();
-			City city = new City(world, null, name);
+			City city = new City(cityId, world, null, name);
 			readCity(in, city);
 		}
 		

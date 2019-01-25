@@ -22,6 +22,7 @@ public class World {
 	public final long seed;
 	public int cityNameBaseLength = 1;
 
+	public int lastCityId = -1;
 	public int turn = 0;
 	public int gold = 0;
 	public int goods = 0;
@@ -31,6 +32,7 @@ public class World {
 	public int discoverThisTurn = 0;
 
 	private HashMap<Integer, Region> regions = new HashMap<>();
+	private HashMap<Integer, City> cityIdMap = new HashMap<>();
 	public ArrayList<City> cities = new ArrayList<>();
 
 	public final Save save;
@@ -59,7 +61,7 @@ public class World {
 		origin = discoverTile(originwx, originwy);
 		discoverArea(origin.wx, origin.wy, 5);
 		
-		new City(this, origin, null);
+		new City(0, this, origin, null);
 		updateCities();
 		updateWorldTotals();
 		
@@ -164,6 +166,18 @@ public class World {
 		return (int)(dist*dist);
 	}
 	
+	public void registerNewCity(City city) {
+		if(cityIdMap.containsKey(city.id))
+			throw new RuntimeException();
+		cityIdMap.put(city.id, city);
+		cities.add(city);
+		lastCityId = city.id;
+	}
+	
+	public City cityById(int id) {
+		return id<0 ? null : cityIdMap.get(id);
+	}
+	
 	public boolean canAddToCity(Tile t, City city) {
 		if(t.city!=city && t.distTo(city.tile)<=City.expandRange) {
 			return t.countAdjCityTiles(city)>0;
@@ -221,13 +235,21 @@ public class World {
 	}
 
 	public void nextTurn() {
+		ArrayList<City> deadCities = new ArrayList<>();
 		for(City city : cities) {
 			city.nextTurn();
+			if(city.population<=0)
+				deadCities.add(city);
 		}
-		for(Tile tile: newCities) {
-			new City(this, tile, null);
-		}
+		for(Tile tile: newCities)
+			new City(lastCityId+1, this, tile, null);
 		newCities.clear();
+		for(City city: deadCities) {
+			city.tile.region.cities.remove(city);
+			cityIdMap.remove(city.id);
+			cities.remove(city);
+			city.destroyCity();
+		}
 		
 		if(settings.voidEnabled && turn==settings.voidStartTurn-1)
 			startVoid();
@@ -288,18 +310,24 @@ public class World {
 	public void startVoid() {
 		Random random = new Random(seed+4983L);
 		int toAdd = settings.voidStartSources;
-		for(int r = (settings.voidMaxDistance+settings.voidMinDistance)/2;; r+=2) {
-			Dir d = Dir.values()[random.nextInt(6)];
+		Dir dfix = null;
+		int r = (settings.voidMaxDistance+settings.voidMinDistance)/2;
+		while(toAdd>0) {
+			Dir d = dfix!=null ? dfix : Dir.values()[random.nextInt(6)];
 			Dir dc = d.cw(2);
 			int i = random.nextInt(r);
 			int wx = originwx + r*d.dx + i*dc.dx;
 			int wy = originwy +r*d.dy + i*dc.dy;
 			int dist = distToNearestCity(wx, wy);
-			if(dist>=settings.voidMinDistance && dist<=settings.voidMaxDistance) {
+			if(dist<settings.voidMinDistance)
+				r += 2;
+			else if(dist>settings.voidMaxDistance)
+				r -= 2;
+			else {
 				startVoidAt(wx, wy);
+				dfix = d.ccw();
+				r += 2;
 				toAdd--;
-				if(toAdd==0)
-					return;
 			}
 		}
 	}

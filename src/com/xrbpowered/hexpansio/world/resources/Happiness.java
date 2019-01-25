@@ -29,7 +29,7 @@ public enum Happiness {
 			return Happiness.content;
 		else if(h>-pop)
 			return Happiness.unhappy;
-		else if(h>-pop*2 || pop<2)
+		else if(h>-pop*2)// || pop<2)
 			return Happiness.angry;
 		else
 			return Happiness.raging;

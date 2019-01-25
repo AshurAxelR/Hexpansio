@@ -80,6 +80,11 @@ public class ResourcePile {
 	public int remove(TokenResource res, int count) {
 		return add(res, -count);
 	}
+	
+	public void removeAll(TokenResource res) {
+		map.remove(res.name);
+		sortedList = null;
+	}
 
 	public void remove(ResourcePile pile) {
 		for(Entry e : pile.map.values())

@@ -51,11 +51,11 @@ public class TradeList {
 	}
 	
 	public Trade get(City otherCity) {
-		return trades.get(otherCity.index);
+		return trades.get(otherCity.id);
 	}
 
 	public Trade getCopy(City otherCity) {
-		Trade t = trades.get(otherCity.index);
+		Trade t = trades.get(otherCity.id);
 		if(t==null)
 			return new Trade(city, otherCity);
 		else
@@ -70,21 +70,30 @@ public class TradeList {
 		if(trade.city!=this.city || checkDist && this.city.tile.distTo(trade.otherCity.tile)>TradeMode.cityRange)
 			return;
 		if(trade.in.isEmpty() && trade.out.isEmpty()) {
-			trades.remove(trade.otherCity.index);
-			trade.otherCity.trades.trades.remove(this.city.index);
+			trades.remove(trade.otherCity.id);
+			trade.otherCity.trades.trades.remove(this.city.id);
 		}
 		else {
-			trades.put(trade.otherCity.index, trade);
-			trade.otherCity.trades.trades.put(this.city.index, trade.reverse);
+			trades.put(trade.otherCity.id, trade);
+			trade.otherCity.trades.trades.put(this.city.id, trade.reverse);
 		}
 		updateTotal();
 		trade.otherCity.trades.updateTotal();
 	}
 	
+	public void cancelAll() {
+		for(Trade t : trades.values()) {
+			t.otherCity.trades.trades.remove(this.city.id);
+			t.otherCity.trades.updateTotal();
+		}
+		trades.clear();
+		updateTotal();
+	}
+	
 	public void cancelResource(TokenResource res) {
 		for(Trade t : trades.values()) {
 			if(t.out.count(res)>0) {
-				t.out.map.get(res.name).count = 0;
+				t.out.removeAll(res);
 				accept(t, false);
 				t.otherCity.updateStats();
 			}

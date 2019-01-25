@@ -106,7 +106,7 @@ public class MapView extends UIElement {
 	public void setWorld(World world) {
 		this.world = world;
 		((UIZoomView)getParent()).setScale(3f);
-		selectCity(world.origin.city, true);
+		selectCity(world.cities.get(0), true);
 	}
 	
 	public void selectCity(City city, boolean center) {

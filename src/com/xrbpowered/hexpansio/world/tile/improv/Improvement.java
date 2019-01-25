@@ -34,7 +34,7 @@ public class Improvement implements Comparable<Improvement> {
 	public int workplaces = 0;
 	public int maintenance = 0;
 	public int bonusResources = 0;
-	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.volcano, Feature.thevoid};
+	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.volcano, Feature.thevoid, Feature.ruins};
 	private Feature[] reqFeatures = null;
 	private boolean reqResource = false;
 	private boolean reqCoastalCity = false;
@@ -257,11 +257,11 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement gatherer = new Improvement("gatherer", "Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
 			.yield(1, 1, 0, 0).require(Feature.forest, Feature.swamp);
 	public static final Improvement market = new Improvement("market", "Market", 50).hotkey(KeyEvent.VK_T).setGlyph("T")
-			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.volcano, Feature.thevoid);
+			.yield(0, 0, 2, 0).reject(Feature.water, Feature.mountain, Feature.peak, Feature.volcano, Feature.thevoid, Feature.ruins);
 	public static final Improvement park = new Improvement("park", "Park", 30).hotkey(KeyEvent.VK_P).setGlyph("P")
 			.yield(0, 0, 0, 1).maintenance(1).reject(Feature.water, Feature.desert, Feature.volcano, Feature.thevoid);
 	public static final Improvement pasture = new Improvement("pasture", "Pasture", 30).hotkey(KeyEvent.VK_U).setGlyph("U")
-			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak, Feature.volcano, Feature.thevoid);
+			.yield(1, 0, 0, 0)	.reject(Feature.water, Feature.desert, Feature.forest, Feature.swamp, Feature.peak, Feature.volcano, Feature.thevoid, Feature.ruins);
 	public static final Improvement plantation = new Improvement("plantation", "Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
 			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak, Feature.volcano, Feature.thevoid).requireResource();
 	public static final Improvement quarry = new Improvement("quarry", "Quarry", 30).hotkey(KeyEvent.VK_Y).setGlyph("Y")
