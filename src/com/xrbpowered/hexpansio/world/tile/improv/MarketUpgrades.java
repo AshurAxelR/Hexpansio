@@ -8,27 +8,28 @@ import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 
 public abstract class MarketUpgrades {
 
-	public static void init() {
-		new Improvement(market, "Trade Rows", 30, 1).workplaces(1).yieldPerWorker(0, 0, 1, 0);
-		new Improvement(market, "Fun Fair", 60, 1).workplaces(1).yield(0, 0, 1, 1).yieldPerWorker(0, 0, 0, 1);
-		new Improvement(market, "Grocery", 30, 1).yield(1, 0, 0, 0);
-		new Improvement(market, "Warehouse", 40, 1).maintenance(1).yield(0, 2, 0, 0);
-		new Improvement(market, "Office", 80, 1).workplaces(1).yield(0, 0, 2, 0).yieldPerWorker(0, 0, 1, 0).cityPrerequisite(CityUpgrades.townHall)
+	public static final Improvement office = new Improvement(market, "Office", 150, 1).workplaces(1).yield(0, 0, 2, 0).yieldPerWorker(0, 0, 1, 0).cityPrerequisite(CityUpgrades.townHall)
 			.reject(Feature.forest, Feature.swamp);
+
+	public static void init() {
+		new Improvement(market, "Trade Rows", 30, 1).workplaces(1).yield(0, 0, 1, 0).yieldPerWorker(0, 0, 1, 0);
+		new Improvement(market, "Fun Fair", 80, 1).yield(0, 0, 1, 1);
+		new Improvement(market, "Grocery", 20, 1).yield(1, 0, 1, 0);
+		new Improvement(market, "Warehouse", 40, 1).maintenance(1).yield(0, 2, 0, 0);
 		
-		new Improvement(market, "Bank", 100, 2).workplaces(1).maintenance(1).cityPrerequisite(CityUpgrades.townHall)
+		new Improvement(market, "Bank", 250, 2).maintenance(1).cityPrerequisite(CityUpgrades.townHall)
 			.reject(Feature.forest, Feature.swamp).effects(new YieldEffect.Tile(0, 0, 1, 0) {
 				@Override
 				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {
-					return ImprovementStack.tileContains(tile, market) ? this.yield.get(res) : 0;
+					return ImprovementStack.tileContains(tile, office) ? this.yield.get(res) : 0;
 				}
 				@Override
 				public String getDescription() {
-					return "+1 Gold from every Market";
+					return "+1 Gold from every Office";
 				}
 			});
 		
-		new Improvement(market, "Trade Hub", 120, 3).cityUnique().maintenance(2).cityPrerequisite(CityUpgrades.townHall)
+		new Improvement(market, "Stock Exchange", 150, 3).cityUnique().maintenance(2).cityPrerequisite(CityUpgrades.townHall)
 			.reject(Feature.forest, Feature.swamp).effects(new YieldEffect.Resource(0, 0, 1, 0) {
 				@Override
 				public String getDescription() {

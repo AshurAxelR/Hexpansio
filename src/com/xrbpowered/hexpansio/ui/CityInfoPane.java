@@ -131,7 +131,7 @@ public class CityInfoPane extends UIContainer {
 			g.drawString(String.format("Void resistance: %d%%", city.getVoidResist()), x, y);
 		}
 		g.setColor(Color.WHITE);
-		y += 20; g.drawString(String.format("%+d base happiness", city.world.baseHappiness), x, y);
+		y += 20; g.drawString(String.format("%+d baseline happiness", city.world.baseHappiness), x, y);
 		y += 15; g.drawString(String.format("%+d from tiles and resources", city.incomeTiles.get(YieldResource.happiness)+city.incomeResources.get(YieldResource.happiness)), x, y);
 		g.setColor(Color.GRAY);
 		int u = city.getPopulationUnhappiness();
@@ -189,7 +189,7 @@ public class CityInfoPane extends UIContainer {
 		g.setColor(YieldResource.gold.fill);
 		g.drawString("Gold:", cx-10f, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 		g.drawString(String.format("%+d (+%d / -%d)", city.balance.get(YieldResource.gold),
-				city.incomeTiles.get(YieldResource.food)+city.incomeResources.get(YieldResource.gold),
+				city.incomeTiles.get(YieldResource.gold)+city.incomeResources.get(YieldResource.gold),
 				city.expences.get(YieldResource.gold)), cx, y);
 		y += 15;
 		g.setColor(YieldResource.production.fill);

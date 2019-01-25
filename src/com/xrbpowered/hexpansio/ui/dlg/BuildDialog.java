@@ -262,8 +262,9 @@ public class BuildDialog extends OverlayDialog {
 				}
 				if(imp.effect!=null) {
 					y += 25;
-					g.setColor(Color.LIGHT_GRAY);
+					g.setColor(Color.WHITE);
 					g.drawString("City-wide effects:", x, y);
+					g.setColor(Color.LIGHT_GRAY);
 					String[] desc = imp.effect.getDescription().split("\\n");
 					for(String s : desc) {
 						y += 15;

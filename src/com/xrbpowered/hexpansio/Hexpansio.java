@@ -227,8 +227,6 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		new Hexpansio(frame.getContainer());
 		new GameMenu();
 		frame.show();
-		
-		System.out.printf("Difficulty: %d\n", new WorldSettings().getDifficultyRating());
 	}
 
 }

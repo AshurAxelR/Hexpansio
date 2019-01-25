@@ -75,7 +75,7 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 		randomButton.setLocation(box.getWidth()-randomButton.getWidth()-10, y);
 		y += randomButton.getHeight()+30;
 
-		baseHappinessOption = new OptionBox(box, "Initial base happiness:", new int[] {1, 3, 5, 7}, "%+d") {
+		baseHappinessOption = new OptionBox(box, "Baseline happiness:", new int[] {1, 3, 5, 7}, "%+d") {
 			@Override
 			protected void selectOption(int value) {
 				settings.initialBaseHappiness = value;
@@ -99,7 +99,7 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 		voidCheckBox.setLocation(10, y);
 		y += voidCheckBox.getHeight()+5;
 
-		voidStartTurnOption = new OptionBox(box, "Void start turn:", new int[] {1, 20, 50, 100}) {
+		voidStartTurnOption = new OptionBox(box, "Void starts on turn:", new int[] {1, 20, 50, 100}) {
 			@Override
 			protected void selectOption(int value) {
 				settings.voidStartTurn = value;
@@ -173,7 +173,8 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 	
 	@Override
 	public void onEnter() {
-		// TODO create
+		if(!updateText())
+			return;
 		lastUsed = settings;
 		Hexpansio.instance.newGame(settings);
 		dismiss(false);

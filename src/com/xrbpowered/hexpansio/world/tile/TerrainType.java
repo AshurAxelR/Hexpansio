@@ -106,7 +106,7 @@ public class TerrainType {
 	public static final TerrainType hills = new TerrainType("Hills", new Color(0x85a443)).yield(1, 1, 0)
 			.resources(0.2f, cattle, wool, iron, gold, flowers, stone);
 	public static final TerrainType forestHills = new TerrainType("Forest hills", new Color(0x6e9845)).yield(1, 2, 0).feature(Feature.forest)
-			.resources(0.1f, iron, gold, flowers, berries, stone);
+			.resources(0.1f, iron, gold, flowers, berries);
 	public static final TerrainType barrenHills = new TerrainType("Barren hills", new Color(0x9eab63)).yield(0, 2, 0)
 			.resources(0.2f, wool, iron, gold, gems, stone, clay, sand, cacti);
 	public static final TerrainType barrenPlains = new TerrainType("Barren plains", new Color(0x9fac63)).yield(0, 1, 0)

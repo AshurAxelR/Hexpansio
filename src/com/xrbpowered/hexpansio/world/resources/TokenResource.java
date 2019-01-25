@@ -96,6 +96,6 @@ public class TokenResource {
 	public static final TokenResource corals = new TokenResource(rare, "Corals", Res.imgRes, 15)
 			.requires(Improvement.boat).terrain(1, 0, 1, 0).yield(0, 0, 1, 1);
 	public static final TokenResource kelp = new TokenResource(uncommon, "Kelp", Res.imgRes, 17)
-			.requires(Improvement.boat).terrain(0, 0, 1, 0).yield(1, 0, 1, 0);
+			.requires(Improvement.boat).terrain(0, 1, 0, 0).yield(1, 1, 0, 0);
 
 }

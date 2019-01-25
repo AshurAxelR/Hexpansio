@@ -263,7 +263,7 @@ public class Improvement implements Comparable<Improvement> {
 	public static final Improvement plantation = new Improvement("Plantation", 40).hotkey(KeyEvent.VK_N).setGlyph("N")
 			.yield(1, 0, 1, 0)	.reject(Feature.water, Feature.peak, Feature.thevoid).requireResource();
 	public static final Improvement quarry = new Improvement("Quarry", 30).hotkey(KeyEvent.VK_Y).setGlyph("Y")
-			.yield(0, 1, 1, 0).requireResource();
+			.yield(0, 1, 1, 0).reject(Feature.water, Feature.forest, Feature.peak, Feature.thevoid);
 	public static final Improvement boat = new Improvement("Fishing Boat", 20).hotkey(KeyEvent.VK_B).setGlyph("B")
 			.reject((Feature[])null).require(Feature.water).yield(1, 0, 0, 0).requireResource();
 	public static final Improvement drill = new Improvement("Drill", 60).hotkey(KeyEvent.VK_I).setGlyph("I")

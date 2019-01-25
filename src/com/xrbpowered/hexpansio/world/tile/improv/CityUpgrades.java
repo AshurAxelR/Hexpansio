@@ -5,6 +5,7 @@ import static com.xrbpowered.hexpansio.world.tile.improv.Improvement.*;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.city.effect.YieldEffect;
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 
@@ -24,6 +25,7 @@ public abstract class CityUpgrades {
 	public static Improvement highrise = null;
 
 	public static void init() {
+		new Improvement(cityCenter, "Food Reserve", 30, 1).maintenance(1).yield(2, 0, 0, 0);
 		new Improvement(townHall, "Utopia", 200, 1).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
 		
 		new Improvement(cityCenter, "Harbour", 60, 1).maintenance(2).requireCoastalCity()
@@ -62,8 +64,21 @@ public abstract class CityUpgrades {
 				}
 			});
 		
+		new Improvement(cityCenter, "Industrial Zone", 150, 1).maintenance(3).yield(0, 2, 0, 0)
+			.effects(new YieldEffect.Resource(0, 1, 0, 0) {
+				@Override
+				public int addResourceBonusYield(TokenResource resource, YieldResource res) {
+					return resource==TokenResource.iron || resource==TokenResource.fuel ? this.yield.get(res) : 0;
+				}
+				@Override
+				public String getDescription() {
+					return "+1 Production from Iron and Fuel";
+				}
+			});
+		
 		highrise = new Improvement(townHall, "Highrise", 300, 3).requirePopulation(15).cannotHurry().maintenance(10)
 				.effects(CityEffect.dummy(String.format("Unhappiness from population -%d%%", (int)(highriseEffect*100f))));
+		new Improvement(highrise, "Downtown", 400, 1).cannotHurry().yield(0, 0, 3, 3);
 
 	}
 	

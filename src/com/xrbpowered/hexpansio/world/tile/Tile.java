@@ -8,6 +8,7 @@ import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
@@ -112,7 +113,14 @@ public class Tile {
 	}
 
 	public int getWorkplaces() {
-		return isCityCenter() ? 0 : terrain.workplaces + (improvement==null ? 0 : improvement.workplaces);
+		if(isCityCenter())
+			return 0;
+		int w = terrain.workplaces;
+		if(improvement!=null)
+			w += improvement.workplaces;
+		if(city!=null)
+			w += city.effects.tileEffect(EffectTarget.workplaces, this);
+		return w;
 	}
 	
 	public boolean assignWorker() {

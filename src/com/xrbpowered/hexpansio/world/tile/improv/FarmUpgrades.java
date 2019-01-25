@@ -10,6 +10,7 @@ public abstract class FarmUpgrades {
 
 	public static void init() {
 		new Improvement(farm, "Fertiliser", 30, 1).maintenance(1).yield(3, 0, 0, 0);
+		new Improvement(farm, "Mill", 40, 1).maintenance(2).yieldPerWorker(0, 1, 0, 0);
 		new Improvement(farm, "Greenhouse", 40, 1).workplaces(1).yieldPerWorker(1, 0, 0, 0);
 		new Improvement(farm, "Green Market", 60, 1).workplaces(1).yield(1, 0, 1, 0).yieldPerWorker(0, 0, 1, 0);
 		
