@@ -162,16 +162,20 @@ public class ImprovementStack {
 	}
 
 	public static void read(Tile tile, ObjectIndex<Improvement> conv, DataInputStream in) throws IOException {
-		Improvement imp = conv.get(in.readShort());
-		if(imp==null) {
+		int x = in.readShort();
+		if(x<0) {
 			tile.improvement = null;
 		}
 		else {
+			Improvement imp = conv.get(x);
 			int num = in.readByte();
 			ArrayList<Improvement> upgrades = new ArrayList<>(num);
-			for(int i=0; i<num; i++)
-				upgrades.add(conv.get(in.readShort()));
-			tile.improvement = new ImprovementStack(imp, upgrades);
+			for(int i=0; i<num; i++) {
+				Improvement upg = conv.get(in.readShort());
+				if(upg!=null)
+					upgrades.add(upg);
+			}
+			tile.improvement = imp==null ? null : new ImprovementStack(imp, upgrades);
 		}
 	}
 }

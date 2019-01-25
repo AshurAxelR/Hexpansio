@@ -64,8 +64,6 @@ public class ObjectIndex<T> {
 		for(int i=0; i<num; i++) {
 			String key = in.readUTF();
 			T object = get(key);
-			if(object==null)
-				throw new IOException("Index entry does not exist: "+key);
 			conv.put(key, object);
 		}
 		return conv;

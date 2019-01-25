@@ -141,5 +141,7 @@ public class TerrainType {
 
 	public static final TerrainType voidEdge = new TerrainType("void.edge", "Void Storm", new Color(0x775566)).workplaces(0).feature(Feature.thevoid);
 	public static final TerrainType deepVoid = new TerrainType("void.deep", "Deep Void", new Color(0x442233)).workplaces(0).feature(Feature.thevoid);
+	
+	public static final TerrainType defaultFallback = plains;
 
 }

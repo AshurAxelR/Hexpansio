@@ -74,6 +74,8 @@ public class Save {
 
 	protected void readTile(DataInputStream in, Tile tile) throws IOException {
 		tile.terrain = convTerrainType.get(in.readByte());
+		if(tile.terrain==null)
+			tile.terrain = TerrainType.defaultFallback;
 		if(tile.isVoid())
 			tile.region.hasVoid = true;
 		tile.resource = convResources.get(in.readByte());
@@ -141,6 +143,7 @@ public class Save {
 	protected BuildingProgress readBuildingProgress(DataInputStream in, City city) throws IOException {
 		int x = in.readShort();
 		BuildingProgress bp;
+		boolean skip = false;
 		if(x==noBuildingProgress)
 			return null;
 		else if(x==buildSettlement)
@@ -149,6 +152,7 @@ public class Save {
 			bp = new RemoveImprovement(null);
 		else {
 			Improvement imp = convImprovement.get(x);
+			skip = imp==null;
 			bp = new BuildImprovement(city, imp);
 		}
 		
@@ -156,7 +160,7 @@ public class Save {
 		int wx = in.readInt();
 		int wy = in.readInt();
 		bp.tile = new Tile.DummyTile(wx, wy);
-		return bp;
+		return skip ? null : bp;
 	}
 	
 	protected void writeTrade(DataOutputStream out, Trade trade) throws IOException {
