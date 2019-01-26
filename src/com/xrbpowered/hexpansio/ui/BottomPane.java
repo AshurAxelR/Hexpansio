@@ -7,7 +7,9 @@ import java.util.Date;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
+import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 
@@ -67,6 +69,11 @@ public class BottomPane extends UIContainer {
 		}
 		
 		@Override
+		public boolean isHot() {
+			return Hexpansio.getWorld()!=null && Hexpansio.getWorld().problematicCities==0;
+		}
+		
+		@Override
 		protected void paintFrame(GraphAssist g, boolean enabled, boolean hot) {
 			float d = (getHeight()-buttonFrameSize)/4f;
 			g.setColor(Color.WHITE);
@@ -74,19 +81,28 @@ public class BottomPane extends UIContainer {
 			g.drawString(new SimpleDateFormat("HH:mm").format(new Date()),
 					getWidth()/2+frameWidth/2, getHeight()-d, GraphAssist.RIGHT, GraphAssist.CENTER);
 			
-			// TODO warn: cities may require attention, next turn highlight
+			String s = problematicCitiesWarning();
+			if(s!=null) {
+				g.drawString(s, getWidth()/2+frameWidth/2, d, GraphAssist.RIGHT, GraphAssist.CENTER);
+			}
 			
 			super.paintFrame(g, enabled, hot);
 		}
 		
 		@Override
 		public void onClick() {
-			Hexpansio.instance.nextTurn();
+			Hexpansio.instance.safeNextTurn();
 		}
 	}
+	
+	public static String problematicCitiesWarning() {
+		int v = Hexpansio.getWorld()==null ? 0 : Hexpansio.getWorld().problematicCities;
+		return v>0 ? String.format("%d %s may require attention", v, v==1 ? "city" : "cities") : null; 
+	}
 
-	private ModeButton[] modeButtons;
-	private NextTurnButton nextTurnButton;
+	private final ModeButton[] modeButtons;
+	private final NextTurnButton nextTurnButton;
+	private final ClickButton eventsButton;
 	
 	public BottomPane(UIContainer parent, final MapView view) {
 		super(parent);
@@ -101,11 +117,39 @@ public class BottomPane extends UIContainer {
 		}
 		
 		nextTurnButton = new NextTurnButton();
+		
+		eventsButton = new ClickButton(this, "MESSAGES", 160, (int)this.getHeight(), Res.fontLarge) {
+			@Override
+			public boolean isEnabled() {
+				return MessageLogDialog.isEnabled();
+			}
+			@Override
+			protected void paintFrame(GraphAssist g, boolean enabled, boolean hot) {
+				World world = Hexpansio.getWorld();
+				if(world!=null) {
+					int n = world.pinnedMessages + world.events.size();
+					if(n>0) {
+						float d = (getHeight()-buttonFrameSize)/4f;
+						g.setColor(Color.WHITE);
+						g.setFont(Res.font);
+						g.drawString(String.format("(%d)", n), getWidth(), getHeight()-d, GraphAssist.RIGHT, GraphAssist.CENTER);
+					}
+				}
+				
+				super.paintFrame(g, enabled, hot);
+			}
+			public void onClick() {
+				Hexpansio.instance.showMessageLog(); // TODO toggle, not an overlay dialog
+				repaint();
+			}
+		};
+		eventsButton.setFrameSize(eventsButton.frameWidth, buttonFrameSize);
 	}
 	
 	@Override
 	public void layout() {
 		nextTurnButton.setLocation(getWidth()-nextTurnButton.getWidth(), 0);
+		eventsButton.setLocation(nextTurnButton.getX()-eventsButton.getWidth(), 0);
 		super.layout();
 	}
 

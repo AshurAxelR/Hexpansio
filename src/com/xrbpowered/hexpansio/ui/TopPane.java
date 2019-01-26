@@ -108,7 +108,7 @@ public class TopPane extends UIContainer {
 		g.setColor(Color.DARK_GRAY);
 		g.resetStroke();
 		Res.imgHappiness.draw(g, x-r, y-r, r*2, world.minHappiness.ordinal());
-		g.graph.drawOval(x-r, y-r, r*2, r*2);
+		g.graph.drawOval(x-r, y-r, r*2, r*2); // TODO clickable minHappiness
 
 		x -= 30;
 
@@ -116,6 +116,7 @@ public class TopPane extends UIContainer {
 		g.setFont(Res.font);
 		g.drawString(String.format("Population: %d    Cities: %d    Turn: %d", world.totalPopulation, world.cities.size(), world.turn),
 				x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
+		// TODO statistics/history
 		
 		x = 10;
 

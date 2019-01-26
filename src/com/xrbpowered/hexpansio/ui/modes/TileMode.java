@@ -92,6 +92,16 @@ public class TileMode extends MapMode {
 		return paintHoverTileHint(g, s, c, x, y);
 	}
 
+	public void selectTile(Tile tile, boolean pan) {
+		if(tile!=null && tile.discovered) {
+			view.selectedTile = tile;
+			if(tile.city!=null)
+				view.selectedCity = tile.city;
+			if(pan)
+				view.panToTile(tile);
+		}
+	}
+	
 	@Override
 	public boolean action() {
 		Tile hoverTile = view.hoverTile;
@@ -99,9 +109,7 @@ public class TileMode extends MapMode {
 			return false;
 		
 		if(hoverTile!=view.selectedTile) {
-			view.selectedTile = hoverTile;
-			if(hoverTile.city!=null)
-				view.selectedCity = hoverTile.city;
+			selectTile(hoverTile, false);
 			return true;
 		}
 		else if(hoverTile.city==view.selectedCity && !hoverTile.isCityCenter()) {
@@ -144,8 +152,11 @@ public class TileMode extends MapMode {
 				}
 			};
 		}
-		else
+		else {
 			city.setBuilding(bp);
+			city.updateStats();
+			city.world.updateWorldTotals();
+		}
 	}
 	
 	public boolean cancelBuilding() {

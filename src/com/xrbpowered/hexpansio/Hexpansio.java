@@ -10,7 +10,9 @@ import com.xrbpowered.hexpansio.ui.CityInfoPane;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.TileInfoPane;
 import com.xrbpowered.hexpansio.ui.TopPane;
+import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
 import com.xrbpowered.hexpansio.ui.dlg.GameMenu;
+import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
@@ -106,7 +108,25 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			setWorld(save.read());
 		}
 	}
-	
+
+	public void safeNextTurn() {
+		if(world!=null) {
+			String s = BottomPane.problematicCitiesWarning();
+			if(s!=null) {
+				new ConfirmationDialog(0, "UNSOLVED PROBLEMS", s+".\nDo you want to end turn as is?", "NEXT TURN", "CANCEL") {
+					@Override
+					public void onEnter() {
+						dismiss();
+						nextTurn();
+					}
+				};
+				repaint();
+			}
+			else
+				nextTurn();
+		}
+	}
+
 	public void nextTurn() {
 		world.nextTurn();
 		System.out.printf("Turn %d\n", world.turn);
@@ -120,7 +140,13 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				view.view.selectCity(world.cities.get(0));
 			}
 		}
+		showMessageLog();
 		repaint();
+	}
+	
+	public void showMessageLog() {
+		if(MessageLogDialog.isEnabled())
+			new MessageLogDialog();
 	}
 	
 	public void browseCity(int delta) {
@@ -141,8 +167,11 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				repaint();
 				return true;
 			case KeyEvent.VK_ENTER:
-				if(world!=null)
-					nextTurn();
+				safeNextTurn();
+				return true;
+			case KeyEvent.VK_TAB:
+				showMessageLog();
+				repaint();
 				return true;
 			case KeyEvent.VK_UP:
 				if(world!=null)

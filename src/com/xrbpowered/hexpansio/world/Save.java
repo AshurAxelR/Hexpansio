@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world;
 
+import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -15,6 +16,7 @@ import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.FinishedBuilding;
 import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
@@ -30,7 +32,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 6;
+	public static final int saveVersion = 7;
 	
 	public final String path;
 	public final File file;
@@ -193,6 +195,7 @@ public class Save {
 		out.writeInt(city.growth);
 		writeBuildingProgress(out, city.buildingProgress);
 		out.writeByte(city.availExpand ? 1 : 0);
+		FinishedBuilding.write(out, city.finishedBuilding);
 	}
 	
 	protected void readCity(DataInputStream in, City city) throws IOException {
@@ -200,11 +203,49 @@ public class Save {
 		city.growth = in.readInt();
 		city.buildingProgress = readBuildingProgress(in, city);
 		city.availExpand = in.readByte()>0;
+		city.finishedBuilding = FinishedBuilding.read(in);
 	}
 	
 	protected void realiseCity(City city) {
 		if(city.buildingProgress!=null)
 			city.buildingProgress.setTile(((DummyTile) city.buildingProgress.tile).realise(city.world));
+	}
+	
+	protected void writeMessages(DataOutputStream out, World world) throws IOException {
+		out.writeByte(world.events.size());
+		for(TurnEventMessage msg : world.events) {
+			out.writeUTF(msg.city==null ? "" : msg.city);
+			out.writeUTF(msg.message);
+			out.writeByte(msg.focusTile==null ? 0 : 1);
+			if(msg.focusTile!=null) {
+				out.writeInt(msg.focusTile.wx);
+				out.writeInt(msg.focusTile.wy);
+			}
+			out.writeInt(msg.color==null ? 0 : msg.color.getRGB());
+		}
+	}
+
+	protected void readMessages(DataInputStream in, World world) throws IOException {
+		int n = in.readByte();
+		world.events.clear();
+		for(int i=0; i<n; i++) {
+			String city = in.readUTF();
+			if(city.isEmpty())
+				city = null;
+			String message = in.readUTF();
+			Tile tile;
+			if(in.readByte()!=0) {
+				int wx = in.readInt();
+				int wy = in.readInt();
+				tile = world.getTile(wx, wy);
+			}
+			else {
+				tile = null;
+			}
+			int rgb = in.readInt();
+			Color color = rgb==0 ? null : new Color(rgb);
+			world.events.add(new TurnEventMessage(city, message, tile).setColor(color));
+		}
 	}
 	
 	protected void writeWorld(DataOutputStream out, World world) throws IOException {
@@ -237,6 +278,8 @@ public class Save {
 			out.writeShort(r.ry);
 			writeRegion(out, r);
 		}
+		
+		writeMessages(out, world);
 	}
 	
 	protected void readWorld(DataInputStream in, World world) throws IOException {
@@ -269,8 +312,10 @@ public class Save {
 		world.origin = world.getTile(World.originwx, World.originwy);
 		for(City city : world.cities)
 			realiseCity(city);
+		
+		readMessages(in, world);
 	}
-	
+
 	public void write() {
 		if(world==null)
 			return;

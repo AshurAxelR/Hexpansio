@@ -5,6 +5,7 @@ import java.util.Random;
 import com.xrbpowered.hexpansio.ui.modes.ScoutMode;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.Region;
+import com.xrbpowered.hexpansio.world.TurnEventMessage;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
@@ -167,12 +168,14 @@ public class Tile {
 	
 	public void makeVoid() {
 		if(isCityCenter())
-			return; // TODO consume city?
+			return;
 		
 		if(settlement!=null)
 			settlement.city.setBuilding(null);
 		if(city!=null && city.buildingProgress!=null && city.buildingProgress.tile==this)
 			city.setBuilding(null);
+		if(city!=null)
+			region.world.events.add(new TurnEventMessage(city.name, "has lost a tile to the void", this).setColor(TerrainType.Feature.thevoid.color));
 		unassignWorkers();
 		improvement = null;
 		terrain = TerrainType.voidEdge;

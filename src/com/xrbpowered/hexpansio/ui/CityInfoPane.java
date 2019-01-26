@@ -1,6 +1,7 @@
 package com.xrbpowered.hexpansio.ui;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
@@ -257,6 +258,30 @@ public class CityInfoPane extends UIContainer {
 				g.drawString("Cannot hurry", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 		}
 
+		if(city.finishedBuilding!=null) {
+			y += 15;
+			g.fillRect(0, y, getWidth(), 55, Res.uiBgBright);
+			g.resetStroke();
+			g.line(0, y, getWidth(), y, Res.uiBorderDark);
+			
+			y += 25;
+			g.setColor(Color.WHITE);
+			g.setFont(Res.font);
+			g.drawString("Finished building:", x, y);
+			y += 15;
+			g.setFont(Res.fontBold);
+			if(city.finishedBuilding.excess>0) {
+				String s = city.finishedBuilding.name;
+				FontMetrics fm = g.graph.getFontMetrics();
+				float w = fm.stringWidth(s);
+				g.drawString(s, x, y);
+				g.setFont(Res.font);
+				Res.paintIncome(g, YieldResource.production, " ", city.finishedBuilding.excess, null, x+w, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+			}
+			else
+				g.drawString(city.finishedBuilding.name, x, y);
+		}
+		
 		y += 15;
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);

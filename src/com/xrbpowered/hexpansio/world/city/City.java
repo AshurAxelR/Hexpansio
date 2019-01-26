@@ -1,13 +1,16 @@
 package com.xrbpowered.hexpansio.world.city;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.NameGen;
+import com.xrbpowered.hexpansio.world.TurnEventMessage;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.FinishedBuilding;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
@@ -58,7 +61,9 @@ public class City {
 	public int unemployed, workplaces;
 	public int adjVoid;
 	public Happiness happiness = Happiness.content;
-	
+
+	public FinishedBuilding finishedBuilding = null;
+
 	public City(int id, World world, Tile tile, String name) {
 		this.id = id;
 		this.world = world;
@@ -227,24 +232,34 @@ public class City {
 	
 	public void nextTurn() {
 		updateStats();
+		finishedBuilding = null;
 		
 		growth +=getFoodGrowth();
 		
-		if(buildingProgress!=null)
-			buildingProgress.progress(getProduction());
+		if(buildingProgress!=null) {
+			if(buildingProgress.progress(getProduction()))
+				world.events.add(finishedBuilding.createMessage(this));
+		}
 		else
 			world.goods += getExcess(getProduction());
 		
-		if(happiness==Happiness.raging)
+		if(happiness==Happiness.raging) {
 			reducePopulation();
+			world.events.add(new TurnEventMessage(this, "1 population rage quit").setColor(Color.RED));
+		}
 		if(growth<0) {
 			reducePopulation();
+			world.events.add(new TurnEventMessage(this, "1 population lost to starvation").setColor(Color.RED));
 		}
 		else if(population>0){
+			int pop = 0;
 			while(growth>=getTargetGrowth()) {
 				growth -= getTargetGrowth();
+				pop++;
 				population++;
 			}
+			if(pop>0)
+				world.events.add(new TurnEventMessage(this, String.format("population grows %+d", pop)).setColor(YieldResource.food.fill));
 		}
 		
 		world.gold += balance.get(YieldResource.gold);
@@ -367,6 +382,26 @@ public class City {
 			updateIncomeResources();
 			updateBalance();
 		}
+	}
+	
+	public int countPinnedMessages() {
+		int n = 0;
+		if(balance.get(YieldResource.happiness)<0)
+			n++;
+		if(getFoodGrowth()<0)
+			n++;
+		if(unemployed>0)
+			n++;
+		return n;
+	}
+	
+	public void addPinnedMessages(ArrayList<TurnEventMessage> msgList) {
+		if(balance.get(YieldResource.happiness)<0)
+			msgList.add(new TurnEventMessage(this, "population is "+happiness.name).setColor(happiness.color).pin());
+		if(getFoodGrowth()<0)
+			msgList.add(new TurnEventMessage(this, "is starving").setColor(Color.RED).pin());
+		if(unemployed>0)
+			msgList.add(new TurnEventMessage(this, String.format("has %d unemployed %s", unemployed, unemployed==1 ? "worker" : "workers")).setColor(new Color(0xdd0000)).pin());
 	}
 
 }

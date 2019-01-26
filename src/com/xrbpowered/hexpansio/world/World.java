@@ -1,5 +1,6 @@
 package com.xrbpowered.hexpansio.world;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -47,6 +48,9 @@ public class World {
 	public int baseHappiness = 0;
 	
 	public Happiness minHappiness = Happiness.happy;
+	public int problematicCities = 0;
+	public int pinnedMessages = 0;
+	public ArrayList<TurnEventMessage> events = new ArrayList<>();
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
@@ -235,20 +239,25 @@ public class World {
 	}
 
 	public void nextTurn() {
+		events.clear();
+		
 		ArrayList<City> deadCities = new ArrayList<>();
 		for(City city : cities) {
 			city.nextTurn();
 			if(city.population<=0)
 				deadCities.add(city);
 		}
-		for(Tile tile: newCities)
-			new City(lastCityId+1, this, tile, null);
+		for(Tile tile: newCities) {
+			City city = new City(lastCityId+1, this, tile, null);
+			events.add(new TurnEventMessage(city, "has been created").setColor(Color.WHITE));
+		}
 		newCities.clear();
 		for(City city: deadCities) {
 			city.tile.region.cities.remove(city);
 			cityIdMap.remove(city.id);
 			cities.remove(city);
 			city.destroyCity();
+			events.add(new TurnEventMessage(city, "has been abandoned").setColor(new Color(0x660000)));
 		}
 		
 		if(settings.voidEnabled && turn==settings.voidStartTurn-1)
@@ -287,6 +296,8 @@ public class World {
 		int prevBH = baseHappiness;
 		baseHappiness = settings.initialBaseHappiness;
 		minHappiness = Happiness.happy;
+		problematicCities = 0;
+		pinnedMessages = 0;
 		for(City city : cities) {
 			totalPopulation += city.population;
 			totalGoldIn += city.balance.get(YieldResource.gold);
@@ -296,6 +307,11 @@ public class World {
 			baseHappiness += city.effects.modifyCityValue(EffectTarget.baseHappiness, 0);
 			if(city.happiness.ordinal()>minHappiness.ordinal())
 				minHappiness = city.happiness;
+			int pm = city.countPinnedMessages();
+			if(pm>0) {
+				problematicCities++;
+				pinnedMessages += pm;
+			}
 		}
 		if(prevBH!=baseHappiness) {
 			updateCities();
@@ -325,6 +341,7 @@ public class World {
 				r -= 2;
 			else {
 				startVoidAt(wx, wy);
+				events.add(new TurnEventMessage(null, "discover the source of Void", getTile(wx, wy)).setColor(TerrainType.Feature.thevoid.color));
 				dfix = d.ccw();
 				r += 2;
 				toAdd--;
