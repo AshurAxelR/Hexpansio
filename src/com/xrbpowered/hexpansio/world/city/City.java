@@ -331,14 +331,14 @@ public class City {
 
 	public int getPopulationUnhappiness() {
 		int u = population-1;
-		if(ImprovementStack.cityContains(tile, CityUpgrades.highrise))
+		if(ImprovementStack.cityContains(this, CityUpgrades.highrise))
 			u = (int)(u * (1f - CityUpgrades.highriseEffect));
 		return u;
 	}
 	
 	public int getVoidUnhappiness() {
 		int u = adjVoid;
-		if(ImprovementStack.cityContains(tile, CityUpgrades.beaconOfHope))
+		if(ImprovementStack.cityContains(this, CityUpgrades.beaconOfHope))
 			u = (int)(u * (1f - CityUpgrades.beaconOfHopeEffect));
 		return u;
 	}

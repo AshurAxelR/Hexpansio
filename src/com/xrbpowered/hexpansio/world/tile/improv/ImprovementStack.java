@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.xrbpowered.hexpansio.world.ObjectIndex;
-import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.resources.Yield;
@@ -97,14 +96,13 @@ public class ImprovementStack {
 		return false;
 	}
 
-	public static boolean cityContains(Tile tile, Improvement imp) {
+	public static boolean cityContains(City city, Improvement imp) {
 		if(imp==null)
 			return false;
-		World world = tile.region.world;
 		for(int x=-City.expandRange; x<=City.expandRange; x++)
 			for(int y=-City.expandRange; y<=City.expandRange; y++) {
-				Tile t = world.getTile(tile.wx+x, tile.wy+y);
-				if(t!=null && t.city==tile.city && tileContains(t, imp))
+				Tile t = city.world.getTile(city.tile.wx+x, city.tile.wy+y);
+				if(t!=null && t.city==city && tileContains(t, imp))
 					return true;
 			}
 		return false;

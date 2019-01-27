@@ -165,8 +165,8 @@ public class Improvement implements Comparable<Improvement> {
 
 	public boolean canBuildOn(Tile tile) {
 		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
-				(!cityUnique || !ImprovementStack.cityContains(tile, this)) &&
-				(cityPrerequisite==null || ImprovementStack.cityContains(tile, cityPrerequisite)) &&
+				(!cityUnique || !ImprovementStack.cityContains(tile.city, this)) &&
+				(cityPrerequisite==null || ImprovementStack.cityContains(tile.city, cityPrerequisite)) &&
 				(reqFeatures==null || tile.terrain.hasFeature(reqFeatures)) &&
 				!tile.terrain.hasFeature(rejectFeatures) &&
 				(!reqResource || tile.resource!=null && tile.resource.improvement==this.getBase()) &&
@@ -179,10 +179,10 @@ public class Improvement implements Comparable<Improvement> {
 		if(!(prerequisite==null || ImprovementStack.isPrerequisite(tile, this))) {
 			return String.format("Requires %s", prerequisite.name);
 		}
-		else if(!(!cityUnique || !ImprovementStack.cityContains(tile, this))) {
+		else if(!(!cityUnique || !ImprovementStack.cityContains(tile.city, this))) {
 			return "Already built in this city";
 		}
-		else if(!(cityPrerequisite==null || ImprovementStack.cityContains(tile, cityPrerequisite))) {
+		else if(!(cityPrerequisite==null || ImprovementStack.cityContains(tile.city, cityPrerequisite))) {
 			return String.format("Requires %s", cityPrerequisite.name);
 		}
 		else if(!(reqFeatures==null || tile.terrain.hasFeature(reqFeatures))) {
