@@ -63,6 +63,11 @@ public class TradeMode extends MapMode {
 	}
 	
 	@Override
+	public String getDescription() {
+		return "Manage trade routes between cities.";
+	}
+	
+	@Override
 	public boolean showCityRange() {
 		return true;
 	}

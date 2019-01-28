@@ -170,7 +170,7 @@ public class MapView extends UIElement {
 			return true;
 		}
 		else
-			return false;
+			return false; // TODO explain why action not enabled
 	}
 	
 	@Override

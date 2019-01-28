@@ -12,6 +12,7 @@ public class WorldSettings {
 	public boolean customSeed = false;
 	public String seedString = null;
 
+	public int initialGold = 10;
 	public int initialBaseHappiness = 5;
 	
 	public boolean voidEnabled = true;
@@ -24,6 +25,7 @@ public class WorldSettings {
 	public int getDifficultyRating() {
 		float d = 1f;
 		d *= (1f - (initialBaseHappiness-5)*0.25f);
+		d *= (1f - (initialGold-10)*0.01f);
 		if(customSeed)
 			d *= 0.5f;
 		if(voidEnabled) {

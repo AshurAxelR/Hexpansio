@@ -125,7 +125,11 @@ public class Tile {
 	}
 	
 	public boolean assignWorker() {
-		if(city!=null && !isCityCenter() && workers<getWorkplaces() && city.unemployed>0) {
+		if(city!=null && !isCityCenter() && workers<getWorkplaces()) {
+			if(city.unemployed<=0) {
+				if(!city.unassignWorker())
+					return false;
+			}
 			workers++;
 			city.unemployed--;
 			return true;

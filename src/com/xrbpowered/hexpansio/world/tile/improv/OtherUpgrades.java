@@ -22,7 +22,6 @@ public abstract class OtherUpgrades {
 			.require(Feature.desert);
 		new Improvement("plantation.intensive", plantation, "Intensive Farming", 60, 1).workplaces(1).yieldPerWorker(1, 0, 1, 0).bonusResources(1)
 			.reject(Feature.desert);
-		new Improvement("plantation.fairmarket", plantation, "Fair Market", 60, 1).workplaces(1).yield(0, 0, 2, 1);
 		
 		new Improvement("quarry.excavator", quarry, "Excavator", 60, 1).maintenance(1).yield(0, 1, 0, 0).bonusResources(1);
 		new Improvement("quarry.deep", quarry, "Deep Quarry", 40, 1).workplaces(1).yieldPerWorker(0, 1, 0, 0);
@@ -41,8 +40,8 @@ public abstract class OtherUpgrades {
 
 		new Improvement("boat.crew", boat, "Crew Training", 60, 1).workplaces(1).yieldPerWorker(1, 0, 1, 0).bonusResources(1)
 			.reject((Feature[])null);
-		new Improvement("boat.yacht", boat, "Luxury Yacht", 60, 1).maintenance(3).yield(0, 0, 0, 3)
-		.reject((Feature[])null);
+		new Improvement("boat.yacht", boat, "Luxury Yacht", 60, 1).maintenance(2).yield(0, 0, 0, 3).cityPrerequisite(CityUpgrades.resort)
+			.reject((Feature[])null);
 		new Improvement("boat.cargo", boat, "Cargo Ship", 80, 1).maintenance(2).yield(0, 2, 0, 0)
 			.reject((Feature[])null);
 

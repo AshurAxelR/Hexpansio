@@ -1,19 +1,14 @@
-package com.xrbpowered.hexpansio.ui.dlg;
+package com.xrbpowered.hexpansio.ui.dlg.popup;
 
-import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.ui.ClickButton;
-import com.xrbpowered.zoomui.GraphAssist;
 
-public class ConfirmationDialog extends OverlayDialog {
+public class ConfirmationDialog extends PopupDialog {
 
 	protected final ClickButton yesButton;
 	protected final ClickButton noButton;
 	
-	protected String[] lines;
-
 	public ConfirmationDialog(float height, String title, String[] lines, String yesLabel, String noLabel) {
-		super(Hexpansio.instance.getBase(), 400, height>0 ? height : lines.length*15+120, title);
-		this.lines = lines;
+		super(height, title, lines);
 		
 		yesButton = new ClickButton(box, yesLabel, 140) {
 			@Override
@@ -34,22 +29,6 @@ public class ConfirmationDialog extends OverlayDialog {
 
 	public ConfirmationDialog(float height, String title, String message, String yesLabel, String noLabel) {
 		this(height, title, message==null ? null : message.split("\\n"), yesLabel, noLabel);
-	}
-
-	public void onCancel() {
-		dismiss();
-	}
-	
-	@Override
-	protected void paintBoxContents(GraphAssist g) {
-		if(lines!=null) {
-			int y = 60;
-			for(String s : lines) {
-				g.drawString(s, box.getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-				y += 15;
-			}
-		}
-		super.paintBoxContents(g);
 	}
 
 }

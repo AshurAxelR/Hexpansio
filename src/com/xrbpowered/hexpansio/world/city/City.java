@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.NameGen;
 import com.xrbpowered.hexpansio.world.TurnEventMessage;
@@ -386,22 +387,30 @@ public class City {
 	
 	public int countPinnedMessages() {
 		int n = 0;
-		if(balance.get(YieldResource.happiness)<0)
+		if(Hexpansio.settings.warnUnhappy && balance.get(YieldResource.happiness)<0)
 			n++;
 		if(getFoodGrowth()<0)
 			n++;
 		if(unemployed>0)
+			n++;
+		if(buildingProgress==null && getExcess(getProduction())==0)
+			n++;
+		else if(Hexpansio.settings.warnNoBuilding && buildingProgress==null)
 			n++;
 		return n;
 	}
 	
 	public void addPinnedMessages(ArrayList<TurnEventMessage> msgList) {
-		if(balance.get(YieldResource.happiness)<0)
+		if(Hexpansio.settings.warnUnhappy && balance.get(YieldResource.happiness)<0)
 			msgList.add(new TurnEventMessage(this, "population is "+happiness.name).setColor(happiness.color).pin());
 		if(getFoodGrowth()<0)
 			msgList.add(new TurnEventMessage(this, "is starving").setColor(Color.RED).pin());
 		if(unemployed>0)
 			msgList.add(new TurnEventMessage(this, String.format("has %d unemployed %s", unemployed, unemployed==1 ? "worker" : "workers")).setColor(new Color(0xdd0000)).pin());
+		if(buildingProgress==null && getExcess(getProduction())==0)
+			msgList.add(new TurnEventMessage(this, "will produce nothing").setColor(Color.DARK_GRAY).pin());
+		else 	if(Hexpansio.settings.warnNoBuilding && buildingProgress==null)
+			msgList.add(new TurnEventMessage(this, "is producing goods").setColor(YieldResource.production.border).pin());
 	}
 
 }

@@ -4,6 +4,8 @@ import java.util.Random;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.ui.ClickButton;
+import com.xrbpowered.hexpansio.ui.dlg.popup.InformationDialog;
+import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.zoomui.std.text.UITextBox;
 
@@ -59,6 +61,12 @@ public class CityRenameDialog extends OverlayDialog {
 	public void onEnter() {
 		getBase().resetFocus();
 		String text = nameText.editor.getText();
+		
+		if(parseCheats(text)) {
+			dismiss();
+			return;
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		int n = text.length();
 		int m = 0;
@@ -99,7 +107,9 @@ public class CityRenameDialog extends OverlayDialog {
 		if(!name.isEmpty() && name.equals(text)) {
 			if(city.rename(name))
 				dismiss();
-			// TODO message: city name exists
+			else {
+				new InformationDialog(false, "City name has already been taken.").repaint();
+			}
 		}
 		else {
 			nameText.editor.setText(name);
@@ -107,4 +117,42 @@ public class CityRenameDialog extends OverlayDialog {
 		}
 	}
 
+	public static boolean parseCheats(String s) {
+		if(!Hexpansio.cheatsEnabled)
+			return false;
+		
+		String args[] = s.trim().split("\\s+", 3);
+		World world = Hexpansio.getWorld();
+		if(args.length>1 && args[0].equalsIgnoreCase("cheat")) {
+			if(args[1].equalsIgnoreCase("vision")) {
+				int n = args.length==2 ? 5 : Integer.parseInt(args[2]);
+				if(n>=0)
+					world.debugDiscover(n);
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("gold")) {
+				int n = args.length==2 ? 1000 : Integer.parseInt(args[2]);
+				if(n>0)
+					world.gold += n;
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("goods")) {
+				int n = args.length==2 ? 1000 : Integer.parseInt(args[2]);
+				if(n>0)
+					world.goods += n;
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("happy")) {
+				int n = args.length==2 ? 10 : Integer.parseInt(args[2]);
+				if(n>0) {
+					world.settings.initialBaseHappiness += n;
+					world.updateCities();
+					world.updateWorldTotals();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

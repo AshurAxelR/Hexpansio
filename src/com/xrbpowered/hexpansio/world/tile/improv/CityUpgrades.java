@@ -23,6 +23,7 @@ public abstract class CityUpgrades {
 				);
 	
 	public static Improvement highrise = null;
+	public static Improvement resort = null;
 
 	public static void init() {
 		new Improvement("city.farm", cityCenter, "Food Reserve", 30, 1).maintenance(1).yield(2, 0, 0, 0);
@@ -52,7 +53,7 @@ public abstract class CityUpgrades {
 			}
 		});
 
-		new Improvement("city.resort", cityCenter, "Holiday Resort", 200, 2).yield(0, 0, 1, 1).requireCoastalCity()
+		resort = new Improvement("city.resort", cityCenter, "Holiday Resort", 200, 2).yield(0, 0, 1, 1).requireCoastalCity()
 			.effects(new YieldEffect.Tile(0, 0, 0, 1) {
 				@Override
 				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {

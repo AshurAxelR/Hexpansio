@@ -1,4 +1,4 @@
-package com.xrbpowered.hexpansio.ui.dlg;
+package com.xrbpowered.hexpansio.ui.dlg.popup;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;

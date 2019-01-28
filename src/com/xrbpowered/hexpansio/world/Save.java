@@ -32,7 +32,7 @@ public class Save {
 
 	public static final int formatCode = 632016289;
 	
-	public static final int saveVersion = 7;
+	public static final int saveVersion = 8;
 	
 	public final String path;
 	public final File file;
@@ -250,6 +250,7 @@ public class Save {
 	
 	protected void writeWorld(DataOutputStream out, World world) throws IOException {
 		out.writeByte(world.cityNameBaseLength);
+		out.writeByte(world.cheater ? 1 : 0);
 		
 		out.writeInt(world.turn);
 		out.writeInt(world.poverty);
@@ -284,6 +285,7 @@ public class Save {
 	
 	protected void readWorld(DataInputStream in, World world) throws IOException {
 		world.cityNameBaseLength = in.readByte();
+		world.cheater = in.readByte()!=0;
 		
 		world.turn = in.readInt();
 		world.poverty = in.readInt();
@@ -316,9 +318,9 @@ public class Save {
 		readMessages(in, world);
 	}
 
-	public void write() {
+	public boolean write() {
 		if(world==null)
-			return;
+			return false;
 		
 		try {
 			ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(file));
@@ -340,9 +342,11 @@ public class Save {
 			zip.close();
 			
 			System.out.println("World saved");
+			return true;
 		}
-		catch(IOException e) {
+		catch(Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 	

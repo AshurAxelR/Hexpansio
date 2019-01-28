@@ -1,4 +1,4 @@
-package com.xrbpowered.hexpansio.ui.dlg;
+package com.xrbpowered.hexpansio.ui.dlg.menu;
 
 import java.awt.Color;
 import java.util.Random;
@@ -8,12 +8,13 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.CheckBox;
 import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.ui.OptionBox;
+import com.xrbpowered.hexpansio.ui.dlg.OverlayDialog;
 import com.xrbpowered.hexpansio.world.NameGen;
 import com.xrbpowered.hexpansio.world.WorldSettings;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.std.text.UITextBox;
 
-public class GameWorldSettingsDialog extends OverlayDialog {
+public class WorldSettingsDialog extends OverlayDialog {
 
 	public static WorldSettings lastUsed = new WorldSettings();
 	
@@ -30,6 +31,7 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 	private final ClickButton randomButton;
 
 	private final OptionBox baseHappinessOption;
+	private final OptionBox goldOption;
 
 	private final CheckBox voidCheckBox;
 	private final OptionBox voidStartTurnOption;
@@ -37,8 +39,8 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 	private final OptionBox voidDistanceOption;
 	private final OptionBox voidSpreadSpeedOption;
 
-	public GameWorldSettingsDialog() {
-		super(Hexpansio.instance.getBase(), 540, 550, "WORLD SETTINGS");
+	public WorldSettingsDialog() {
+		super(Hexpansio.instance.getBase(), 460, 570, "WORLD SETTINGS");
 		
 		float y = 60f;
 		float cx = box.getWidth() - OptionBox.defaultWidth - 30;
@@ -82,8 +84,17 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 			}
 		};
 		baseHappinessOption.setLocation(cx, y);
-		y += baseHappinessOption.getHeight()+30;
-		
+		y += baseHappinessOption.getHeight()+5;
+
+		goldOption = new OptionBox(box, "Starting gold:", new int[] {0, 10, 20, 30}, "%d") {
+			@Override
+			protected void selectOption(int value) {
+				settings.initialGold = value;
+			}
+		};
+		goldOption.setLocation(cx, y);
+		y += goldOption.getHeight()+30;
+
 		voidCheckBox = new CheckBox(box, "The Void") {
 			@Override
 			public boolean isSelected() {
@@ -197,6 +208,7 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 		seedText.editor.setText(settings.seedString);
 		
 		settings.initialBaseHappiness = baseHappinessOption.findOption(settings.initialBaseHappiness);
+		settings.initialGold = goldOption.findOption(settings.initialGold);
 		settings.voidStartTurn = voidStartTurnOption.findOption(settings.voidStartTurn);
 		settings.voidStartSources = voidStartSourcesOption.findOption(settings.voidStartSources);
 		settings.setVoidDistance(voidDistanceOption.findOption(settings.voidMinDistance));
@@ -245,7 +257,7 @@ public class GameWorldSettingsDialog extends OverlayDialog {
 		g.resetStroke();
 		float y = baseHappinessOption.getY()-15;
 		g.line(0, y, box.getWidth(), y, Res.uiBorderDark);
-		y = baseHappinessOption.getY()+baseHappinessOption.getHeight()+15;
+		y = goldOption.getY()+goldOption.getHeight()+15;
 		g.line(0, y, box.getWidth(), y, Res.uiBorderDark);
 		
 		g.setColor(Color.LIGHT_GRAY);

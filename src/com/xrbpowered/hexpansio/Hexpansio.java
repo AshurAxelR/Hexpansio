@@ -1,6 +1,7 @@
 package com.xrbpowered.hexpansio;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
@@ -10,10 +11,11 @@ import com.xrbpowered.hexpansio.ui.CityInfoPane;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.TileInfoPane;
 import com.xrbpowered.hexpansio.ui.TopPane;
-import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
-import com.xrbpowered.hexpansio.ui.dlg.GameMenu;
 import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
+import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
+import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
+import com.xrbpowered.hexpansio.ui.dlg.popup.InformationDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
 import com.xrbpowered.hexpansio.world.World;
@@ -27,9 +29,13 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class Hexpansio extends UIContainer implements KeyInputHandler {
 
-	public static Hexpansio instance = null;
+	public static final String version = "B.0.9";
 	
-	public static boolean saveOnExit = false;
+	public static GlobalSettings settings = new GlobalSettings();
+	public static boolean cheatsEnabled = false;
+	
+	private static SwingFrame frame = null;
+	public static Hexpansio instance = null;
 	
 	private static Save save = new Save("./hexpansion.save"); 
 	private static World world = null;
@@ -51,11 +57,13 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public Hexpansio(UIContainer parent) {
 		super(parent);
 		instance = this;
-		setVisible(false);
 		
 		view = MapView.createMapView(this);
 		if(world!=null)
 			view.view.setWorld(world);
+		else
+			setVisible(false);
+
 		cityInfo = new CityInfoPane(this);
 		tileInfo = new TileInfoPane(this);
 		top = new TopPane(this);
@@ -98,9 +106,18 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		setWorld(save.startNew(settings));
 	}
 	
-	public void saveGame() {
+	public void autosave() {
 		if(world!=null)
 			save.write();
+	}
+	
+	public void saveGame() {
+		if(world!=null) {
+			if(save.write())
+				new InformationDialog(true, "Game successfully saved.");
+			else
+				new InformationDialog(false, "Unable to write the save file.");
+		}
 	}
 	
 	public void loadGame() {
@@ -112,7 +129,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public void safeNextTurn() {
 		if(world!=null) {
 			String s = BottomPane.problematicCitiesWarning();
-			if(s!=null) {
+			if(settings.warnNextTurn && s!=null) {
 				new ConfirmationDialog(0, "UNSOLVED PROBLEMS", s+".\nDo you want to end turn as is?", "NEXT TURN", "CANCEL") {
 					@Override
 					public void onEnter() {
@@ -130,17 +147,27 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public void nextTurn() {
 		world.nextTurn();
 		System.out.printf("Turn %d\n", world.turn);
-		// saveGame();
 		if(view.view.selectedCity.population==0) {
 			if(world.cities.isEmpty()) {
-				// TODO show game over message
 				setWorld(null);
+				new InformationDialog(0, "GAME OVER", "You have lost all cities.", "OK") {
+					@Override
+					public void dismiss() {
+						super.dismiss();
+						new GameMenu();
+						repaint();
+					}
+				};
+				return;
 			}
 			else {
 				view.view.selectCity(world.cities.get(0));
 			}
 		}
-		showMessageLog();
+		if(settings.autosave)
+			autosave();
+		if(settings.openMessageLog)
+			showMessageLog();
 		repaint();
 	}
 	
@@ -191,30 +218,6 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				if(world!=null)
 					browseCity(1);
 				return true;
-			case KeyEvent.VK_F1: {
-				float scale = getBase().getBaseScale();
-				if(scale>1f) {
-					getBase().setBaseScale(scale-0.25f);
-					repaint();
-				}
-				return true;
-			}
-			case KeyEvent.VK_F2: {
-				float scale = getBase().getBaseScale();
-				if(scale<2f) {
-					getBase().setBaseScale(scale+0.25f);
-					repaint();
-				}
-				return true;
-			}
-			/*case KeyEvent.VK_F4: // TODO parse cheats 
-				if(mods==UIElement.modCtrlMask) {
-					world.debugDiscover(5);
-					repaint();
-					return true;
-				}
-				else
-					return true;*/
 			default:
 				if(MapMode.checkHotkey(code)) {
 					repaint();
@@ -235,8 +238,6 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	
 	@Override
 	public void paint(GraphAssist g) {
-		g.graph.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.graph.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		try {
 			super.paint(g);
 		}
@@ -246,25 +247,51 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		}
 	}
 
-	public static void main(String[] args) {
-		Res.restyleStdControls();
-		SwingFrame frame = new SwingFrame(SwingWindowFactory.use(), "Hexpansio", 800, 600, false, true) {
+	private static void parseArgs(String[] args) {
+		for(int i=0; i<args.length; i++) {
+			if(args[i].equalsIgnoreCase("--cheats"))
+				cheatsEnabled = true;
+		}
+	}
+	
+	public static void createWindow() {
+		if(frame!=null)
+			frame.frame.dispose();
+		
+		frame = new SwingFrame(SwingWindowFactory.use(), "Hexpansio", 1600, 900, settings.windowed, !settings.windowed) {
 			@Override
 			public boolean onClosing() {
 				new QuickExitDialog().repaint();
 				return false;
 			}
 		};
-		frame.maximize();
+		frame.frame.setMinimumSize(new Dimension(1600, 900));
+		if(!settings.windowed)
+			frame.maximize();
 		new UIElement(frame.getContainer()) {
 			@Override
 			public void paint(GraphAssist g) {
+				g.graph.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+				g.graph.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 				g.fill(this, Color.BLACK);
+				
+				g.setColor(Color.GRAY);
+				g.setFont(Res.font);
+				float x = getWidth()/2f;
+				float y = getHeight() - 20;
+				g.drawString("version: "+version, x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 			}
 		};
 		new Hexpansio(frame.getContainer());
 		new GameMenu();
 		frame.show();
+	}
+	
+	public static void main(String[] args) {
+		parseArgs(args);
+		Res.restyleStdControls();
+		settings = GlobalSettings.load();
+		settings.apply(null);
 	}
 
 }

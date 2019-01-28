@@ -1,14 +1,14 @@
 package com.xrbpowered.hexpansio.ui.modes;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.dlg.BuildDialog;
-import com.xrbpowered.hexpansio.ui.dlg.ConfirmationDialog;
-import com.xrbpowered.hexpansio.ui.dlg.HurryDialog;
-import com.xrbpowered.hexpansio.ui.dlg.ProductionLossDialog;
+import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
+import com.xrbpowered.hexpansio.ui.dlg.popup.HurryDialog;
+import com.xrbpowered.hexpansio.ui.dlg.popup.ProductionLossDialog;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
@@ -60,6 +60,11 @@ public class TileMode extends MapMode {
 	}
 	
 	@Override
+	public String getDescription() {
+		return "Change selected city or tile. Toggle workers in the selected tile.";
+	}
+	
+	/*@Override
 	public int paintHoverTileHint(GraphAssist g, int x, int y) {
 		String s;
 		Color c = Color.GRAY;
@@ -90,7 +95,7 @@ public class TileMode extends MapMode {
 			 c = Color.WHITE;
 		}
 		return paintHoverTileHint(g, s, c, x, y);
-	}
+	}*/
 
 	public void selectTile(Tile tile, boolean pan) {
 		if(tile!=null && tile.discovered) {
@@ -167,21 +172,30 @@ public class TileMode extends MapMode {
 		else
 			return false;
 	}
+	
+	private void hurry(int cost) {
+		view.world.goods -= cost;
+		view.selectedCity.buildingProgress.progress(cost);
+		view.selectedCity.updateStats();
+		view.world.updateWorldTotals();
+	}
 
 	public boolean hurryBuilding() {
 		if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.canHurry()) {
 			final int cost = view.selectedCity.buildingProgress.getCost() - view.selectedCity.buildingProgress.progress;
 			if(cost >0 && view.world.goods>=cost) {
-				new HurryDialog(cost) {
-					@Override
-					public void onEnter() {
-						view.world.goods -= cost;
-						view.selectedCity.buildingProgress.progress(cost);
-						view.selectedCity.updateStats();
-						view.world.updateWorldTotals();
-						dismiss();
-					}
-				};
+				if(Hexpansio.settings.confirmHurry) {
+					new HurryDialog(cost) {
+						@Override
+						public void onEnter() {
+							hurry(cost);
+							dismiss();
+						}
+					};
+				}
+				else {
+					hurry(cost);
+				}
 				return true;
 			}
 		}

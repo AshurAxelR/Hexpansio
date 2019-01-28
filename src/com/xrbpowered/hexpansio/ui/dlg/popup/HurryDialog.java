@@ -1,4 +1,4 @@
-package com.xrbpowered.hexpansio.ui.dlg;
+package com.xrbpowered.hexpansio.ui.dlg.popup;
 
 import java.awt.Color;
 

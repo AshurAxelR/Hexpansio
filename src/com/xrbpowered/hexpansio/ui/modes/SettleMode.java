@@ -57,6 +57,11 @@ public class SettleMode extends MapMode {
 	}
 	
 	@Override
+	public String getDescription() {
+		return "Build new settlements or migrate population between cities.";
+	}
+	
+	/*@Override
 	public int paintHoverTileHint(GraphAssist g, int x, int y) {
 		String s;
 		Color c = Color.GRAY;
@@ -91,7 +96,7 @@ public class SettleMode extends MapMode {
 
 		}
 		return paintHoverTileHint(g, s, c, x, y);
-	}
+	}*/
 	
 	@Override
 	public boolean showCityRange() {

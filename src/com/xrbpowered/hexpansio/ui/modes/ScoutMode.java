@@ -59,6 +59,11 @@ public class ScoutMode extends MapMode {
 	}
 	
 	@Override
+	public String getDescription() {
+		return "Spend gold to discover new lands.";
+	}
+	
+	/*@Override
 	public int paintHoverTileHint(GraphAssist g, int x, int y) {
 		String s;
 		Color c = Color.GRAY;
@@ -88,7 +93,7 @@ public class ScoutMode extends MapMode {
 			}
 		}
 		return paintHoverTileHint(g, s, c, x, y);
-	}
+	}*/
 	
 	@Override
 	public boolean showCityRange() {

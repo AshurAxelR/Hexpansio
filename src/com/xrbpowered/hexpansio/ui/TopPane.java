@@ -7,7 +7,7 @@ import java.awt.GradientPaint;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.dlg.CityRenameDialog;
-import com.xrbpowered.hexpansio.ui.dlg.GameMenu;
+import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -101,22 +101,15 @@ public class TopPane extends UIContainer {
 		if(world==null)
 			return;
 
-		int x = (int)(menuButton.getX()-20);
+		int x = (int)(menuButton.getX()-10);
 		int y = (int)getHeight()/2;
-
-		int r = 15;
-		g.setColor(Color.DARK_GRAY);
-		g.resetStroke();
-		Res.imgHappiness.draw(g, x-r, y-r, r*2, world.minHappiness.ordinal());
-		g.graph.drawOval(x-r, y-r, r*2, r*2); // TODO clickable minHappiness
-
-		x -= 30;
 
 		g.setColor(Color.WHITE);
 		g.setFont(Res.font);
-		g.drawString(String.format("Population: %d    Cities: %d    Turn: %d", world.totalPopulation, world.cities.size(), world.turn),
+		g.drawString(String.format("%s    Population: %d    Cities: %d    Turn: %d", world.cheater ? "CHEATER!" : "", world.totalPopulation, world.cities.size(), world.turn),
 				x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
 		// TODO statistics/history
+		// TODO list cities
 		
 		x = 10;
 

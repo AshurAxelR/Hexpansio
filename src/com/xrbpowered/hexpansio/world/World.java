@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
@@ -21,6 +22,7 @@ public class World {
 	
 	public final WorldSettings settings;
 	public final long seed;
+	public boolean cheater = false;
 	public int cityNameBaseLength = 1;
 
 	public int lastCityId = -1;
@@ -59,9 +61,13 @@ public class World {
 		this.settings = settings;
 		this.seed = settings.getSeed();
 		this.terrainGenerator = terrain;
+		
+		if(Hexpansio.cheatsEnabled)
+			cheater = true;
 	}
 	
 	public World create() {
+		gold = settings.initialGold;
 		origin = discoverTile(originwx, originwy);
 		discoverArea(origin.wx, origin.wy, 5);
 		
@@ -341,7 +347,7 @@ public class World {
 				r -= 2;
 			else {
 				startVoidAt(wx, wy);
-				events.add(new TurnEventMessage(null, "discover the source of Void", getTile(wx, wy)).setColor(TerrainType.Feature.thevoid.color));
+				events.add(new TurnEventMessage(null, "have discovered the source of Void", getTile(wx, wy)).setColor(TerrainType.Feature.thevoid.color));
 				dfix = d.ccw();
 				r += 2;
 				toAdd--;

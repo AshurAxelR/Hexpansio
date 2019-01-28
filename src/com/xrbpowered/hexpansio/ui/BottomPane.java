@@ -120,6 +120,10 @@ public class BottomPane extends UIContainer {
 		
 		eventsButton = new ClickButton(this, "MESSAGES", 160, (int)this.getHeight(), Res.fontLarge) {
 			@Override
+			public boolean isModeActive() {
+				return MessageLogDialog.active;
+			}
+			@Override
 			public boolean isEnabled() {
 				return MessageLogDialog.isEnabled();
 			}
@@ -160,35 +164,27 @@ public class BottomPane extends UIContainer {
 		g.resetStroke();
 		g.hborder(this, GraphAssist.TOP, Color.WHITE);
 		
+		World world = Hexpansio.getWorld();
+		if(world==null)
+			return;
+		
+		int r = 15;
+		int x = (int)eventsButton.getX() - 35;
+		int y = (int)getHeight()/2;
+		g.setColor(Color.DARK_GRAY);
+		g.resetStroke();
+		Res.imgHappiness.draw(g, x-r, y-r, r*2, world.minHappiness.ordinal());
+		g.graph.drawOval(x-r, y-r, r*2, r*2);
+
 		MapMode mode = MapMode.active;
 		
-		int y = 30;
+		y = 30;
 		g.setColor(Color.WHITE);
 		g.setFont(Res.fontLarge);
 		g.drawString(mode.label.toUpperCase()+" MODE", getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-		
-		// FIXME change bottom pane hints, create hover tile tooltip
-		// TODO message log 
-		
-		/*y += 25;
+		y += 20;
 		g.setFont(Res.font);
-		Tile tile = view.hoverTile; 
-		if(tile!=null && tile.discovered) {
-			String s;
-			if(tile.isCityCenter())
-				s = tile.city.name.toUpperCase();
-			else {
-				s = tile.terrain.name;
-				if(tile.improvement!=null)
-					s += ", "+tile.improvement.base.name;
-				if(tile.city!=null)
-					s += " worked by "+tile.city.name;
-			}
-			g.drawString(s, getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-		}
-		
-		y += 17;
-		y = mode.paintHoverTileHint(g, (int)getWidth()/2, y);*/
+		g.drawString(mode.getDescription(), getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 	}
 	
 }

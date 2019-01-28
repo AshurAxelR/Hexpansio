@@ -19,6 +19,8 @@ import com.xrbpowered.zoomui.std.UIListItem;
 
 public class MessageLogDialog extends OverlayDialog {
 
+	public static boolean active = false;
+	
 	private static final Shape marker = new Polygon(new int[] {0, 10, 10, 0}, new int[] {0, 0, 35, 45}, 4);
 	
 	private class MessageListItem extends UIListItem {
@@ -110,6 +112,8 @@ public class MessageLogDialog extends OverlayDialog {
 			}
 		};
 		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
+		
+		active = true;
 	}
 
 	@Override
@@ -123,6 +127,12 @@ public class MessageLogDialog extends OverlayDialog {
 	public static boolean isEnabled() {
 		World world = Hexpansio.getWorld();
 		return (world!=null && (!world.events.isEmpty() || world.problematicCities>0));
+	}
+	
+	@Override
+	public void dismiss() {
+		active = false;
+		super.dismiss();
 	}
 	
 }

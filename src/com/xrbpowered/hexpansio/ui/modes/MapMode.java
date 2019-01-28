@@ -26,6 +26,8 @@ public abstract class MapMode {
 			activate();
 	}
 	
+	public abstract String getDescription();
+	
 	public String keyName() {
 		return KeyEvent.getKeyText(key);
 	}
@@ -67,10 +69,6 @@ public abstract class MapMode {
 		return y+15;
 	}
 
-	public int paintHoverTileHint(GraphAssist g, int x, int y) {
-		return y;
-	}
-	
 	public boolean showCityRange() {
 		return false;
 	}

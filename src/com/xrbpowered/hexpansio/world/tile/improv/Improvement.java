@@ -252,7 +252,7 @@ public class Improvement implements Comparable<Improvement> {
 			.yield(2, 0, 0, 0).reject(Feature.values());
 	public static final Improvement mine = new Improvement("mine", "Mine", 40).hotkey(KeyEvent.VK_M).setGlyph("M")
 			.maintenance(1).yield(0, 3, 0, 0).requireResource();
-	public static final Improvement lumberMill = new Improvement("lumbermill", "Lumber Mill", 60).hotkey(KeyEvent.VK_L).setGlyph("L")
+	public static final Improvement lumberMill = new Improvement("lumbermill", "Lumber Mill", 30).hotkey(KeyEvent.VK_L).setGlyph("L")
 			.yield(0, 2, 0, 0).require(Feature.forest);
 	public static final Improvement gatherer = new Improvement("gatherer", "Gatherer", 20).hotkey(KeyEvent.VK_G).setGlyph("G")
 			.yield(1, 1, 0, 0).require(Feature.forest, Feature.swamp);
