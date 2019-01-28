@@ -194,5 +194,17 @@ public class Res {
 		}
 		g.popPureStroke();
 	}
+	
+	public static void paintTooltip(GraphAssist g, float x, float y, String s, int valign) {
+		g.setFont(Res.font);
+		FontMetrics fm = g.graph.getFontMetrics();
+		float w = fm.stringWidth(s)+20;
+		float ty = valign==GraphAssist.BOTTOM ? y : y - 25;
+		g.fillRect(x-w/2, ty, w, 25, Color.BLACK);
+		g.resetStroke();
+		g.drawRect(x-w/2, ty, w, 25, Color.LIGHT_GRAY);
+		g.setColor(Color.WHITE);
+		g.drawString(s, x, ty+12.5f, GraphAssist.CENTER, GraphAssist.CENTER);
+	}
 
 }

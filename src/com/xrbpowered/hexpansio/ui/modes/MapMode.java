@@ -81,10 +81,6 @@ public abstract class MapMode {
 		return false;
 	}
 
-	public boolean hotkeyAction(int code) {
-		return false;
-	}
-
 	public static MapMode active = null;
 	
 	public static final MapMode[] modes = {TileMode.instance, ExpandMode.instance, TradeMode.instance, SettleMode.instance, ScoutMode.instance};
@@ -96,7 +92,7 @@ public abstract class MapMode {
 				return true;
 			}
 		}
-		return active.isTileEnabled(active.view.selectedTile) && active.hotkeyAction(code);
+		return TileMode.instance.hotkeyAction(code);
 	}
 	
 	

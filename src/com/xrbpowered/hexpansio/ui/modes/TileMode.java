@@ -204,8 +204,15 @@ public class TileMode extends MapMode {
 
 	public boolean removeBuilding() {
 		if(view.selectedTile.improvement!=null && !view.selectedTile.improvement.isPermanent()) {
-			String warnRes = view.selectedTile.hasResourceImprovement() ? String.format("\nProduction of %s from this tile will stop.", view.selectedTile.resource.name) : "";
-			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?\nBuilding costs will not be refunded."+warnRes, "REMOVE", "CANCEL") {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Remove ");
+			sb.append(view.selectedTile.improvement.base.name);
+			if(!view.selectedTile.improvement.upgrades.isEmpty())
+				sb.append(" and all upgrades");
+			sb.append("?\nBuilding costs will not be refunded.");
+			if(view.selectedTile.hasResourceImprovement())
+				sb.append(String.format("\nProduction of %s from this tile will stop.", view.selectedTile.resource.name));
+			new ConfirmationDialog(0, "REMOVE", sb.toString(), "REMOVE", "CANCEL") {
 				@Override
 				public void onEnter() {
 					dismiss();
@@ -219,14 +226,13 @@ public class TileMode extends MapMode {
 			return false;
 	}
 
-	@Override
 	public boolean hotkeyAction(int code) {
 		Tile tile = view.selectedTile;
-		if(tile.city==null)
+		if(tile==null || !tile.discovered || tile.city==null)
 			return false;
 		
 		if(code==KeyEvent.VK_DELETE) {
-			if(view.selectedCity.buildingProgress!=null && view.selectedCity.buildingProgress.tile==tile) {
+			if(view.selectedCity.buildingProgress!=null) {
 				cancelBuilding();
 				return true;
 			}

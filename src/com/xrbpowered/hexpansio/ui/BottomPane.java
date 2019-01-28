@@ -28,6 +28,13 @@ public class BottomPane extends UIContainer {
 		}
 		
 		@Override
+		public void paint(GraphAssist g) {
+			super.paint(g);
+			if(hover && Hexpansio.settings.hotkeyTooltips)
+				Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: "+mode.keyName(), GraphAssist.TOP);
+		}
+		
+		@Override
 		public boolean isModeActive() {
 			return mode.isActive();
 		}
@@ -68,6 +75,13 @@ public class BottomPane extends UIContainer {
 			setFrameSize(frameWidth-40, buttonFrameSize);
 		}
 		
+		@Override
+		public void paint(GraphAssist g) {
+			super.paint(g);
+			if(hover && Hexpansio.settings.hotkeyTooltips)
+				Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Enter", GraphAssist.TOP);
+		}
+
 		@Override
 		public boolean isHot() {
 			return Hexpansio.getWorld()!=null && Hexpansio.getWorld().problematicCities==0;
@@ -115,10 +129,16 @@ public class BottomPane extends UIContainer {
 			b.setLocation(i*buttonWidth+10, 0);
 			modeButtons[i] = b;
 		}
-		
+
 		nextTurnButton = new NextTurnButton();
 		
 		eventsButton = new ClickButton(this, "MESSAGES", 160, (int)this.getHeight(), Res.fontLarge) {
+			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Tab", GraphAssist.TOP);
+			}
 			@Override
 			public boolean isModeActive() {
 				return MessageLogDialog.active;

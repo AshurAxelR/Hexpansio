@@ -132,19 +132,19 @@ public class CityRenameDialog extends OverlayDialog {
 			}
 			else if(args[1].equalsIgnoreCase("gold")) {
 				int n = args.length==2 ? 1000 : Integer.parseInt(args[2]);
-				if(n>0)
+				if(n!=0)
 					world.gold += n;
 				return true;
 			}
 			else if(args[1].equalsIgnoreCase("goods")) {
 				int n = args.length==2 ? 1000 : Integer.parseInt(args[2]);
-				if(n>0)
+				if(n!=0)
 					world.goods += n;
 				return true;
 			}
 			else if(args[1].equalsIgnoreCase("happy")) {
 				int n = args.length==2 ? 10 : Integer.parseInt(args[2]);
-				if(n>0) {
+				if(n!=0) {
 					world.settings.initialBaseHappiness += n;
 					world.updateCities();
 					world.updateWorldTotals();

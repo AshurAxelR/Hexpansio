@@ -30,6 +30,12 @@ public class TileInfoPane extends UIContainer {
 		
 		buildButton = new ClickButton(this, "Build", (int)(getWidth()-margin*2)) {
 			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Space", GraphAssist.TOP);
+			}
+			@Override
 			public void onClick() {
 				new BuildDialog(getMapView().selectedTile).repaint();
 			}
@@ -39,6 +45,12 @@ public class TileInfoPane extends UIContainer {
 		
 		upgButton = new ClickButton(this, "Upgrade", 140) {
 			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Space", GraphAssist.TOP);
+			}
+			@Override
 			public void onClick() {
 				new BuildDialog(getMapView().selectedTile).repaint();
 			}
@@ -47,6 +59,12 @@ public class TileInfoPane extends UIContainer {
 		upgButton.setVisible(false);
 		
 		removeButton = new ClickButton(this, "Remove", (int)(getWidth()-upgButton.getWidth()-margin*2-5)) {
+			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Bksp", GraphAssist.TOP);
+			}
 			@Override
 			public boolean isEnabled() {
 				Tile tile= getMapView().selectedTile;

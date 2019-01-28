@@ -14,6 +14,7 @@ public class GlobalSettings {
 	
 	public int uiScaling = 0;
 	public boolean windowed = false;
+	public boolean hotkeyTooltips = true;
 	
 	public boolean autosave = false;
 	public boolean saveOnExit = false;
@@ -28,6 +29,7 @@ public class GlobalSettings {
 		GlobalSettings s = new GlobalSettings();
 		s.uiScaling = uiScaling;
 		s.windowed = windowed;
+		s.hotkeyTooltips = hotkeyTooltips;
 		s.autosave = autosave;
 		s.saveOnExit = saveOnExit;
 		s.confirmHurry = confirmHurry;
@@ -86,6 +88,7 @@ public class GlobalSettings {
 		HashMap<String, String> values = new HashMap<>();
 		values.put("uiScaling", Integer.toString(s.uiScaling));
 		values.put("windowed", Boolean.toString(s.windowed));
+		values.put("hotkeyTooltips", Boolean.toString(s.hotkeyTooltips));
 		values.put("autosave", Boolean.toString(s.autosave));
 		values.put("saveOnExit", Boolean.toString(s.saveOnExit));
 		values.put("confirmHurry", Boolean.toString(s.confirmHurry));
@@ -127,6 +130,7 @@ public class GlobalSettings {
 		GlobalSettings s = new GlobalSettings();
 		s.uiScaling = getInt(values.get("uiScaling"), 0, 200, s.uiScaling);
 		s.windowed = getBoolean(values.get("windowed"), s.windowed);
+		s.hotkeyTooltips = getBoolean(values.get("hotkeyTooltips"), s.hotkeyTooltips);
 		s.autosave = getBoolean(values.get("autosave"), s.autosave);
 		s.saveOnExit = getBoolean(values.get("saveOnExit"), s.saveOnExit);
 		s.confirmHurry = getBoolean(values.get("confirmHurry"), s.confirmHurry);

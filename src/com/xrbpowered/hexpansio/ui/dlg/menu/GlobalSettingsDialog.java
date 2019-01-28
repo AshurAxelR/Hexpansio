@@ -18,6 +18,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 	private final ClickButton cancelButton;
 
 	private final CheckBox windowedCheckBox;
+	private final CheckBox hotkeyTooltipsCheckBox;
 	private final OptionBox uiScaleOption;
 
 	private final CheckBox autosaveCheckBox;
@@ -30,7 +31,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 	private final CheckBox warnNoBuildingCheckBox;
 	
 	public GlobalSettingsDialog() {
-		super(Hexpansio.instance.getBase(), 460, 420, "SETTINGS");
+		super(Hexpansio.instance.getBase(), 460, 440, "SETTINGS");
 		
 		float y = 60f;
 		float cx = box.getWidth() - OptionBox.defaultWidth - 30;
@@ -60,7 +61,21 @@ public class GlobalSettingsDialog extends OverlayDialog {
 			}
 		};
 		windowedCheckBox.setLocation(10, y);
-		y += windowedCheckBox.getHeight()+30;
+		y += windowedCheckBox.getHeight()+5;
+
+		hotkeyTooltipsCheckBox = new CheckBox(box, "Show hotkeys in tooltips") {
+			@Override
+			public boolean isSelected() {
+				return settings.hotkeyTooltips;
+			}
+			@Override
+			public void onClick() {
+				settings.hotkeyTooltips = !settings.hotkeyTooltips;
+				repaint();
+			}
+		};
+		hotkeyTooltipsCheckBox.setLocation(10, y);
+		y += hotkeyTooltipsCheckBox.getHeight()+30;
 
 		autosaveCheckBox = new CheckBox(box, "Autosave every turn") {
 			@Override

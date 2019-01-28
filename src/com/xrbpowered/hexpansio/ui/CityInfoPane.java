@@ -30,6 +30,12 @@ public class CityInfoPane extends UIContainer {
 		
 		hurryButton = new ClickButton(this, "Hurry", 140) {
 			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Ins", GraphAssist.TOP);
+			}
+			@Override
 			public boolean isEnabled() {
 				City city = getMapView().selectedCity;
 				if(city.buildingProgress!=null && city.buildingProgress.canHurry()) {
@@ -50,6 +56,12 @@ public class CityInfoPane extends UIContainer {
 		hurryButton.setVisible(false);
 		
 		cancelButton = new ClickButton(this, "Cancel", (int)(getWidth()-hurryButton.getWidth()-margin*2-5)) {
+			@Override
+			public void paint(GraphAssist g) {
+				super.paint(g);
+				if(hover && Hexpansio.settings.hotkeyTooltips)
+					Res.paintTooltip(g, getWidth()/2, -5, "Hotkey: Del", GraphAssist.TOP);
+			}
 			@Override
 			public void onClick() {
 				TileMode.instance.cancelBuilding();
