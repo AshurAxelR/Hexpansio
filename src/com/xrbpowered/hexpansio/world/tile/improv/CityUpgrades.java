@@ -21,6 +21,9 @@ public abstract class CityUpgrades {
 					CityEffect.dummy(String.format("Unhappiness from void -%d%%", (int)(beaconOfHopeEffect*100f))),
 					CityEffect.dummy("Allows building Voidworks")
 				);
+
+	public static final Improvement migrationCentre = new Improvement("city.migration", cityCenter, "Migration Centre", 50, 0).maintenance(3).yield(0, 0, 0, -1)
+			.effects(CityEffect.dummy("Allows migration to and from this city"));
 	
 	public static Improvement highrise = null;
 	public static Improvement resort = null;

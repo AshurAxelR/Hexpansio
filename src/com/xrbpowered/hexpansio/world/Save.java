@@ -14,8 +14,9 @@ import java.util.zip.ZipOutputStream;
 
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
+import com.xrbpowered.hexpansio.world.city.build.BuildMigration;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
-import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.BuildSettlement;
 import com.xrbpowered.hexpansio.world.city.build.FinishedBuilding;
 import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
@@ -85,7 +86,7 @@ public class Save {
 		int cityId = in.readInt();
 		tile.city = tile.region.world.cityById(cityId);
 		cityId = in.readInt();
-		tile.settlement = cityId<0 ? null : (BuiltSettlement)tile.region.world.cityById(cityId).buildingProgress;
+		tile.settlement = cityId<0 ? null : (BuildSettlement)tile.region.world.cityById(cityId).buildingProgress;
 		
 		ImprovementStack.read(tile, convImprovement, in);
 		if(tile.isCityCenter())
@@ -120,14 +121,17 @@ public class Save {
 	private static final int noBuildingProgress = -1;
 	private static final int buildSettlement = -2;
 	private static final int removeImprovement = -3;
+	private static final int buildMigration = -4;
 	
 	protected void writeBuildingProgress(DataOutputStream out, BuildingProgress bp) throws IOException {
 		if(bp==null)
 			out.writeShort(noBuildingProgress);
 		else {
 			int x;
-			if(bp instanceof BuiltSettlement)
+			if(bp instanceof BuildSettlement)
 				x = buildSettlement;
+			else if(bp instanceof BuildMigration)
+				x = buildMigration;
 			else if(bp instanceof RemoveImprovement)
 				x = removeImprovement;
 			else {
@@ -149,7 +153,9 @@ public class Save {
 		if(x==noBuildingProgress)
 			return null;
 		else if(x==buildSettlement)
-			bp = new BuiltSettlement(city, null);
+			bp = new BuildSettlement(city, null);
+		else if(x==buildMigration)
+			bp = new BuildMigration(city, null);
 		else if(x==removeImprovement)
 			bp = new RemoveImprovement(null);
 		else {

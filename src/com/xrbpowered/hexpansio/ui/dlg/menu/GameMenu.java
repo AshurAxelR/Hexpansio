@@ -140,6 +140,8 @@ public class GameMenu extends OverlayDialog {
 			return true;
 	}
 	
+	// FIXME dismissed on esc
+	
 	private static Paint titleBg = null;
 	private static Shape titleText = null;
 	

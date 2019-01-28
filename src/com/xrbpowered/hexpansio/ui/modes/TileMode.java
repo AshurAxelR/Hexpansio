@@ -204,7 +204,8 @@ public class TileMode extends MapMode {
 
 	public boolean removeBuilding() {
 		if(view.selectedTile.improvement!=null && !view.selectedTile.improvement.isPermanent()) {
-			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?", "REMOVE", "CANCEL") { // TODO show price, warn if trade is affected
+			String warnRes = view.selectedTile.hasResourceImprovement() ? String.format("\nProduction of %s from this tile will stop.", view.selectedTile.resource.name) : "";
+			new ConfirmationDialog(0, "REMOVE", "Remove tile improvement and all upgrades?\nBuilding costs will not be refunded."+warnRes, "REMOVE", "CANCEL") {
 				@Override
 				public void onEnter() {
 					dismiss();

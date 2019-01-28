@@ -10,7 +10,8 @@ import com.xrbpowered.hexpansio.world.NameGen;
 import com.xrbpowered.hexpansio.world.TurnEventMessage;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
-import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.BuildMigration;
+import com.xrbpowered.hexpansio.world.city.build.BuildSettlement;
 import com.xrbpowered.hexpansio.world.city.build.FinishedBuilding;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
@@ -47,6 +48,8 @@ public class City {
 	public Tile tile = null;
 	public boolean coastalCity = false;
 
+	public int immigration = 0;
+	
 	public int numTiles = 0;
 	public final Yield.Cache incomeTiles = new Yield.Cache();
 	public final Yield.Cache incomeResources = new Yield.Cache();
@@ -149,6 +152,10 @@ public class City {
 		world.addToCity(wx, wy, this);
 	}
 	
+	public boolean hasMigrationCentre() {
+		return ImprovementStack.tileContains(tile, CityUpgrades.migrationCentre);
+	}
+	
 	public int getTargetGrowth() {
 		return population*growthCostFactor;
 	}
@@ -160,9 +167,13 @@ public class City {
 	}
 	
 	public boolean isBuildingSettlement() {
-		return buildingProgress!=null && (buildingProgress instanceof BuiltSettlement);
+		return buildingProgress!=null && (buildingProgress instanceof BuildSettlement);
 	}
-	
+
+	public boolean isBuildingMigration() {
+		return buildingProgress!=null && (buildingProgress instanceof BuildMigration);
+	}
+
 	public Tile getSettlement() {
 		return isBuildingSettlement() ? buildingProgress.tile : null; 
 	}
@@ -218,7 +229,7 @@ public class City {
 	}
 	
 	private void reducePopulation() {
-		if(isBuildingSettlement())
+		if(isBuildingSettlement() || isBuildingMigration())
 			buildingProgress.cancel();
 		population--;
 		if(unemployed>0)
@@ -234,6 +245,8 @@ public class City {
 	public void nextTurn() {
 		updateStats();
 		finishedBuilding = null;
+		
+		if(immigration>0) immigration--;
 		
 		growth +=getFoodGrowth();
 		
@@ -313,7 +326,7 @@ public class City {
 					}
 				}
 			}
-		if(isBuildingSettlement())
+		if(isBuildingSettlement() || isBuildingMigration())
 			workers++;
 		unemployed = population - workers;
 		
@@ -337,6 +350,10 @@ public class City {
 		return u;
 	}
 	
+	public int getImmigrationUnhapiness() {
+		return (immigration + BuildMigration.unhappinessPerImmigration-1)/BuildMigration.unhappinessPerImmigration;
+	}
+	
 	public int getVoidUnhappiness() {
 		int u = adjVoid;
 		if(ImprovementStack.cityContains(this, CityUpgrades.beaconOfHope))
@@ -346,7 +363,7 @@ public class City {
 	
 	protected void updateBalance() {
 		expences.add(YieldResource.happiness,
-				getPopulationUnhappiness() + unemployed*unemployed + (world.cities.size()-1) + world.poverty + getVoidUnhappiness());
+				getPopulationUnhappiness() + unemployed*unemployed + (world.cities.size()-1) + world.poverty + getVoidUnhappiness() + getImmigrationUnhapiness());
 		
 		balance.clear();
 		balance.add(YieldResource.happiness, world.baseHappiness);

@@ -3,11 +3,10 @@ package com.xrbpowered.hexpansio.world.city.build;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
-public class BuiltSettlement extends BuildingProgress {
+public class BuildSettlement extends BuildingProgress {
 	
-	public BuiltSettlement(City city, Tile tile) {
+	public BuildSettlement(City city, Tile tile) {
 		super(city, tile);
-		city.unemployed--;
 	}
 	
 	@Override

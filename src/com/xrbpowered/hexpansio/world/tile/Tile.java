@@ -8,7 +8,7 @@ import com.xrbpowered.hexpansio.world.Region;
 import com.xrbpowered.hexpansio.world.TurnEventMessage;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
-import com.xrbpowered.hexpansio.world.city.build.BuiltSettlement;
+import com.xrbpowered.hexpansio.world.city.build.BuildSettlement;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
@@ -25,7 +25,7 @@ public class Tile {
 	public boolean discovered = false;
 
 	public City city = null;
-	public BuiltSettlement settlement = null;
+	public BuildSettlement settlement = null;
 	public ImprovementStack improvement = null;
 	public int workers = 0;
 

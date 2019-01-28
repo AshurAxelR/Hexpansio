@@ -152,6 +152,10 @@ public class CityInfoPane extends UIContainer {
 		if(city.balance.get(YieldResource.food)<0) {
 			y += 15; g.drawString(String.format("%d from starvation", -city.population), x, y);
 		}
+		u = city.getImmigrationUnhapiness();
+		if(u>0) {
+			y += 15; g.drawString(String.format("%d from immigration (%d %s)", -u, city.immigration, city.immigration==1 ? "turn" : "turns"), x, y);
+		}
 		u = city.getVoidUnhappiness();
 		if(u>0) {
 			y += 15; g.drawString(String.format("%d from void", -u), x, y);
