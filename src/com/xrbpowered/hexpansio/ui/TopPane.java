@@ -5,6 +5,7 @@ import java.awt.GradientPaint;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.dlg.CityListDialog;
 import com.xrbpowered.hexpansio.ui.dlg.CityRenameDialog;
 import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
 import com.xrbpowered.hexpansio.world.World;
@@ -43,7 +44,8 @@ public class TopPane extends UIContainer {
 		cityListButton = new ClickButton(this, "Cities", 80, (int)getHeight(), Res.font) {
 			@Override
 			public void onClick() {
-				// TODO city list dialog
+				if(Hexpansio.getWorld()!=null)
+					new CityListDialog().repaint();
 			}
 			@Override
 			public void paint(GraphAssist g) {

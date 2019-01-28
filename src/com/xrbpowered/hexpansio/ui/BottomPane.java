@@ -188,17 +188,11 @@ public class BottomPane extends UIContainer {
 		if(world==null)
 			return;
 		
-		int r = 15;
-		int x = (int)eventsButton.getX() - 35;
-		int y = (int)getHeight()/2;
-		g.setColor(Color.DARK_GRAY);
-		g.resetStroke();
-		Res.imgHappiness.draw(g, x-r, y-r, r*2, world.minHappiness.ordinal());
-		g.graph.drawOval(x-r, y-r, r*2, r*2);
+		Res.paintHappiness(g, (int)eventsButton.getX() - 35, (int)getHeight()/2, world.minHappiness);
 
 		MapMode mode = MapMode.active;
 		
-		y = 30;
+		int y = 30;
 		g.setColor(Color.WHITE);
 		g.setFont(Res.fontLarge);
 		g.drawString(mode.label.toUpperCase()+" MODE", getWidth()/2f, y, GraphAssist.CENTER, GraphAssist.BOTTOM);

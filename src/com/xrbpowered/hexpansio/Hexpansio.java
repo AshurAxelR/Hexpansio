@@ -11,6 +11,7 @@ import com.xrbpowered.hexpansio.ui.CityInfoPane;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.ui.TileInfoPane;
 import com.xrbpowered.hexpansio.ui.TopPane;
+import com.xrbpowered.hexpansio.ui.dlg.CityListDialog;
 import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
@@ -199,6 +200,10 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			case KeyEvent.VK_TAB:
 				showMessageLog();
 				repaint();
+				return true;
+			case KeyEvent.VK_F2:
+				if(world!=null)
+					new CityListDialog().repaint();
 				return true;
 			case KeyEvent.VK_UP:
 				if(world!=null)

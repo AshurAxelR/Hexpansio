@@ -11,6 +11,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.MathUtils;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -205,6 +206,14 @@ public class Res {
 		g.drawRect(x-w/2, ty, w, 25, Color.LIGHT_GRAY);
 		g.setColor(Color.WHITE);
 		g.drawString(s, x, ty+12.5f, GraphAssist.CENTER, GraphAssist.CENTER);
+	}
+	
+	public static void paintHappiness(GraphAssist g, int x, int y, Happiness happiness) {
+		int r = 15;
+		g.setColor(Color.DARK_GRAY);
+		g.resetStroke();
+		imgHappiness.draw(g, x-r, y-r, r*2, happiness.ordinal());
+		g.graph.drawOval(x-r, y-r, r*2, r*2);
 	}
 
 }

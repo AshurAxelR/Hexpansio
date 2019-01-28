@@ -52,16 +52,21 @@ public class OptionBox extends UIContainer {
 		this.options = options;
 		this.label = label;
 		this.format = format;
-		setSize(defaultWidth, defaultHeight);
 		
 		left = new FlipButton(this, -1);
-		left.setLocation(3, 0);
 		right = new FlipButton(this, 1);
-		right.setLocation(getWidth()-right.getWidth()-3, 0);
+		setSize(defaultWidth, defaultHeight);
 	}
 
 	public OptionBox(UIContainer parent, String label, int[] options) {
 		this(parent, label, options, "%d");
+	}
+	
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+		left.setLocation(3, 0);
+		right.setLocation(getWidth()-right.getWidth()-3, 0);
 	}
 
 	public int getSelectedValue() {
