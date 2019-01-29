@@ -282,6 +282,7 @@ public class Improvement implements Comparable<Improvement> {
 		MarketUpgrades.init();
 		ParkUpgrades.init();
 		OtherUpgrades.init();
+		VoidUpgrades.init();
 	}
 
 }

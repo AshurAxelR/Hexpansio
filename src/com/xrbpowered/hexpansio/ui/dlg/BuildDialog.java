@@ -202,12 +202,17 @@ public class BuildDialog extends OverlayDialog {
 				g.drawString(imp.name, x, y, GraphAssist.LEFT, GraphAssist.TOP);
 				y += 20;
 				g.setFont(Res.font);
-				if(imp.isRecommendedFor(tile)) {
+				if(!viewOnly && imp.isRecommendedFor(tile)) {
 					g.setColor(Color.YELLOW);
 					y += 15;
 					g.drawString("Recommended:", x, y);
 					y += 15;
 					g.drawString(imp.recommendationExplained(tile), x, y);
+				}
+				if(viewOnly && tile.hasResourceImprovement() && imp.prerequisite==null) {
+					g.setColor(Color.YELLOW);
+					y += 15;
+					g.drawString("Produces "+tile.resource.name, x, y);
 				}
 				g.setColor(Color.WHITE);
 				if(imp.cityUnique) {
