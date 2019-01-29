@@ -97,8 +97,9 @@ public class ResourceInfoDialog extends OverlayDialog {
 	private UIListBox list;
 
 	private final ClickButton closeButton;
+	private final ClickButton tradeButton;
 
-	public ResourceInfoDialog(City city) {
+	public ResourceInfoDialog(final City city) {
 		super(Hexpansio.instance.getBase(), 1020, 660, "CITY RESOURCES");
 		this.city = city;
 		
@@ -152,6 +153,15 @@ public class ResourceInfoDialog extends OverlayDialog {
 			}
 		};
 		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
+		
+		tradeButton = new ClickButton(box, "TRADE", 100) {
+			@Override
+			public void onClick() {
+				dismiss();
+				new CityTradesDialog(city).repaint();
+			}
+		};
+		tradeButton.setLocation(box.getWidth()-tradeButton.getWidth()-10, closeButton.getY());
 	}
 
 	@Override

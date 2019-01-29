@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.ui.dlg.CityTradesDialog;
 import com.xrbpowered.hexpansio.ui.dlg.SetupTradeDialog;
 import com.xrbpowered.hexpansio.world.Dir;
 import com.xrbpowered.hexpansio.world.resources.Trade;
@@ -81,7 +82,7 @@ public class TradeMode extends MapMode {
 	public boolean action() {
 		Tile hoverTile = view.hoverTile;
 		if(hoverTile.city==view.selectedCity) {
-			// TODO show city traders
+			new CityTradesDialog(view.selectedCity);
 			return true;
 		}
 		else if(hoverTile.isCityCenter()) {
