@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.utils.RandomUtils;
 
@@ -21,7 +22,7 @@ public class Region {
 	
 	public final ArrayList<City> cities = new ArrayList<>();
 	
-	public boolean hasVoid = false;
+	public int voidStorms = 0;
 	
 	public Region(World world, int rx, int ry) {
 		this.world = world;
@@ -42,7 +43,7 @@ public class Region {
 	}
 	
 	public void spreadVoid() {
-		if(hasVoid) {
+		if(voidStorms>0) {
 			Random random = new Random(RandomUtils.seedXY(world.seed+world.turn, rx, ry));
 			int d = voidBlockSide;
 			for(int x=0; x<size; x+=d)
@@ -53,5 +54,14 @@ public class Region {
 					}
 				}
 		}
+	}
+	
+	public void updateVoidCount() {
+		voidStorms = 0;
+		for(int x=0; x<size; x++)
+			for(int y=0; y<size; y++) {
+				if(tiles[x][y].terrain==TerrainType.voidStorm)
+					voidStorms++;
+			}
 	}
 }

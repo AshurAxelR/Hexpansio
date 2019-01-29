@@ -143,7 +143,7 @@ public class TerrainType {
 	public static final TerrainType lagoon = new TerrainType("lagoon", "Lagoon", new Color(0x9bc4d5)).yield(1, 0, 2, 1).feature(Feature.water)
 			.resources(0.5f, fish, pearls, corals, kelp);
 
-	public static final TerrainType voidEdge = new TerrainType("void.edge", "Void storm", new Color(0x775566)).workplaces(0).feature(Feature.thevoid);
+	public static final TerrainType voidStorm = new TerrainType("void.edge", "Void storm", new Color(0x775566)).workplaces(0).feature(Feature.thevoid);
 	public static final TerrainType deepVoid = new TerrainType("void.deep", "Deep void", new Color(0x442233)).workplaces(0).feature(Feature.thevoid);
 	public static final TerrainType ruins = new TerrainType("ruins", "City ruins", new Color(0x888888)).yield(0, 2, 3, 0).feature(Feature.ruins);
 	

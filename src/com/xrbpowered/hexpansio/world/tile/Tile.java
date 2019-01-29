@@ -171,7 +171,7 @@ public class Tile {
 	}
 	
 	public void makeVoid() {
-		if(isCityCenter())
+		if(isCityCenter() || isVoid())
 			return;
 		
 		if(settlement!=null)
@@ -182,16 +182,15 @@ public class Tile {
 			region.world.events.add(new TurnEventMessage(city.name, "has lost a tile to the void", this).setColor(TerrainType.Feature.thevoid.color));
 		unassignWorkers();
 		improvement = null;
-		terrain = TerrainType.voidEdge;
+		terrain = TerrainType.voidStorm;
 		resource = null;
 		
 		voidTurn = region.world.turn;
-		region.hasVoid = true;
 		region.world.discoverArea(wx, wy, 1);
 	}
 	
 	public void checkVoidDepth() {
-		if(terrain==TerrainType.voidEdge) {
+		if(terrain==TerrainType.voidStorm) {
 			if(countAdjTerrain(Feature.thevoid)==6)
 				terrain = TerrainType.deepVoid;
 		}
@@ -199,7 +198,7 @@ public class Tile {
 	
 	public void spreadVoid() {
 		int turn = region.world.turn;
-		if(terrain==TerrainType.voidEdge && voidTurn<turn) {
+		if(terrain==TerrainType.voidStorm && voidTurn<turn) {
 			Random random = new Random(this.getSeed(turn + 4983L));
 			int[] dw = new int[6];
 			int countVoid = 0;

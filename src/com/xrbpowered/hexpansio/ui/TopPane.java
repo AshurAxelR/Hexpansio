@@ -1,6 +1,7 @@
 package com.xrbpowered.hexpansio.ui;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 
 import com.xrbpowered.hexpansio.Hexpansio;
@@ -8,8 +9,11 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.dlg.CityListDialog;
 import com.xrbpowered.hexpansio.ui.dlg.CityRenameDialog;
 import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
+import com.xrbpowered.hexpansio.ui.dlg.stats.HistoryDialog;
+import com.xrbpowered.hexpansio.world.TurnStatistics;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
@@ -60,7 +64,7 @@ public class TopPane extends UIContainer {
 		statsButton = new ClickButton(this, "Stats", 60, (int)getHeight(), Res.font) {
 			@Override
 			public void onClick() {
-				// TODO stats dialog
+				new HistoryDialog().repaint();
 			}
 			@Override
 			public void paint(GraphAssist g) {
@@ -143,21 +147,42 @@ public class TopPane extends UIContainer {
 		World world = ((Hexpansio) getParent()).view.view.world;
 		if(world==null)
 			return;
-
+		TurnStatistics stats = world.history.stats();
+		
+		g.setFont(Res.font);
+		FontMetrics fm = g.graph.getFontMetrics();
+		String s;
+		
 		int x = (int)statsButton.getX()-10;
 		int y = (int)getHeight()/2;
-
 		g.setColor(Color.WHITE);
-		g.setFont(Res.font);
-		g.drawString(String.format("%s    Population: %d    Cities: %d    Turn: %d", world.cheater ? "CHEATER!" : "", world.totalPopulation, world.cities.size(), world.turn),
-				x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
+		s = String.format("Population: %d    Cities: %d    Turn: %d", stats.population, stats.numCities, world.turn);
+		g.drawString(s, x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
+		x -= fm.stringWidth(s);
+		if(world.cheater) {
+			g.setColor(Color.RED);
+			g.drawString("CHEATER!    ", x, y, GraphAssist.RIGHT, GraphAssist.CENTER);
+		}
 		
 		x = (int)cityListButton.getWidth();
-
-		g.setFont(Res.font);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("Gold: %d (%+d)    Goods: %d (%+d)", world.gold, world.totalGoldIn, world.goods, world.totalGoodsIn),
-				x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		x += Res.paintCost(g, YieldResource.gold, "Gold: ", stats.gold, null, stats.gold, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		g.setColor(Color.WHITE);
+		s = String.format(" (%+d)", stats.yield.get(YieldResource.gold));
+		g.drawString(s, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		x += fm.stringWidth(s);
+		if(world.poverty>0) {
+			g.setColor(Color.RED);
+			s = String.format(" POVERTY (%d %s)", world.poverty, world.poverty==1 ? "turn" : "turns");
+			g.drawString(s, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+			x += fm.stringWidth(s);
+		}
+		g.setColor(Color.WHITE);
+		x += Res.paintCost(g, YieldResource.production, "    Goods: ", stats.goods, null, stats.goods, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		g.setColor(Color.WHITE);
+		s = String.format(" (%+d)", stats.goodsIn);
+		g.drawString(s, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		x += fm.stringWidth(s);
 		
 		City city = ((Hexpansio) getParent()).view.view.selectedCity;
 		if(city==null)

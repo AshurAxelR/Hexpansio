@@ -79,8 +79,8 @@ public class Save {
 		tile.terrain = convTerrainType.get(in.readByte());
 		if(tile.terrain==null)
 			tile.terrain = TerrainType.defaultFallback;
-		if(tile.isVoid())
-			tile.region.hasVoid = true;
+		if(tile.terrain==TerrainType.voidStorm)
+			tile.region.voidStorms++;
 		tile.resource = convResources.get(in.readByte());
 		tile.workers = in.readByte();
 		int cityId = in.readInt();
@@ -287,6 +287,7 @@ public class Save {
 		}
 		
 		writeMessages(out, world);
+		world.history.write(out);
 	}
 	
 	protected void readWorld(DataInputStream in, World world) throws IOException {
@@ -322,6 +323,7 @@ public class Save {
 			realiseCity(city);
 		
 		readMessages(in, world);
+		world.history.read(in);
 	}
 
 	public boolean write() {

@@ -58,6 +58,17 @@ public class OptionBox extends UIContainer {
 		setSize(defaultWidth, defaultHeight);
 	}
 
+	private static int[] createRange(int rangeSize) {
+		int[] opts = new int[rangeSize];
+		for(int i=0; i<opts.length; i++)
+			opts[i] = i;
+		return opts;
+	}
+	
+	public OptionBox(UIContainer parent, String label, int rangeSize, String format) {
+		this(parent, label, createRange(rangeSize), format);
+	}
+
 	public OptionBox(UIContainer parent, String label, int[] options) {
 		this(parent, label, options, "%d");
 	}

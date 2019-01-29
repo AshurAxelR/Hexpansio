@@ -8,8 +8,6 @@ import java.util.Random;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
-import com.xrbpowered.hexpansio.world.resources.Happiness;
-import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -44,12 +42,9 @@ public class World {
 
 	public HashMap<String, City> citiesByName = new HashMap<>();
 	
-	public int totalPopulation = 1;
-	public int totalGoldIn = 0;
-	public int totalGoodsIn = 0;
 	public int baseHappiness = 0;
+	public History history = new History(this);
 	
-	public Happiness minHappiness = Happiness.happy;
 	public int problematicCities = 0;
 	public int pinnedMessages = 0;
 	public ArrayList<TurnEventMessage> events = new ArrayList<>();
@@ -243,6 +238,13 @@ public class World {
 	public int distToNearestCityOrSettler(int wx, int wy) {
 		return distToNearestCityOrSettler(wx, wy, false);
 	}
+	
+	public int countVoidStorms() {
+		int count = 0;
+		for(Region r : regions.values())
+			count += r.voidStorms;
+		return count;
+	}
 
 	public void nextTurn() {
 		events.clear();
@@ -272,6 +274,8 @@ public class World {
 			ArrayList<Region> regions = new ArrayList<>(this.regions.values());
 			for(Region r : regions)
 				r.spreadVoid();
+			for(Region r : this.regions.values())
+				r.updateVoidCount();
 		}
 		
 		if(gold<0) {
@@ -281,11 +285,10 @@ public class World {
 		else {
 			poverty = 0;
 		}
-		updateCities();
-		updateWorldTotals();
-		
 		discoverThisTurn = 0;
 		turn++;
+		updateCities();
+		updateWorldTotals();
 	}
 	
 	public void updateCities() {
@@ -295,24 +298,14 @@ public class World {
 	}
 	
 	public void updateWorldTotals() {
-		totalPopulation = 0;
-		totalGoldIn = 0;
-		totalGoodsIn = 0;
 		maxDiscover = 0;
 		int prevBH = baseHappiness;
 		baseHappiness = settings.initialBaseHappiness;
-		minHappiness = Happiness.happy;
 		problematicCities = 0;
 		pinnedMessages = 0;
 		for(City city : cities) {
-			totalPopulation += city.population;
-			totalGoldIn += city.balance.get(YieldResource.gold);
-			if(city.buildingProgress==null)
-				totalGoodsIn += city.getExcess(city.getProduction());
 			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0);
 			baseHappiness += city.effects.modifyCityValue(EffectTarget.baseHappiness, 0);
-			if(city.happiness.ordinal()>minHappiness.ordinal())
-				minHappiness = city.happiness;
 			int pm = city.countPinnedMessages();
 			if(pm>0) {
 				problematicCities++;
@@ -323,6 +316,7 @@ public class World {
 			updateCities();
 			updateWorldTotals();
 		}
+		history.stats().update(this);
 	}
 	
 	public boolean hasVoid() {

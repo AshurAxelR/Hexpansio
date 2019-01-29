@@ -328,6 +328,7 @@ public class SetupTradeDialog extends OverlayDialog {
 		city.trades.accept(new Trade(city, otherCity, in, out));
 		city.updateStats();
 		otherCity.updateStats();
+		city.world.updateWorldTotals();
 	}
 	
 	@Override

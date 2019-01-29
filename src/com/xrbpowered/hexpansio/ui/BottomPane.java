@@ -188,7 +188,7 @@ public class BottomPane extends UIContainer {
 		if(world==null)
 			return;
 		
-		Res.paintHappiness(g, (int)eventsButton.getX() - 35, (int)getHeight()/2, world.minHappiness);
+		Res.paintHappiness(g, (int)eventsButton.getX() - 35, (int)getHeight()/2, world.history.stats().minHappiness);
 
 		MapMode mode = MapMode.active;
 		

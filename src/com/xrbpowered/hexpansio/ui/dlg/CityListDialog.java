@@ -167,10 +167,7 @@ public class CityListDialog extends OverlayDialog {
 		};
 		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
 		
-		int[] opts = new int[sortOptionNames.length];
-		for(int i=0; i<opts.length; i++)
-			opts[i] = i;
-		sortOption = new OptionBox(box, "Sort by:", opts, null) {
+		sortOption = new OptionBox(box, "Sort by:", sortOptionNames.length, null) {
 			@Override
 			protected void selectOption(int value) {
 				sortMode = value;

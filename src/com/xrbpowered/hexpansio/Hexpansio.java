@@ -17,6 +17,7 @@ import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
 import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
 import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
 import com.xrbpowered.hexpansio.ui.dlg.popup.InformationDialog;
+import com.xrbpowered.hexpansio.ui.dlg.stats.HistoryDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.Save;
 import com.xrbpowered.hexpansio.world.World;
@@ -30,7 +31,7 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class Hexpansio extends UIContainer implements KeyInputHandler {
 
-	public static final String version = "B.0.9";
+	public static final String version = "B.0.10";
 	
 	public static GlobalSettings settings = new GlobalSettings();
 	public static boolean cheatsEnabled = false;
@@ -200,6 +201,10 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			case KeyEvent.VK_TAB:
 				showMessageLog();
 				repaint();
+				return true;
+			case KeyEvent.VK_F1:
+				if(world!=null)
+					new HistoryDialog().repaint();
 				return true;
 			case KeyEvent.VK_F2:
 				if(world!=null)

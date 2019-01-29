@@ -103,6 +103,7 @@ public class ExpandMode extends MapMode {
 				view.selectedCity.availExpand = false;
 				view.world.addToCity(hoverTile.wx, hoverTile.wy, view.selectedCity);
 				view.selectedCity.updateStats();
+				view.world.updateWorldTotals();
 				view.selectedTile = hoverTile;
 				TileMode.instance.activate();
 				return true;

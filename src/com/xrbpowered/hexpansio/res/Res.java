@@ -112,7 +112,7 @@ public class Res {
 		}
 	}
 	
-	public static void paintCost(GraphAssist g, YieldResource res, String prefix, String cost, String postfix,
+	public static float paintCost(GraphAssist g, YieldResource res, String prefix, String cost, String postfix,
 			Color costColor, float x, float y, int halign, int valign) {
 		FontMetrics fm = g.graph.getFontMetrics();
 		float wstart = prefix==null ? 0 : fm.stringWidth(prefix);
@@ -132,16 +132,18 @@ public class Res {
 		
 		g.setColor(res.fill);
 		g.graph.fillOval((int)(tx+wstart+h*0.25f), (int)(ty-h), (int)h, (int)h);
+		
+		return w;
 	}
 
-	public static void paintCost(GraphAssist g, YieldResource res, String prefix, int cost, String postfix,
+	public static float paintCost(GraphAssist g, YieldResource res, String prefix, int cost, String postfix,
 			int avail, float x, float y, int halign, int valign) {
-		paintCost(g, res, prefix, Integer.toString(cost), postfix, cost>avail ? Color.RED : Color.WHITE, x, y, halign, valign);
+		return paintCost(g, res, prefix, Integer.toString(cost), postfix, cost>avail ? Color.RED : Color.WHITE, x, y, halign, valign);
 	}
 
-	public static void paintIncome(GraphAssist g, YieldResource res, String prefix, int income, String postfix,
+	public static float paintIncome(GraphAssist g, YieldResource res, String prefix, int income, String postfix,
 			float x, float y, int halign, int valign) {
-		paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.LIGHT_GRAY : Color.WHITE, x, y, halign, valign);
+		return paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.LIGHT_GRAY : Color.WHITE, x, y, halign, valign);
 	}
 
 	public static void paintToken(GraphAssist g, float scale, ImageAtlas atlas, int subImage) {
