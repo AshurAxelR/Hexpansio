@@ -128,6 +128,8 @@ public class GlobalSettings {
 	public static GlobalSettings load() {
 		HashMap<String, String> values = loadValues();
 		GlobalSettings s = new GlobalSettings();
+		if(values==null)
+			return s;
 		s.uiScaling = getInt(values.get("uiScaling"), 0, 200, s.uiScaling);
 		s.windowed = getBoolean(values.get("windowed"), s.windowed);
 		s.hotkeyTooltips = getBoolean(values.get("hotkeyTooltips"), s.hotkeyTooltips);

@@ -103,7 +103,7 @@ public class CityTradesDialog extends OverlayDialog {
 
 	private final ClickButton closeButton;
 
-	public CityTradesDialog(City city) {
+	public CityTradesDialog(final City city) {
 		super(Hexpansio.instance.getBase(), 1020, 600, "CITY TRADES: "+city.name.toUpperCase());
 		this.city = city;
 		
