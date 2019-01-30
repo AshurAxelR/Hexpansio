@@ -126,6 +126,7 @@ public class ScoutMode extends MapMode {
 				view.world.gold -= cost;
 				view.world.discoverThisTurn++;
 				view.world.discoverArea(hoverTile.wx, hoverTile.wy, areaRange);
+				view.world.updateWorldTotals();
 				return true;
 			}
 		}
