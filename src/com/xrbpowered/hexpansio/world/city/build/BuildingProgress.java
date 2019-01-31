@@ -26,8 +26,8 @@ public abstract class BuildingProgress {
 	public boolean checkComplete() {
 		if(progress>=getCost()) {
 			progress -= getCost();
-			complete();
 			city.finishedBuilding = new FinishedBuilding(this);
+			complete();
 			city.world.goods += city.finishedBuilding.excess;
 			city.buildingProgress = null;
 			return true;
