@@ -174,7 +174,7 @@ public class ResourceInfoDialog extends OverlayDialog {
 			int y = 80;
 			g.setColor(res.fill);
 			g.setFont(Res.fontLarge);
-			g.drawString(String.format("%+d %s", city.balance.get(res), res.name), x, y);
+			g.drawString(String.format("%+d %s", res==YieldResource.production ? city.getProduction() : city.balance.get(res), res.name), x, y);
 			y += 25;
 			g.setFont(Res.font);
 			g.drawString(String.format("%+d from tiles", city.incomeTiles.get(res)), x, y);

@@ -161,7 +161,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 		warnUnhappyCheckBox.setLocation(10, y);
 		y += warnUnhappyCheckBox.getHeight()+5;
 
-		warnNoBuildingCheckBox = new CheckBox(box, "Notify about building goods") {
+		warnNoBuildingCheckBox = new CheckBox(box, "Always notify about building goods") {
 			@Override
 			public boolean isSelected() {
 				return settings.warnNoBuilding;

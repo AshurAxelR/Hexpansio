@@ -70,7 +70,11 @@ public class TurnStatistics {
 			if(city.happiness.ordinal()>minHappiness.ordinal())
 				minHappiness = city.happiness;
 
-			yield.add(city.balance); // FIXME unhappiness penalty for total production 
+			yield.add(YieldResource.happiness, city.balance.get(YieldResource.happiness));
+			yield.add(YieldResource.food, city.balance.get(YieldResource.food));
+			yield.add(YieldResource.gold, city.balance.get(YieldResource.gold));
+			yield.add(YieldResource.production, city.getProduction());
+			
 			if(city.buildingProgress==null)
 				goodsIn += city.getExcess(city.getProduction());
 		

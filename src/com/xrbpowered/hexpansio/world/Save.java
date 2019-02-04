@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -15,8 +16,8 @@ import java.util.zip.ZipOutputStream;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.build.BuildImprovement;
 import com.xrbpowered.hexpansio.world.city.build.BuildMigration;
-import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.BuildSettlement;
+import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.city.build.FinishedBuilding;
 import com.xrbpowered.hexpansio.world.city.build.RemoveImprovement;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
@@ -31,11 +32,14 @@ import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 
 public class Save {
 
-	public static final int formatCode = 632016289;
+	public static final String savePath = "./save";
+	public static final File saveDirectory = new File(savePath);
+	public static final Save autosave = new Save(new File(saveDirectory, "autosave.save"));
 	
-	public static final int saveVersion = 8;
+	private static final int formatCode = 632016289;
+	private static final int saveVersion = 8;
 	
-	public final String path;
+	public final String name;
 	public final File file;
 
 	public World world = null;
@@ -45,9 +49,10 @@ public class Save {
 	protected ObjectIndex<TokenResource> convResources = null;
 	protected ObjectIndex<Improvement> convImprovement = null;
 	
-	public Save(String path) {
-		this.path = path;
-		this.file = new File(path);
+	public Save(File file) {
+		this.file = file;
+		String s = file.getName();
+		this.name = s.substring(0, s.length()-".save".length());
 	}
 	
 	public boolean exists() {
@@ -399,6 +404,35 @@ public class Save {
 		
 		this.world = world;
 		return world;
+	}
+	
+	public static ArrayList<Save> allSaves(boolean showAutosave) {
+		saveDirectory.mkdirs();
+		File[] files = saveDirectory.listFiles();
+		ArrayList<Save> saves = new ArrayList<>();
+		for(int i=0; i<files.length; i++) {
+			File f = files[i];
+			if(f.getName().toLowerCase().endsWith(".save")); {
+				Save s = new Save(f);
+				if(showAutosave || !s.name.equalsIgnoreCase("autosave"))
+					saves.add(s);
+			}
+		}
+		saves.sort(new Comparator<Save>() {
+			@Override
+			public int compare(Save s1, Save s2) {
+				return -Long.compare(s1.file.lastModified(), s2.file.lastModified());
+			}
+		});
+		return saves;
+	}
+	
+	public static Save latest() {
+		ArrayList<Save> saves = allSaves(true);
+		if(saves.isEmpty())
+			return null;
+		else
+			return saves.get(0);
 	}
 
 }

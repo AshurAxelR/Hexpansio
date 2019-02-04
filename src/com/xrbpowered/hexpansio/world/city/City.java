@@ -412,7 +412,7 @@ public class City {
 			n++;
 		if(buildingProgress==null && getExcess(getProduction())==0)
 			n++;
-		else if(Hexpansio.settings.warnNoBuilding && buildingProgress==null)
+		else 	if((Hexpansio.settings.warnNoBuilding || finishedBuilding!=null || world.turn==0) && buildingProgress==null)
 			n++;
 		return n;
 	}
@@ -426,7 +426,7 @@ public class City {
 			msgList.add(new TurnEventMessage(this, String.format("has %d unemployed %s", unemployed, unemployed==1 ? "worker" : "workers")).setColor(new Color(0xdd0000)).pin());
 		if(buildingProgress==null && getExcess(getProduction())==0)
 			msgList.add(new TurnEventMessage(this, "will produce nothing").setColor(Color.DARK_GRAY).pin());
-		else 	if(Hexpansio.settings.warnNoBuilding && buildingProgress==null)
+		else 	if((Hexpansio.settings.warnNoBuilding || finishedBuilding!=null || world.turn==0) && buildingProgress==null)
 			msgList.add(new TurnEventMessage(this, "is producing goods").setColor(YieldResource.production.border).pin());
 	}
 

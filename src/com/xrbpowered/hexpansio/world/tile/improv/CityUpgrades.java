@@ -14,7 +14,7 @@ public abstract class CityUpgrades {
 	public static final float beaconOfHopeEffect = 0.8f;
 	public static final float highriseEffect = 0.5f;
 
-	public static final Improvement townHall = new Improvement("city.hall", cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2));
+	public static final Improvement townHall = new Improvement("city.hall", cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2)).cannotHurry();
 	
 	public static final Improvement beaconOfHope = new Improvement("city.beacon", cityCenter, "Beacon of Hope", 50, 0).maintenance(5).yield(0, 0, 0, 2).voidUnlock()
 			.effects(
@@ -56,7 +56,7 @@ public abstract class CityUpgrades {
 			}
 		});
 
-		resort = new Improvement("city.resort", cityCenter, "Holiday Resort", 200, 2).yield(0, 0, 1, 1).requireCoastalCity()
+		resort = new Improvement("city.resort", cityCenter, "Holiday Resort", 200, 2).yield(0, 0, 1, 1).requireCoastalCity().cannotHurry()
 			.effects(new YieldEffect.Tile(0, 0, 0, 1) {
 				@Override
 				public int addTileYield(com.xrbpowered.hexpansio.world.tile.Tile tile, YieldResource res) {

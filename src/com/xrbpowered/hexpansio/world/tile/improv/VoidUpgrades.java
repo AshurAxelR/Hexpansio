@@ -21,7 +21,7 @@ public abstract class VoidUpgrades {
 		new Improvement("void.power", voidworks, "Power Plant", 50, 1).yieldPerWorker(0, 0, 1, 0)
 			.reject((Feature[])null);
 		
-		new Improvement("void.economy", voidworks, "Void Economy", 200, 3).cityUnique().yield(0, 0, 2, 0).yieldPerWorker(0, 0, 1, 0)
+		new Improvement("void.economy", voidworks, "Void Economy", 200, 3).cityUnique().yield(0, 0, 2, 0).yieldPerWorker(0, 0, 1, 0).cannotHurry()
 			.reject((Feature[])null)
 			.effects(new CityEffect() {
 				@Override

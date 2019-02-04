@@ -18,7 +18,7 @@ import com.xrbpowered.zoomui.GraphAssist;
 
 public class HistoryDialog extends OverlayDialog {
 
-	private final float plotWidth = 750f;
+	private final float plotWidth = 800f;
 	private final float plotHeight = 400f;
 	
 	public final World world;
@@ -129,10 +129,11 @@ public class HistoryDialog extends OverlayDialog {
 		g.pushTx();
 		g.translate(box.getWidth()-plotWidth-10, 50+plotHeight);
 		g.fillRect(0, -plotHeight, plotWidth, plotHeight, Color.BLACK);
-		if(plotMin<0)
-			g.fillRect(0, (float)zero.getY(), plotWidth, (float)-zero.getY(), new Color(0x220000));
 		g.resetStroke();
-		g.line(0, (float)zero.getY(), plotWidth, (float)zero.getY(), new Color(0x550000));
+		if(plotMin<0) {
+			g.fillRect(0, (float)zero.getY(), plotWidth, (float)-zero.getY(), new Color(0x220000));
+			g.line(0, (float)zero.getY(), plotWidth, (float)zero.getY(), new Color(0x550000));
+		}
 		g.drawRect(0, -plotHeight, plotWidth, plotHeight, Res.uiBorderDark);
 		g.pushAntialiasing(true);
 		g.pushPureStroke(true);
@@ -145,6 +146,8 @@ public class HistoryDialog extends OverlayDialog {
 		g.popPureStroke();
 		g.popAntialiasing();
 		g.popTx();
+		
+		// TODO display world settings (seed), copy to clipboard 
 		
 		super.paintBoxContents(g);
 	}

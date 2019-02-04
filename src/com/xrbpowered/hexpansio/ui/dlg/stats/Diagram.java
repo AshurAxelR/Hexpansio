@@ -62,7 +62,7 @@ public abstract class Diagram {
 
 	public static final Diagram populationDensity = new Diagram("Population density",
 			new String[] {"Population", "Territory", "Workplaces"},
-			new Color[] {Color.WHITE, TerrainType.water.color, Color.GRAY}) {
+			new Color[] {Color.WHITE, TerrainType.fertilePlains.color, Color.GRAY}) {
 		@Override
 		public int getValue(TurnStatistics s, int plot) {
 			switch(plot) {
@@ -74,7 +74,7 @@ public abstract class Diagram {
 	};
 
 	public static final Diagram happiness = new Diagram("Happiness",
-			new String[] {"Max happiness", "Min happiness", "Average"},
+			new String[] {"Max happiness", "Min happiness", "Average happiness"},
 			new Color[] {new Color(0x88ddbb), Happiness.angry.color, Happiness.unhappy.color}, "%+d") {
 		@Override
 		public int getValue(TurnStatistics s, int plot) {
@@ -113,7 +113,7 @@ public abstract class Diagram {
 	};
 
 	public static final Diagram resources = new Diagram("Resources",
-			new String[] {"Produced", "Traded"},
+			new String[] {"Resources produced", "Resources traded"},
 			new Color[] {Color.WHITE, YieldResource.gold.fill}) {
 		@Override
 		protected String getFormat(int plot) {
@@ -128,12 +128,38 @@ public abstract class Diagram {
 		}
 	};
 	
-	public static final Diagram voidStorms = new Diagram("Void storms",
+	public static final Diagram voidStorms = new Diagram("The Void",
 			new String[] {"Void storms"},
 			new Color[] {TerrainType.Feature.thevoid.color}) {
 		@Override
 		public int getValue(TurnStatistics s, int plot) {
 			return s.voidStorms;
+		}
+		@Override
+		public int paintLegend(GraphAssist g, int x, int y, TurnStatistics current, World world) {
+			if(!world.settings.voidEnabled) {
+				g.setColor(Color.WHITE);
+				g.drawString("The Void is not enabled", x, y);
+				y += 25;
+			}
+			else if(!world.hasVoid()) {
+				g.setColor(Color.WHITE);
+				g.drawString(String.format("The void starts on turn %d", world.settings.voidStartTurn), x, y);
+				y += 25;
+			}
+			else {
+				y = super.paintLegend(g, x, y, current, world);
+				g.setColor(Color.LIGHT_GRAY);
+				y += 15;
+				g.drawString(String.format("Started on turn %d", world.settings.voidStartTurn), x, y);
+				y += 15;
+				g.drawString(String.format("Void sources: %d", world.settings.voidStartSources), x, y);
+				y += 15;
+				g.drawString(String.format("Distance: %d-%d", world.settings.voidMinDistance, world.settings.voidMaxDistance), x, y);
+				y += 15;
+				g.drawString(String.format("Spread speed: x%d", world.settings.voidSpreadSpeed), x, y);
+			}
+			return y;
 		}
 	};
 }

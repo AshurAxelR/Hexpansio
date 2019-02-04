@@ -39,15 +39,11 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	private static SwingFrame frame = null;
 	public static Hexpansio instance = null;
 	
-	private static Save save = new Save("./hexpansion.save"); 
+	public static Save currentSave = Save.latest(); 
 	private static World world = null;
 	
 	public static World getWorld() {
 		return world;
-	}
-	
-	public static boolean saveExists() {
-		return save.exists();
 	}
 	
 	public final TopPane top;
@@ -104,28 +100,38 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	}
 	
 	public void newGame(WorldSettings settings) {
-		save.delete();
-		setWorld(save.startNew(settings));
+		currentSave = null;
+		setWorld(Save.autosave.startNew(settings));
 	}
 	
 	public void autosave() {
-		if(world!=null)
-			save.write();
-	}
-	
-	public void saveGame() {
 		if(world!=null) {
-			if(save.write())
-				new InformationDialog(true, "Game successfully saved.");
-			else
-				new InformationDialog(false, "Unable to write the save file.");
+			Save.autosave.world = world;
+			Save.autosave.write();
 		}
 	}
 	
-	public void loadGame() {
-		if(saveExists()) {
-			setWorld(save.read());
+	public void saveGame(Save save) {
+		if(world!=null) {
+			save.world = world;
+			if(save.write()) {
+				currentSave = save;
+				new InformationDialog(true, "Game successfully saved.");
+			}
+			else {
+				currentSave = null;
+				new InformationDialog(false, "Unable to write the save file.");
+			}
 		}
+	}
+	
+	public void loadGame(Save save) {
+		World world = save.exists() ? save.read() : null;
+		setWorld(world);
+		if(world==null)
+			new InformationDialog(false, "Unable to load the save file.");
+		else
+			currentSave = save;
 	}
 
 	public void safeNextTurn() {

@@ -15,7 +15,6 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.ui.dlg.OverlayDialog;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
-import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
 import com.xrbpowered.zoomui.GraphAssist;
 
 public class GameMenu extends OverlayDialog {
@@ -37,15 +36,15 @@ public class GameMenu extends OverlayDialog {
 		resumeButton = new ClickButton(box, "RESUME", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
 			public boolean isEnabled() {
-				return Hexpansio.getWorld()!=null || Hexpansio.saveExists();
+				return Hexpansio.getWorld()!=null || Hexpansio.currentSave!=null;
 			}
 			@Override
 			public void onClick() {
 				if(!isEnabled())
 					return;
 				if(Hexpansio.getWorld()==null)
-					Hexpansio.instance.loadGame();
-				dismiss();
+					Hexpansio.instance.loadGame(Hexpansio.currentSave);
+				dismissNow();
 			}
 		};
 		resumeButton.setLocation(100, y);
@@ -54,20 +53,8 @@ public class GameMenu extends OverlayDialog {
 		newButton = new ClickButton(box, "START NEW", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
 			public void onClick() {
-				if(Hexpansio.getWorld()!=null) {
-					new ConfirmationDialog(0, "NEW GAME", "Reset all progress and start new world?", "START", "CANCEL") {
-						@Override
-						public void onEnter() {
-							new WorldSettingsDialog();
-							dismiss();
-							GameMenu.this.dismiss();
-						}
-					}.repaint();
-				}
-				else {
-					new WorldSettingsDialog();
-					dismiss();
-				}
+				new WorldSettingsDialog();
+				dismissNow();
 			}
 		};
 		newButton.setLocation(100, y);
@@ -82,8 +69,8 @@ public class GameMenu extends OverlayDialog {
 			public void onClick() {
 				if(!isEnabled())
 					return;
-				Hexpansio.instance.saveGame(); // TODO save dialog
-				dismiss();
+				dismissNow();
+				new SaveDialog(true, Hexpansio.currentSave).repaint();
 			}
 		};
 		saveButton.setLocation(100, y);
@@ -91,21 +78,11 @@ public class GameMenu extends OverlayDialog {
 		
 		loadButton = new ClickButton(box, "LOAD", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
-			public boolean isEnabled() {
-				return Hexpansio.saveExists();
-			}
-			@Override
 			public void onClick() {
 				if(!isEnabled())
 					return;
-				new ConfirmationDialog(0, "RELOAD GAME", "Reload last save?", "RELOAD", "CANCEL") {
-					@Override
-					public void onEnter() {
-						Hexpansio.instance.loadGame(); // TODO load dialog
-						dismiss();
-						GameMenu.this.dismiss();
-					}
-				}.repaint();
+				dismissNow();
+				SaveDialog.load().repaint();
 			}
 		};
 		loadButton.setLocation(100, y);
@@ -114,7 +91,7 @@ public class GameMenu extends OverlayDialog {
 		settingsButton = new ClickButton(box, "SETTINGS", buttonWidth, buttonHeight, Res.fontLarge) {
 			@Override
 			public void onClick() {
-				dismiss();
+				dismissNow();
 				new GlobalSettingsDialog();
 				repaint();
 			}
@@ -132,15 +109,15 @@ public class GameMenu extends OverlayDialog {
 		exitButton.setLocation(100, y);
 	}
 	
-	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(Hexpansio.getWorld()!=null)
-			return super.onMouseDown(x, y, button, mods);
-		else
-			return true;
+	private void dismissNow() {
+		super.dismiss();
 	}
 	
-	// FIXME dismissed on esc
+	@Override
+	public void dismiss() {
+		if(Hexpansio.getWorld()!=null)
+			super.dismiss();
+	}
 	
 	private static Paint titleBg = null;
 	private static Shape titleText = null;

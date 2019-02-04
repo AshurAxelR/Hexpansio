@@ -53,7 +53,7 @@ public class CityListDialog extends OverlayDialog {
 			for(YieldResource res : YieldResource.values()) {
 				x += 70;
 				g.setColor(res.fill);
-				g.drawString(String.format("%+d", city.balance.get(res)), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
+				g.drawString(String.format("%+d", res==YieldResource.production ? city.getProduction() : city.balance.get(res)), x, y, GraphAssist.CENTER, GraphAssist.CENTER);
 			}
 			
 			x += 90;
@@ -207,7 +207,7 @@ public class CityListDialog extends OverlayDialog {
 						res = -Integer.compare(city1.balance.get(YieldResource.gold), city2.balance.get(YieldResource.gold));
 						break;
 					case 6:
-						res = -Integer.compare(city1.balance.get(YieldResource.production), city2.balance.get(YieldResource.production));
+						res = -Integer.compare(city1.getProduction(), city2.getProduction());
 						break;
 					case 7:
 						res = -Integer.compare(city1.resourcesAvail.totalCount(), city2.resourcesAvail.totalCount());

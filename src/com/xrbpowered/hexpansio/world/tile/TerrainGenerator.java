@@ -172,7 +172,7 @@ public class TerrainGenerator {
 					adjRules.put(key, ai.adj);
 				else {
 					TerrainList common = ai.adj.intersect(aj.adj);
-					if(common.list.length==0)
+					if(common.list.length==0 && verbose)
 						System.out.println("***** No adjacency for "+key);
 					adjRules.put(key, common);
 					adjRules.put(getKey(aj.terrain, ai.terrain), common);
