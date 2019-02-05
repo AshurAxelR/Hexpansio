@@ -36,21 +36,21 @@ public class CityEffectStack extends CityEffect {
 	}
 	
 	@Override
-	protected int addCityValue(EffectTarget key) {
+	public int addCityValue(EffectTarget key) {
 		int value = 0;
 		for(CityEffect eff : effects)
 			value += eff.addCityValue(key);
 		return value;
 	}
-
+	
 	@Override
-	protected float multiplyCityValue(EffectTarget key) {
+	public float multiplyCityValue(EffectTarget key) {
 		float value = 1f;
 		for(CityEffect eff : effects)
 			value *= eff.multiplyCityValue(key);
 		return value;
 	}
-	
+
 	@Override
 	public int addTileYield(Tile tile, YieldResource res) {
 		int value = 0;

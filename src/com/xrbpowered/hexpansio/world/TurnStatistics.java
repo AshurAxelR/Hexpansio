@@ -24,6 +24,7 @@ public class TurnStatistics {
 	public Happiness minHappiness = Happiness.happy; // no history
 	
 	public int gold, goods;
+	public int maxGold, maxGoods;
 	public Yield.Cache yield = new Yield.Cache();
 	public int goodsIn = 0; // no history
 	
@@ -48,6 +49,8 @@ public class TurnStatistics {
 
 		gold = world.gold;
 		goods = world.goods;
+		maxGold = world.maxGold;
+		maxGoods = world.maxGoods;
 		yield.clear();
 		goodsIn = 0;
 		
@@ -98,6 +101,8 @@ public class TurnStatistics {
 		out.writeInt(maxHappy);
 		out.writeInt(gold);
 		out.writeInt(goods);
+		out.writeInt(maxGold);
+		out.writeInt(maxGoods);
 		for(YieldResource res : YieldResource.values())
 			out.writeInt(yield.get(res));
 		out.writeInt(resProduced);
@@ -116,6 +121,8 @@ public class TurnStatistics {
 		maxHappy = in.readInt();
 		gold = in.readInt();
 		goods = in.readInt();
+		maxGold = in.readInt();
+		maxGoods = in.readInt();
 		yield.clear();
 		for(YieldResource res : YieldResource.values())
 			yield.add(res, in.readInt());

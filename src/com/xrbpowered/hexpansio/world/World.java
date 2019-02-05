@@ -8,6 +8,7 @@ import java.util.Random;
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
+import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainGenerator;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.Tile;
@@ -26,11 +27,12 @@ public class World {
 
 	public int lastCityId = -1;
 	public int turn = 0;
-	public int gold = 0; // TODO gold cap / goods cap
+	public int gold = 0;
 	public int goods = 0;
 	public int poverty = 0;
 	
 	public int maxDiscover;
+	public float discoverCostMod = 1f;
 	public int discoverThisTurn = 0;
 
 	private HashMap<Integer, Region> regions = new HashMap<>();
@@ -42,6 +44,7 @@ public class World {
 
 	public HashMap<String, City> citiesByName = new HashMap<>();
 	
+	public int maxGold, maxGoods;
 	public int baseHappiness = 0;
 	public History history = new History(this);
 	
@@ -168,7 +171,7 @@ public class World {
 	
 	public int costDiscover(Tile t) {
 		float dist = (float)origin.distTo(t)/3f;
-		return (int)(dist*dist);
+		return (int)(dist*dist*discoverCostMod);
 	}
 	
 	public void registerNewCity(City city) {
@@ -299,13 +302,19 @@ public class World {
 	
 	public void updateWorldTotals() {
 		maxDiscover = 0;
+		discoverCostMod = 1f;
 		int prevBH = baseHappiness;
 		baseHappiness = settings.initialBaseHappiness;
 		problematicCities = 0;
 		pinnedMessages = 0;
+		maxGold = 0;
+		maxGoods = 0;
 		for(City city : cities) {
-			maxDiscover += city.effects.modifyCityValue(EffectTarget.scouts, 0);
-			baseHappiness += city.effects.modifyCityValue(EffectTarget.baseHappiness, 0);
+			discoverCostMod *= city.effects.multiplyCityValue(EffectTarget.scoutCost);
+			maxDiscover += city.effects.addCityValue(EffectTarget.scouts);
+			baseHappiness += city.effects.addCityValue(EffectTarget.baseHappiness);
+			maxGold += city.effects.addCityValue(EffectTarget.maxGold);
+			maxGoods += city.effects.addCityValue(EffectTarget.maxGoods);
 			int pm = city.countPinnedMessages();
 			if(pm>0) {
 				problematicCities++;
@@ -315,6 +324,14 @@ public class World {
 		if(prevBH!=baseHappiness) {
 			updateCities();
 			updateWorldTotals();
+		}
+		if(gold>maxGold) {
+			gold = maxGold;
+			events.add(new TurnEventMessage(null, "reached Gold limit", null).setColor(YieldResource.gold.fill));
+		}
+		if(goods>maxGoods) {
+			goods = maxGoods;
+			events.add(new TurnEventMessage(null, "reached Goods limit", null).setColor(YieldResource.production.fill));
 		}
 		history.stats().update(this);
 	}

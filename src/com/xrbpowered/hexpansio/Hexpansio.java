@@ -31,7 +31,7 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class Hexpansio extends UIContainer implements KeyInputHandler {
 
-	public static final String version = "B.0.10";
+	public static final String version = "B.1.0";
 	
 	public static GlobalSettings settings = new GlobalSettings();
 	public static boolean cheatsEnabled = false;

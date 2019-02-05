@@ -166,7 +166,7 @@ public class TopPane extends UIContainer {
 		
 		x = (int)cityListButton.getWidth();
 		g.setColor(Color.WHITE);
-		x += Res.paintCost(g, YieldResource.gold, "Gold: ", stats.gold, null, stats.gold, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		x += Res.paintLimit(g, YieldResource.gold, "Gold: ", stats.gold, stats.maxGold, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
 		g.setColor(Color.WHITE);
 		s = String.format(" (%+d)", stats.yield.get(YieldResource.gold));
 		g.drawString(s, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
@@ -178,7 +178,7 @@ public class TopPane extends UIContainer {
 			x += fm.stringWidth(s);
 		}
 		g.setColor(Color.WHITE);
-		x += Res.paintCost(g, YieldResource.production, "    Goods: ", stats.goods, null, stats.goods, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+		x += Res.paintLimit(g, YieldResource.production, "    Goods: ", stats.goods, stats.maxGoods, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
 		g.setColor(Color.WHITE);
 		s = String.format(" (%+d)", stats.goodsIn);
 		g.drawString(s, x, y, GraphAssist.LEFT, GraphAssist.CENTER);

@@ -13,8 +13,20 @@ public abstract class ParkUpgrades {
 		new Improvement("park.garden", park, "Community Garden", 30, 1).yield(1, 0, 0, 1)
 			.reject(Feature.values());
 		new Improvement("park.monument", park, "Monument", 10, 0).maintenance(2).yield(0, 0, 0, 1);
-		new Improvement("park.observatory", park, "Observatory", 60, 2).maintenance(3).yield(0, 0, 0, 3).effects(CityEffect.add(EffectTarget.scouts, 2))
-			.reject((Feature[])null);
+		new Improvement("park.observatory", park, "Observatory", 80, 2).maintenance(3).yield(0, 0, 0, 3).cityUnique()
+			.reject((Feature[])null).effects(
+				CityEffect.add(EffectTarget.scouts, 1),
+				new CityEffect() {
+					@Override
+					public float multiplyCityValue(EffectTarget key) {
+						return key==EffectTarget.scoutCost ? 0.9f : 1f;
+					}
+					@Override
+					public String getDescription() {
+						return "-10% to Scout cost (diminishing)";
+					}
+				}
+			);
 
 		new Improvement("park.ski", park, "Ski Resort", 40, 1).yield(0, 0, 0, 2)
 				.reject((Feature[])null).require(Feature.peak);

@@ -14,7 +14,11 @@ public abstract class CityUpgrades {
 	public static final float beaconOfHopeEffect = 0.8f;
 	public static final float highriseEffect = 0.5f;
 
-	public static final Improvement townHall = new Improvement("city.hall", cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).effects(CityEffect.add(EffectTarget.upgPoints, 2)).cannotHurry();
+	public static final Improvement townHall = new Improvement("city.hall", cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).cannotHurry()
+			.effects(
+					CityEffect.add(EffectTarget.maxGold, 30),
+					CityEffect.add(EffectTarget.upgPoints, 2)
+			);
 	
 	public static final Improvement beaconOfHope = new Improvement("city.beacon", cityCenter, "Beacon of Hope", 50, 0).maintenance(5).yield(0, 0, 0, 2).voidUnlock()
 			.effects(
@@ -31,6 +35,7 @@ public abstract class CityUpgrades {
 	public static void init() {
 		new Improvement("city.farm", cityCenter, "Food Reserve", 30, 1).maintenance(1).yield(2, 0, 0, 0);
 		new Improvement("city.utopia", townHall, "Utopia", 200, 1).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
+		new Improvement("city.treasury", townHall, "Treasury", 150, 1).yield(0, 0, 2, 0).effects(CityEffect.add(EffectTarget.maxGold, 100));
 		
 		new Improvement("city.harbour", cityCenter, "Harbour", 60, 1).maintenance(2).requireCoastalCity()
 			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
@@ -69,16 +74,19 @@ public abstract class CityUpgrades {
 			});
 		
 		new Improvement("city.industry", cityCenter, "Industrial Zone", 150, 1).maintenance(3).yield(0, 2, 0, 0)
-			.effects(new YieldEffect.Resource(0, 1, 0, 0) {
-				@Override
-				public int addResourceBonusYield(TokenResource resource, YieldResource res) {
-					return resource==TokenResource.iron || resource==TokenResource.fuel ? this.yield.get(res) : 0;
-				}
-				@Override
-				public String getDescription() {
-					return "+1 Production from Iron and Fuel";
-				}
-			});
+			.effects(
+				new YieldEffect.Resource(0, 1, 0, 0) {
+					@Override
+					public int addResourceBonusYield(TokenResource resource, YieldResource res) {
+						return resource==TokenResource.iron || resource==TokenResource.fuel ? this.yield.get(res) : 0;
+					}
+					@Override
+					public String getDescription() {
+						return "+1 Production from Iron and Fuel";
+					}
+				},
+				CityEffect.add(EffectTarget.maxGoods, 50)
+			);
 		
 		highrise = new Improvement("city.highrise", townHall, "Highrise", 300, 3).requirePopulation(15).cannotHurry().maintenance(10)
 				.effects(CityEffect.dummy(String.format("Unhappiness from population -%d%%", (int)(highriseEffect*100f))));

@@ -12,18 +12,14 @@ public abstract class CityEffect {
 	
 	public abstract String getDescription();
 	
-	protected int addCityValue(EffectTarget key) {
+	public int addCityValue(EffectTarget key) {
 		return 0;
 	}
 
-	protected float multiplyCityValue(EffectTarget key) {
+	public float multiplyCityValue(EffectTarget key) {
 		return 1f;
 	}
-	
-	public int modifyCityValue(EffectTarget key, int value) {
-		return (int)((value + addCityValue(key) * multiplyCityValue(key)));
-	}
-	
+
 	public int addTileYield(Tile tile, YieldResource res) {
 		return 0;
 	}
@@ -44,7 +40,7 @@ public abstract class CityEffect {
 			this.add = add;
 		}
 		@Override
-		protected int addCityValue(EffectTarget key) {
+		public int addCityValue(EffectTarget key) {
 			return key==this.key ? add : 0;
 		}
 		@Override

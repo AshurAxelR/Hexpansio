@@ -146,6 +146,10 @@ public class Res {
 		return paintCost(g, res, prefix, String.format("%+d", income), postfix, income<0 ? Color.RED : income==0 ? Color.LIGHT_GRAY : Color.WHITE, x, y, halign, valign);
 	}
 
+	public static float paintLimit(GraphAssist g, YieldResource res, String prefix, int value, int limit, float x, float y, int halign, int valign) {
+		return paintCost(g, res, prefix, String.format("%d / %d", value, limit), null, value<limit ? Color.WHITE : Color.YELLOW, x, y, halign, valign);
+	}
+
 	public static void paintToken(GraphAssist g, float scale, ImageAtlas atlas, int subImage) {
 		g.pushPureStroke(true);
 		if(scale>1.25f) {

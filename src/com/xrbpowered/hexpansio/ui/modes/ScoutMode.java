@@ -60,7 +60,7 @@ public class ScoutMode extends MapMode {
 	
 	@Override
 	public String getDescription() {
-		return "Spend gold to discover new lands.";
+		return String.format("Spend gold to discover new lands. Cost modifier: %d%%", (int)(view.world.discoverCostMod*100f));
 	}
 	
 	/*@Override

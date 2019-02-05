@@ -37,7 +37,7 @@ public class Save {
 	public static final Save autosave = new Save(new File(saveDirectory, "autosave.save"));
 	
 	private static final int formatCode = 632016289;
-	private static final int saveVersion = 9;
+	private static final int saveVersion = 10;
 	private static final int minAcceptedVersion = saveVersion;
 
 	public static class SaveInfo {

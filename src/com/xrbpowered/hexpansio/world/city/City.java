@@ -292,7 +292,7 @@ public class City {
 	}
 
 	protected void updateIncomeTiles() {
-		upgPoints = effects.modifyCityValue(EffectTarget.upgPoints, 0);
+		upgPoints = effects.addCityValue(EffectTarget.upgPoints);
 		
 		resourcesOnMap.clear();
 		resourcesProduced.clear();

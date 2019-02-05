@@ -24,7 +24,10 @@ public class EffectTarget {
 
 	public static final EffectTarget upgPoints = new EffectTarget("Upg. Point", true);
 	public static final EffectTarget scouts = new EffectTarget("Scout", true);
+	public static final EffectTarget scoutCost = new EffectTarget("Scout cost", false);
 	public static final EffectTarget baseHappiness = new EffectTarget("Baseline happiness in ALL cities", false);
 	public static final EffectTarget workplaces = new EffectTarget("Workplace", true);
+	public static final EffectTarget maxGold = new EffectTarget("Gold limit", false);
+	public static final EffectTarget maxGoods = new EffectTarget("Goods limit", false);
 
 }

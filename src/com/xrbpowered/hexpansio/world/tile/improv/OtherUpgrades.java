@@ -2,6 +2,8 @@ package com.xrbpowered.hexpansio.world.tile.improv;
 
 import static com.xrbpowered.hexpansio.world.tile.improv.Improvement.*;
 
+import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
+import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
 import com.xrbpowered.hexpansio.world.city.effect.YieldEffect;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
@@ -43,7 +45,7 @@ public abstract class OtherUpgrades {
 		new Improvement("boat.yacht", boat, "Luxury Yacht", 60, 1).maintenance(2).yield(0, 0, 0, 3).cityPrerequisite(CityUpgrades.resort)
 			.reject((Feature[])null);
 		new Improvement("boat.cargo", boat, "Cargo Ship", 80, 1).maintenance(2).yield(0, 2, 0, 0)
-			.reject((Feature[])null);
+			.reject((Feature[])null).effects(CityEffect.add(EffectTarget.maxGoods, 10));
 
 		new Improvement("boat.pump", drill, "Power Pump", 60, 1).yield(0, 1, 1, 0).bonusResources(1)
 			.reject((Feature[])null);
