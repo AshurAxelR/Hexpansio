@@ -14,6 +14,7 @@ import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.ui.dlg.OverlayDialog;
 import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
 import com.xrbpowered.hexpansio.world.Save;
+import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.std.UIListBox;
 import com.xrbpowered.zoomui.std.UIListItem;
@@ -146,7 +147,7 @@ public class SaveDialog extends OverlayDialog {
 		}
 		
 		if(save) {
-			String name = (currentSave==null) ? "NewGame" : currentSave.name;
+			String name = (currentSave==null) ? getNewGameName() : currentSave.name;
 			boolean found = false;
 			for(int i=0; i<list.getNumItems(); i++) {
 				if(((Save)list.getItem(i).object).name.equalsIgnoreCase(name)) {
@@ -160,6 +161,11 @@ public class SaveDialog extends OverlayDialog {
 				repaint();
 			}
 		}
+	}
+	
+	private String getNewGameName() {
+		World world = Hexpansio.getWorld();
+		return String.format("%s.%s", nameDateFormat.format(new Date(world.gameStarted)), world.cities.get(0).name);
 	}
 	
 	private Save selectedSave() {
@@ -217,6 +223,13 @@ public class SaveDialog extends OverlayDialog {
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
 		return true;
 	}
+
+	private static DateFormat nameDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy, HH:mm");
+
+	private static String formatTimestamp(long t) {
+		return dateFormat.format(new Date(t));
+	}
 	
 	@Override
 	protected void paintBoxContents(GraphAssist g) {
@@ -231,20 +244,44 @@ public class SaveDialog extends OverlayDialog {
 		}
 
 		Save s = selectedSave();
-		
-		DateFormat df = new SimpleDateFormat("d MMM yyyy, HH:mm");
-		
 		if(s!=null) {
+			Save.SaveInfo info = s.getInfo();
+			
 			x = (int)(list.getX()+list.getWidth()+20);
 			y = (int)list.getY()+10;
 			g.setFont(Res.font);
-			g.setColor(Color.LIGHT_GRAY);
-			g.drawString("Last played:", x, y);
-			y += 15;
-			g.setColor(Color.WHITE);
-			g.drawString(df.format(new Date(s.file.lastModified())), x, y);
 			
-			// TODO save game info
+			g.setColor(Color.YELLOW);
+			if(!info.validCode) {
+				g.drawString("Bad file format", x, y);
+			}
+			else if(!info.isValid()) {
+				g.drawString("Unsupported old version", x, y);
+			}
+			else {
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawString("Game started:", x, y);
+				y += 15;
+				g.setColor(Color.WHITE);
+				g.drawString(formatTimestamp(info.gameStarted), x, y);
+				
+				y += 25;
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawString("Last played:", x, y);
+				y += 15;
+				g.setColor(Color.WHITE);
+				g.drawString(formatTimestamp(info.gameSaved), x, y);
+
+				y += 40;
+				g.setFont(Res.fontLarge);
+				g.drawString(String.format("Turn %d", info.turn), x, y);
+				g.setFont(Res.font);
+
+				y += 25;
+				g.drawString(String.format("Cities: %d", info.numCities), x, y);
+				y += 15;
+				g.drawString(String.format("Population: %d", info.population), x, y);
+			}
 		}
 		
 		super.paintBoxContents(g);

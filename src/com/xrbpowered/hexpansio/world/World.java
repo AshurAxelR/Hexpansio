@@ -18,6 +18,7 @@ public class World {
 	public static final int originwy = Region.size/2;
 	public static final TerrainType originTerrain = TerrainType.fertileValley;
 	
+	public final long gameStarted;
 	public final WorldSettings settings;
 	public final long seed;
 	public boolean cheater = false;
@@ -25,7 +26,7 @@ public class World {
 
 	public int lastCityId = -1;
 	public int turn = 0;
-	public int gold = 0;
+	public int gold = 0; // TODO gold cap / goods cap
 	public int goods = 0;
 	public int poverty = 0;
 	
@@ -36,7 +37,6 @@ public class World {
 	private HashMap<Integer, City> cityIdMap = new HashMap<>();
 	public ArrayList<City> cities = new ArrayList<>();
 
-	public final Save save;
 	public final TerrainGenerator terrainGenerator;
 	public Tile origin;
 
@@ -51,8 +51,8 @@ public class World {
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
-	public World(Save save, WorldSettings settings, TerrainGenerator terrain) {
-		this.save = save;
+	public World(long started, WorldSettings settings, TerrainGenerator terrain) {
+		this.gameStarted = started;
 		this.settings = settings;
 		this.seed = settings.getSeed();
 		this.terrainGenerator = terrain;

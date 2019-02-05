@@ -37,14 +37,30 @@ public class Save {
 	public static final Save autosave = new Save(new File(saveDirectory, "autosave.save"));
 	
 	private static final int formatCode = 632016289;
-	private static final int saveVersion = 8;
+	private static final int saveVersion = 9;
+	private static final int minAcceptedVersion = saveVersion;
+
+	public static class SaveInfo {
+		public boolean validCode = false;
+		public int version = 0;
+		
+		public long gameStarted;
+		public long gameSaved;
+		public int turn;
+		public int numCities;
+		public int population;
+		
+		public boolean isValid() {
+			return validCode && version>=minAcceptedVersion;
+		}
+	}
 	
 	public final String name;
 	public final File file;
 
+	private SaveInfo info = null;
 	public World world = null;
 	
-	protected int version = 0;
 	protected ObjectIndex<TerrainType> convTerrainType = null;
 	protected ObjectIndex<TokenResource> convResources = null;
 	protected ObjectIndex<Improvement> convImprovement = null;
@@ -331,6 +347,21 @@ public class Save {
 		world.history.read(in);
 	}
 
+	protected void writeInfo(DataOutputStream out, World world) throws IOException {
+		out.writeLong(world.gameStarted);
+		out.writeInt(world.turn);
+		out.writeInt(world.history.stats().numCities);
+		out.writeInt(world.history.stats().population);
+	}
+
+	protected void readInfo(DataInputStream in, SaveInfo info) throws IOException {
+		info.gameSaved = file.lastModified();
+		info.gameStarted = in.readLong();
+		info.turn = in.readInt();
+		info.numCities = in.readInt();
+		info.population = in.readInt();
+	}
+
 	public boolean write() {
 		if(world==null)
 			return false;
@@ -341,9 +372,9 @@ public class Save {
 			DataOutputStream out = new DataOutputStream(zip);
 			
 			out.writeInt(formatCode);
+			out.writeInt(saveVersion);
+			writeInfo(out, world);
 			
-			version = saveVersion;
-			out.writeInt(version);
 			convTerrainType = TerrainType.objectIndex.write(out);
 			convResources = TokenResource.objectIndex.write(out);
 			convImprovement = Improvement.objectIndex.write(out);
@@ -365,31 +396,51 @@ public class Save {
 	
 	public World startNew(WorldSettings settings) {
 		System.out.println("New world");
-		this.world = new World(this, settings, terrainGenerator()).create();
+		this.world = new World(System.currentTimeMillis(), settings, terrainGenerator()).create();
 		return this.world;
 	}
-	
+
 	public World read() {
+		return read(false);
+	}
+
+	public World read(boolean infoOnly) {
 		World world;
+		resetInfo();
 		try {
 			ZipInputStream zip = new ZipInputStream(new FileInputStream(file));
 			zip.getNextEntry();
 			DataInputStream in = new DataInputStream(zip);
 			
+			info = new SaveInfo();
 			if(in.readInt()!=formatCode) {
 				in.close();
-				throw new IOException("Not a save file.");
+				error(infoOnly, "Not a save file");
+				return null;
+			}
+			info.validCode = true;
+			
+			info.version = in.readInt();
+			if(info.version<minAcceptedVersion) {
+				error(infoOnly, "Save version is not supported");
+				in.close();
+				return null;
+			}
+			else if(info.version!=saveVersion)
+				error(infoOnly, "Save version is different");
+			
+			readInfo(in, info);
+			if(infoOnly) {
+				in.close();
+				return null;
 			}
 			
-			version = in.readInt();
-			if(version!=saveVersion)
-				System.err.println("Save version is different");
 			convTerrainType = TerrainType.objectIndex.read(in);
 			convResources = TokenResource.objectIndex.read(in);
 			convImprovement = Improvement.objectIndex.read(in);
 			
 			WorldSettings settings = WorldSettings.read(in);
-			world = new World(this, settings, terrainGenerator());
+			world = new World(info.gameStarted, settings, terrainGenerator());
 			readWorld(in, world);
 
 			zip.close();
@@ -405,8 +456,25 @@ public class Save {
 		this.world = world;
 		return world;
 	}
+
+	private void error(boolean infoOnly, String msg) {
+		if(!infoOnly)
+			System.err.printf("%s: %s\n", name, msg);
+	}
+	
+	public void resetInfo() {
+		info = null;
+	}
+	
+	public SaveInfo getInfo() {
+		if(info==null)
+			read(true);
+		return info;
+	}
+
 	
 	public static ArrayList<Save> allSaves(boolean showAutosave) {
+		autosave.resetInfo();
 		saveDirectory.mkdirs();
 		File[] files = saveDirectory.listFiles();
 		ArrayList<Save> saves = new ArrayList<>();
@@ -429,10 +497,12 @@ public class Save {
 	
 	public static Save latest() {
 		ArrayList<Save> saves = allSaves(true);
-		if(saves.isEmpty())
-			return null;
-		else
-			return saves.get(0);
+		for(int i=0; i<saves.size(); i++) {
+			Save s = saves.get(i);
+			if(s.getInfo().isValid())
+				return s;
+		}
+		return null;
 	}
 
 }
