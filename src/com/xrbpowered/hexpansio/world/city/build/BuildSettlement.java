@@ -5,6 +5,8 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 
 public class BuildSettlement extends BuildingProgress {
 	
+	public static final int cost = 50;
+	
 	public BuildSettlement(City city, Tile tile) {
 		super(city, tile);
 	}
@@ -23,7 +25,7 @@ public class BuildSettlement extends BuildingProgress {
 	
 	@Override
 	public int getCost() {
-		return 50;
+		return cost;
 	}
 	
 	@Override

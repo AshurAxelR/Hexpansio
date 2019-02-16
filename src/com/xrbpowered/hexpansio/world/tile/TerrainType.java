@@ -35,6 +35,10 @@ public class TerrainType {
 		}
 	};
 	
+	private static Feature[] rejectSettler = {
+		Feature.thevoid, Feature.ruins, Feature.water, Feature.swamp, Feature.mountain, Feature.peak, Feature.volcano
+	};
+	
 	public final String id;
 	public final String name;
 	public final Color color;
@@ -99,7 +103,23 @@ public class TerrainType {
 	}
 	
 	public boolean canSettleOn() {
-		return feature!=Feature.water && feature!=Feature.mountain && feature!=Feature.peak && feature!=Feature.swamp;
+		return !hasFeature(rejectSettler);
+	}
+	
+	public static String formatListFeatures(Feature[] features) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<features.length; i++) {
+			if(i>0) {
+				if(features.length==2)
+					sb.append(" or ");
+				else if(i==features.length-1)
+					sb.append(", or ");
+				else
+					sb.append(", ");
+			}
+			sb.append(features[i].name);
+		}
+		return sb.toString();
 	}
 
 	public static final TerrainType valley = new TerrainType("valley", "Valley", new Color(0x73ad46)).yield(1, 1, 1)

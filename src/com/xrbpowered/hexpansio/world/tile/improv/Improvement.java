@@ -9,7 +9,9 @@ import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffect;
 import com.xrbpowered.hexpansio.world.city.effect.CityEffectStack;
 import com.xrbpowered.hexpansio.world.city.effect.EffectTarget;
+import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Yield;
+import com.xrbpowered.hexpansio.world.tile.TerrainType;
 import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 
@@ -34,11 +36,11 @@ public class Improvement implements Comparable<Improvement> {
 	public int workplaces = 0;
 	public int maintenance = 0;
 	public int bonusResources = 0;
-	private Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.volcano, Feature.thevoid, Feature.ruins};
-	private Feature[] reqFeatures = null;
-	private boolean reqResource = false;
-	private boolean reqCoastalCity = false;
-	private int reqPopulation = 0;
+	public Feature[] rejectFeatures = {Feature.water, Feature.peak, Feature.volcano, Feature.thevoid, Feature.ruins};
+	public Feature[] reqFeatures = null;
+	public boolean reqResource = false;
+	public boolean reqCoastalCity = false;
+	public int reqPopulation = 0;
 	public Improvement cityPrerequisite = null;
 
 	public boolean cityUnique = false;
@@ -163,6 +165,24 @@ public class Improvement implements Comparable<Improvement> {
 			effect.addTo(effects);
 	}
 
+	public boolean canBuildOn(TerrainType terrain) {
+		boolean res;
+		if(reqResource) {
+			res = false;
+			if(terrain.tokens!=null) {
+				for(TokenResource r : terrain.tokens)
+					if(r.improvement==this) {
+						res = true;
+						break;
+					}
+			}
+		}
+		else
+			res = true;
+		return (reqFeatures==null || terrain.hasFeature(reqFeatures)) &&
+				!terrain.hasFeature(rejectFeatures) && res;
+	}
+	
 	public boolean canBuildOn(Tile tile) {
 		return (prerequisite==null || ImprovementStack.isPrerequisite(tile, this)) &&
 				(!cityUnique || !ImprovementStack.cityContains(tile.city, this)) &&
@@ -186,15 +206,7 @@ public class Improvement implements Comparable<Improvement> {
 			return String.format("Requires %s", cityPrerequisite.name);
 		}
 		else if(!(reqFeatures==null || tile.terrain.hasFeature(reqFeatures))) {
-			StringBuilder sb = new StringBuilder();
-			for(int i=0; i<reqFeatures.length; i++) {
-				if(i>0 && i==rejectFeatures.length-1)
-					sb.append(" or ");
-				else if(i>0)
-					sb.append(", ");
-				sb.append(reqFeatures[i].name);
-			}
-			return String.format("Requires %s terrain", sb.toString());
+			return String.format("Requires %s terrain", TerrainType.formatListFeatures(reqFeatures));
 		}
 		else if(tile.terrain.hasFeature(rejectFeatures)) {
 			return String.format("Cannot be built on %s terrain", tile.terrain.feature.name);

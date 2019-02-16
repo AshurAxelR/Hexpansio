@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html>
+<head><title>Tile Improvements</title>
+<link href="manual.css" rel="stylesheet">
+</head>
+<body><div id="body">
+<h1>Tile Improvements</h1>
+<h3>Basic Improvements</h3>
+<table class="layout" style="width:100%">
+<tr id="city"><td style="width:160px">
+<p style="margin-top:0"><b>City</b></p>
+</td><td>
+<p style="margin-top:0">Use Settler to build for <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;50</p><p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+50 Gold limit
+<br/>+30 Goods limit
+<br/>+1 Scout
+<br/>+1 Upg. Point
+<br/>+3 Upg. Points in the City tile
+</p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, <a href="terrain.html#thevoid">void</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+<p><a href="#city.upg">View upgrades</a></p></td></tr>
+
+<tr id="farm"><td style="width:160px">
+<p style="margin-top:0"><b>Farm</b><br/><span style="font-size:18pt">F</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#grain">Grain</a></p>
+<p><span style="color:#99dd55">+2 Food</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#thevoid">void</a>, <a href="terrain.html#ruins">ruins</a>, <a href="terrain.html#water">water</a>, <a href="terrain.html#forest">forest</a>, <a href="terrain.html#desert">desert</a>, <a href="terrain.html#swamp">swamp</a>, <a href="terrain.html#mountain">mountain</a>, <a href="terrain.html#peak">peak</a>, or <a href="terrain.html#volcano">volcano</a> terrain<br/>
+</p>
+<p class="info">Hotkey: F</p><p><a href="#farm.upg">View upgrades</a></p></td></tr>
+
+<tr id="mine"><td style="width:160px">
+<p style="margin-top:0"><b>Mine</b><br/><span style="font-size:18pt">M</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#iron">Iron</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gold">Gold</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gems">Gems</a></p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#cb965d">+3 Production</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, <a href="terrain.html#thevoid">void</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+Requires appropriate resource (<a style="color:#fff;font-weight:bold" href="resources.html#iron">Iron</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gold">Gold</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gems">Gems</a>)<br/>
+</p>
+<p class="info">Hotkey: M</p><p><a href="#mine.upg">View upgrades</a></p></td></tr>
+
+<tr id="lumbermill"><td style="width:160px">
+<p style="margin-top:0"><b>Lumber Mill</b><br/><span style="font-size:18pt">L</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30</p>
+<p><span style="color:#cb965d">+2 Production</span></p>
+<p class="dark">
+Requires <a href="terrain.html#forest">forest</a> terrain<br/>
+</p>
+<p class="info">Hotkey: L</p><p><a href="#lumbermill.upg">View upgrades</a></p></td></tr>
+
+<tr id="gatherer"><td style="width:160px">
+<p style="margin-top:0"><b>Gatherer</b><br/><span style="font-size:18pt">G</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;20</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#berries">Berries</a></p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Requires <a href="terrain.html#forest">forest</a> or <a href="terrain.html#swamp">swamp</a> terrain<br/>
+</p>
+<p class="info">Hotkey: G</p><p><a href="#gatherer.upg">View upgrades</a></p></td></tr>
+
+<tr id="market"><td style="width:160px">
+<p style="margin-top:0"><b>Market</b><br/><span style="font-size:18pt">T</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;50</p>
+<p><span style="color:#ddcc33">+2 Gold</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#mountain">mountain</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, <a href="terrain.html#thevoid">void</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+<p class="info">Hotkey: T</p><p><a href="#market.upg">View upgrades</a></p></td></tr>
+
+<tr id="park"><td style="width:160px">
+<p style="margin-top:0"><b>Park</b><br/><span style="font-size:18pt">P</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#flowers">Flowers</a></p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#33ccdd">+1 Happiness</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#desert">desert</a>, <a href="terrain.html#volcano">volcano</a>, or <a href="terrain.html#thevoid">void</a> terrain<br/>
+</p>
+<p class="info">Hotkey: P</p><p><a href="#park.upg">View upgrades</a></p></td></tr>
+
+<tr id="pasture"><td style="width:160px">
+<p style="margin-top:0"><b>Pasture</b><br/><span style="font-size:18pt">U</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#cattle">Cattle</a>, <a style="color:#fff;font-weight:bold" href="resources.html#wool">Wool</a></p>
+<p><span style="color:#99dd55">+1 Food</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#desert">desert</a>, <a href="terrain.html#forest">forest</a>, <a href="terrain.html#swamp">swamp</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, <a href="terrain.html#thevoid">void</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+<p class="info">Hotkey: U</p><p><a href="#pasture.upg">View upgrades</a></p></td></tr>
+
+<tr id="plantation"><td style="width:160px">
+<p style="margin-top:0"><b>Plantation</b><br/><span style="font-size:18pt">N</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#fruits">Friuts</a>, <a style="color:#fff;font-weight:bold" href="resources.html#coffee">Coffee</a>, <a style="color:#fff;font-weight:bold" href="resources.html#cacti">Cacti</a></p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, or <a href="terrain.html#thevoid">void</a> terrain<br/>
+Requires appropriate resource (<a style="color:#fff;font-weight:bold" href="resources.html#fruits">Friuts</a>, <a style="color:#fff;font-weight:bold" href="resources.html#coffee">Coffee</a>, <a style="color:#fff;font-weight:bold" href="resources.html#cacti">Cacti</a>)<br/>
+</p>
+<p class="info">Hotkey: N</p><p><a href="#plantation.upg">View upgrades</a></p></td></tr>
+
+<tr id="quarry"><td style="width:160px">
+<p style="margin-top:0"><b>Quarry</b><br/><span style="font-size:18pt">Y</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#stone">Stone</a>, <a style="color:#fff;font-weight:bold" href="resources.html#clay">Clay</a>, <a style="color:#fff;font-weight:bold" href="resources.html#sand">Sand</a></p>
+<p><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#forest">forest</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, or <a href="terrain.html#thevoid">void</a> terrain<br/>
+</p>
+<p class="info">Hotkey: Y</p><p><a href="#quarry.upg">View upgrades</a></p></td></tr>
+
+<tr id="boat"><td style="width:160px">
+<p style="margin-top:0"><b>Fishing Boat</b><br/><span style="font-size:18pt">B</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;20</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#fish">Fish</a>, <a style="color:#fff;font-weight:bold" href="resources.html#pearls">Pearls</a>, <a style="color:#fff;font-weight:bold" href="resources.html#corals">Corals</a>, <a style="color:#fff;font-weight:bold" href="resources.html#kelp">Kelp</a></p>
+<p><span style="color:#99dd55">+1 Food</span></p>
+<p class="dark">
+Requires <a href="terrain.html#water">water</a> terrain<br/>
+Requires appropriate resource (<a style="color:#fff;font-weight:bold" href="resources.html#fish">Fish</a>, <a style="color:#fff;font-weight:bold" href="resources.html#pearls">Pearls</a>, <a style="color:#fff;font-weight:bold" href="resources.html#corals">Corals</a>, <a style="color:#fff;font-weight:bold" href="resources.html#kelp">Kelp</a>)<br/>
+Requires coastal city<br/>
+</p>
+<p class="info">Hotkey: B</p><p><a href="#boat.upg">View upgrades</a></p></td></tr>
+
+<tr id="drill"><td style="width:160px">
+<p style="margin-top:0"><b>Drill</b><br/><span style="font-size:18pt">I</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60</p>
+<p>Can produce resources: <a style="color:#fff;font-weight:bold" href="resources.html#fuel">Fuel</a></p>
+<p><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+2 Production</span></p>
+<p class="dark">
+Cannot be built on <a href="terrain.html#thevoid">void</a> terrain<br/>
+Requires appropriate resource (<a style="color:#fff;font-weight:bold" href="resources.html#fuel">Fuel</a>)<br/>
+Building on <a href="terrain.html#water">water</a> terrain requires coastal city<br/></p>
+<p class="info">Hotkey: I</p><p><a href="#drill.upg">View upgrades</a></p></td></tr>
+
+<tr id="voidworks"><td style="width:160px">
+<p style="margin-top:0"><b>Voidworks</b><br/><span style="font-size:18pt">V</span></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;20</p>
+<p class="info">+1 workplace</p><p><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city.beacon">Beacon of Hope</a> in the city<br/>
+Requires <a href="terrain.html#thevoid">void</a> terrain<br/>
+</p>
+<p class="info">Hotkey: V</p><p><a href="#voidworks.upg">View upgrades</a></p></td></tr>
+
+</table>
+<h3><span id="city.upg"></span>City Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="city.hall"><td style="width:160px">
+<p style="margin-top:0"><b>Town Hall</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;100<br/>Cannot hurry construction</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-5</span> gold</p><p><span style="color:#33ccdd">+2 Happiness</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+30 Gold limit
+<br/>+2 Upg. Points
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+Requires 5 population<br/></p>
+</td></tr>
+
+<tr id="city.beacon"><td style="width:160px">
+<p style="margin-top:0"><b>Beacon of Hope</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;50</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-5</span> gold</p><p><span style="color:#33ccdd">+2 Happiness</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>Unhappiness from void -80%
+<br/>Allows building Voidworks
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.migration"><td style="width:160px">
+<p style="margin-top:0"><b>Migration Centre</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;50</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p><span style="color:#ff0000">-1 Happiness</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>Allows migration to and from this city
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.farm"><td style="width:160px">
+<p style="margin-top:0"><b>Food Reserve</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#99dd55">+2 Food</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.utopia"><td style="width:160px">
+<p style="margin-top:0"><b>Utopia</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;200<br/>Cannot hurry construction<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-5</span> gold</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Baseline happiness in ALL cities
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a><br/>
+Requires 5 population<br/></p>
+</td></tr>
+
+<tr id="city.treasury"><td style="width:160px">
+<p style="margin-top:0"><b>Treasury</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>Upg. Points required: 1</p>
+<p><span style="color:#ddcc33">+2 Gold</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+100 Gold limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.harbour"><td style="width:160px">
+<p style="margin-top:0"><b>Harbour</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Food and +1 Gold from water tiles
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+Requires coastal city<br/>
+</p>
+</td></tr>
+
+<tr id="city.solar"><td style="width:160px">
+<p style="margin-top:0"><b>Solar Power</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Production from desert tiles
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.resort"><td style="width:160px">
+<p style="margin-top:0"><b>Holiday Resort</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;200<br/>Cannot hurry construction<br/>Upg. Points required: 2</p>
+<p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#ddcc33">+1 Gold</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Happiness from water tiles
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+Requires coastal city<br/>
+</p>
+</td></tr>
+
+<tr id="city.industry"><td style="width:160px">
+<p style="margin-top:0"><b>Industrial Zone</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p><span style="color:#cb965d">+2 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Production from Iron and Fuel
+<br/>+50 Goods limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city">City</a><br/>
+</p>
+</td></tr>
+
+<tr id="city.highrise"><td style="width:160px">
+<p style="margin-top:0"><b>Highrise</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;300<br/>Cannot hurry construction<br/>Upg. Points required: 3</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-10</span> gold</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>Unhappiness from population -50%
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a><br/>
+Requires 15 population<br/></p>
+</td></tr>
+
+<tr id="city.downtown"><td style="width:160px">
+<p style="margin-top:0"><b>Downtown</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;400<br/>Cannot hurry construction<br/>Upg. Points required: 1</p>
+<p><span style="color:#33ccdd">+3 Happiness</span><br/><span style="color:#ddcc33">+3 Gold</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#city.highrise">Highrise</a><br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="farm.upg"></span>Farm Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="farm.fertiliser"><td style="width:160px">
+<p style="margin-top:0"><b>Fertiliser</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#99dd55">+3 Food</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+<tr id="farm.mill"><td style="width:160px">
+<p style="margin-top:0"><b>Mill</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+<tr id="farm.greenhouse"><td style="width:160px">
+<p style="margin-top:0"><b>Greenhouse</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#99dd55">+1 Food per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+<tr id="farm.market"><td style="width:160px">
+<p style="margin-top:0"><b>Green Market</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+<tr id="farm.granary"><td style="width:160px">
+<p style="margin-top:0"><b>Granary</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>City unique<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p class="info">+1 Resource harvested</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Food from Grain
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+<tr id="farm.distillery"><td style="width:160px">
+<p style="margin-top:0"><b>Distillery</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info">+1 workplace</p><p><span style="color:#cb965d">+2 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Happiness from Grain, Berries, and Cacti
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#farm">Farm</a><br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="mine.upg"></span>Mine Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="mine.guild"><td style="width:160px">
+<p style="margin-top:0"><b>Miners' Guild</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">+2 workplaces</p><p><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+</p>
+</td></tr>
+
+<tr id="mine.strip"><td style="width:160px">
+<p style="margin-top:0"><b>Strip Mine</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p class="info">+1 workplace</p><p class="info">+2 Resources harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+Requires appropriate resource (<a style="color:#fff;font-weight:bold" href="resources.html#iron">Iron</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gold">Gold</a>, <a style="color:#fff;font-weight:bold" href="resources.html#gems">Gems</a>)<br/>
+</p>
+</td></tr>
+
+<tr id="mine.auto"><td style="width:160px">
+<p style="margin-top:0"><b>Automated Mining</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#cb965d">+2 Production per worker</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+</p>
+</td></tr>
+
+<tr id="mine.factory"><td style="width:160px">
+<p style="margin-top:0"><b>Factory</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;100<br/>Upg. Points required: 2</p>
+<p class="info">+3 workplaces</p><p><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+20 Goods limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+Cannot be built on <a href="terrain.html#mountain">mountain</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="mine.forge"><td style="width:160px">
+<p style="margin-top:0"><b>Forge</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>City unique<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+2 Production from Iron
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+</p>
+</td></tr>
+
+<tr id="mine.jewelcrafts"><td style="width:160px">
+<p style="margin-top:0"><b>Jewelcrafts</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;100<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">+1 workplace</p><p><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+2 Gold from Gold and Gems
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#mine">Mine</a><br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="lumbermill.upg"></span>Lumber Mill Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="lumbermill.forester"><td style="width:160px">
+<p style="margin-top:0"><b>Forester</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>Upg. Points required: 1</p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#lumbermill">Lumber Mill</a><br/>
+</p>
+</td></tr>
+
+<tr id="lumbermill.saw"><td style="width:160px">
+<p style="margin-top:0"><b>Sawmill</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#cb965d">+3 Production</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#lumbermill">Lumber Mill</a><br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="gatherer.upg"></span>Gatherer Upgrades</h3>
+<table class="layout" style="width:100%">
+</table>
+<p class="dark">No upgrades</p>
+<h3><span id="market.upg"></span>Market Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="market.office"><td style="width:160px">
+<p style="margin-top:0"><b>Office</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#ddcc33">+2 Gold</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a> in the city<br/>
+Cannot be built on <a href="terrain.html#forest">forest</a> or <a href="terrain.html#swamp">swamp</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="market.rows"><td style="width:160px">
+<p style="margin-top:0"><b>Trade Rows</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+</p>
+</td></tr>
+
+<tr id="market.fair"><td style="width:160px">
+<p style="margin-top:0"><b>Fun Fair</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>City unique<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#33ccdd">+2 Happiness</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+</p>
+</td></tr>
+
+<tr id="market.grocery"><td style="width:160px">
+<p style="margin-top:0"><b>Grocery</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30<br/>Upg. Points required: 1</p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+</p>
+</td></tr>
+
+<tr id="market.warehouse"><td style="width:160px">
+<p style="margin-top:0"><b>Warehouse</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#cb965d">+2 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+5 Goods limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+</p>
+</td></tr>
+
+<tr id="market.bank"><td style="width:160px">
+<p style="margin-top:0"><b>Bank</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;200<br/>City unique<br/>Cannot hurry construction<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info">+1 workplace</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Gold from every Office
+<br/>+20 Gold limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a> in the city<br/>
+Cannot be built on <a href="terrain.html#forest">forest</a> or <a href="terrain.html#swamp">swamp</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="market.hub"><td style="width:160px">
+<p style="margin-top:0"><b>Stock Exchange</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;250<br/>City unique<br/>Cannot hurry construction<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info">+1 workplace</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Gold from all resources
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#market">Market</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a> in the city<br/>
+Cannot be built on <a href="terrain.html#forest">forest</a> or <a href="terrain.html#swamp">swamp</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="park.upg"></span>Park Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="park.garden"><td style="width:160px">
+<p style="margin-top:0"><b>Community Garden</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;30<br/>Upg. Points required: 1</p>
+<p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#99dd55">+1 Food</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a>, <a href="terrain.html#forest">forest</a>, <a href="terrain.html#swamp">swamp</a>, <a href="terrain.html#mountain">mountain</a>, or <a href="terrain.html#peak">peak</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.monument"><td style="width:160px">
+<p style="margin-top:0"><b>Monument</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;10</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#33ccdd">+1 Happiness</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+Cannot be built on <a href="terrain.html#peak">peak</a> or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.observatory"><td style="width:160px">
+<p style="margin-top:0"><b>Observatory</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p><span style="color:#33ccdd">+3 Happiness</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Scout
+<br/>-10% to Scout cost (diminishing)
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+</p>
+</td></tr>
+
+<tr id="park.ski"><td style="width:160px">
+<p style="margin-top:0"><b>Ski Resort</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p><span style="color:#33ccdd">+2 Happiness</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+Requires <a href="terrain.html#peak">peak</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.shrine"><td style="width:160px">
+<p style="margin-top:0"><b>Shrine</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;20<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#33ccdd">+1 Happiness per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+</p>
+</td></tr>
+
+<tr id="park.cathederal"><td style="width:160px">
+<p style="margin-top:0"><b>Cathedral</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;100<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p class="info">+1 workplace</p><p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#33ccdd">+1 Happiness per worker</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park.shrine">Shrine</a><br/>
+Cannot be built on <a href="terrain.html#swamp">swamp</a>, <a href="terrain.html#mountain">mountain</a>, or <a href="terrain.html#peak">peak</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.school"><td style="width:160px">
+<p style="margin-top:0"><b>School</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info">+1 workplace</p><p><span style="color:#33ccdd">+1 Happiness per worker</span><br/><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park">Park</a><br/>
+Cannot be built on <a href="terrain.html#forest">forest</a>, <a href="terrain.html#swamp">swamp</a>, <a href="terrain.html#mountain">mountain</a>, or <a href="terrain.html#peak">peak</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.library"><td style="width:160px">
+<p style="margin-top:0"><b>Library</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#33ccdd">+1 Happiness per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park.school">School</a><br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="park.university"><td style="width:160px">
+<p style="margin-top:0"><b>University</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-5</span> gold</p><p class="info">+1 workplace</p><p><span style="color:#33ccdd">+2 Happiness</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Workplace to every School or Office
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#park.school">School</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a> in the city<br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="pasture.upg"></span>Pasture Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="pasture.housing"><td style="width:160px">
+<p style="margin-top:0"><b>Animal Housing</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#pasture">Pasture</a><br/>
+</p>
+</td></tr>
+
+<tr id="pasture.stables"><td style="width:160px">
+<p style="margin-top:0"><b>Stables</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#pasture">Pasture</a><br/>
+</p>
+</td></tr>
+
+<tr id="pasture.mountaineer"><td style="width:160px">
+<p style="margin-top:0"><b>Mountaineer</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>Upg. Points required: 1</p>
+<p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#pasture">Pasture</a><br/>
+Requires <a href="terrain.html#mountain">mountain</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="plantation.upg"></span>Plantation Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="plantation.irrigation"><td style="width:160px">
+<p style="margin-top:0"><b>Irrigation Systems</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#ddcc33">+1 Gold</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#plantation">Plantation</a><br/>
+Requires <a href="terrain.html#desert">desert</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="plantation.intensive"><td style="width:160px">
+<p style="margin-top:0"><b>Intensive Farming</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#99dd55">+1 Food per worker</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#plantation">Plantation</a><br/>
+Cannot be built on <a href="terrain.html#desert">desert</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="quarry.upg"></span>Quarry Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="quarry.excavator"><td style="width:160px">
+<p style="margin-top:0"><b>Excavator</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#cb965d">+1 Production</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#quarry">Quarry</a><br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="quarry.deep"><td style="width:160px">
+<p style="margin-top:0"><b>Deep Quarry</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#quarry">Quarry</a><br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="quarry.giant"><td style="width:160px">
+<p style="margin-top:0"><b>Giant Excavator</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>City unique<br/>Upg. Points required: 3</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-3</span> gold</p><p><span style="color:#cb965d">+3 Production</span></p>
+<p class="info">+2 Resources harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#quarry">Quarry</a><br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="quarry.civileng"><td style="width:160px">
+<p style="margin-top:0"><b>Civil Engineering</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p class="info">+2 workplaces</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Production from Stone, Clay, and Sand
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#quarry">Quarry</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.hall">Town Hall</a> in the city<br/>
+Cannot be built on <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="boat.upg"></span>Fishing Boat Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="boat.crew"><td style="width:160px">
+<p style="margin-top:0"><b>Crew Training</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">+1 workplace</p><p><span style="color:#99dd55">+1 Food per worker</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#boat">Fishing Boat</a><br/>
+Requires coastal city<br/>
+</p>
+</td></tr>
+
+<tr id="boat.yacht"><td style="width:160px">
+<p style="margin-top:0"><b>Luxury Yacht</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#33ccdd">+3 Happiness</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#boat">Fishing Boat</a><br/>
+Requires <a style="color:#fff" href="improvements.html#city.resort">Holiday Resort</a> in the city<br/>
+Requires coastal city<br/>
+</p>
+</td></tr>
+
+<tr id="boat.cargo"><td style="width:160px">
+<p style="margin-top:0"><b>Cargo Ship</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#cb965d">+2 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+10 Goods limit
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#boat">Fishing Boat</a><br/>
+Requires coastal city<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="drill.upg"></span>Drill Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="boat.pump"><td style="width:160px">
+<p style="margin-top:0"><b>Power Pump</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;60<br/>Upg. Points required: 1</p>
+<p><span style="color:#ddcc33">+1 Gold</span><br/><span style="color:#cb965d">+1 Production</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#drill">Drill</a><br/>
+Building on <a href="terrain.html#water">water</a> terrain requires coastal city<br/></p>
+</td></tr>
+
+<tr id="boat.refinery"><td style="width:160px">
+<p style="margin-top:0"><b>Refinery</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;80<br/>Upg. Points required: 1</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p class="info">+1 workplace</p><p><span style="color:#cb965d">+2 Production per worker</span></p>
+<p class="info">+1 Resource harvested</p><p class="dark">
+Requires <a style="color:#fff" href="improvements.html#drill">Drill</a><br/>
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+<tr id="boat.chemical"><td style="width:160px">
+<p style="margin-top:0"><b>Chemical Plant</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;120<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p class="info">+1 workplace</p><p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Gold and +1 Production from Fuel
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#drill">Drill</a><br/>
+Cannot be built on <a href="terrain.html#water">water</a>, <a href="terrain.html#peak">peak</a>, <a href="terrain.html#volcano">volcano</a>, or <a href="terrain.html#ruins">ruins</a> terrain<br/>
+</p>
+</td></tr>
+
+</table>
+<h3><span id="voidworks.upg"></span>Voidworks Upgrades</h3>
+<table class="layout" style="width:100%">
+<tr id="void.farm"><td style="width:160px">
+<p style="margin-top:0"><b>Hydropinics</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;40<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-1</span> gold</p><p><span style="color:#99dd55">+1 Food</span><br/><span style="color:#99dd55">+1 Food per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+<tr id="void.booster"><td style="width:160px">
+<p style="margin-top:0"><b>Booster</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;20<br/>Upg. Points required: 1</p>
+<p><span style="color:#cb965d">+1 Production per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+<tr id="void.hologram"><td style="width:160px">
+<p style="margin-top:0"><b>Hologram</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;100<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#33ccdd">+1 Happiness</span><br/><span style="color:#33ccdd">+1 Happiness per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+<tr id="void.power"><td style="width:160px">
+<p style="margin-top:0"><b>Power Plant</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;50<br/>Upg. Points required: 1</p>
+<p><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+<tr id="void.economy"><td style="width:160px">
+<p style="margin-top:0"><b>Void Economy</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;200<br/>City unique<br/>Cannot hurry construction<br/>Upg. Points required: 3</p>
+<p><span style="color:#ddcc33">+2 Gold</span><br/><span style="color:#ddcc33">+1 Gold per worker</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Workplace to every Voidworks
+<br/>+1 Gold from Voidworks
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+<tr id="void.forge"><td style="width:160px">
+<p style="margin-top:0"><b>Void Forge</b></p>
+</td><td>
+<p style="margin-top:0">Build cost: <span title="Production/Goods" style="color:#cb965d">&#11044;</span>&thinsp;150<br/>City unique<br/>Upg. Points required: 2</p>
+<p class="info">Maintenance: <span title="Gold" style="color:#ddcc33">&#11044;</span><span style="color:#f00">&thinsp;-2</span> gold</p><p><span style="color:#cb965d">+3 Production</span></p>
+<p class="info"><span style="color:#fff">City-wide effects:</span>
+<br/>+1 Production from Voidworks
+</p>
+<p class="dark">
+Requires <a style="color:#fff" href="improvements.html#voidworks">Voidworks</a><br/>
+</p>
+</td></tr>
+
+</table>
+</div></body>
+</html>
