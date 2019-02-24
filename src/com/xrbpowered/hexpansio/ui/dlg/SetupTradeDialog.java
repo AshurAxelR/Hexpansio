@@ -16,9 +16,11 @@ import com.xrbpowered.hexpansio.world.resources.Yield;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
+import com.xrbpowered.zoomui.base.UIListBoxBase;
+import com.xrbpowered.zoomui.std.UIArrowButton;
 import com.xrbpowered.zoomui.std.UIListBox;
-import com.xrbpowered.zoomui.std.UIListBoxBase;
 import com.xrbpowered.zoomui.std.UIScrollBar;
+import com.xrbpowered.zoomui.std.UIScrollContainer;
 
 public class SetupTradeDialog extends OverlayDialog {
 
@@ -162,9 +164,9 @@ public class SetupTradeDialog extends OverlayDialog {
 		float w = fm.stringWidth(s);
 		g.drawString(s, x, y, GraphAssist.CENTER, GraphAssist.CENTER);
 		if(count>0)
-			UIScrollBar.drawRightArrow(g, (int)(x+w/2f+10), y, 6);
+			UIArrowButton.drawRightArrow(g, (int)(x+w/2f+10), y, 6);
 		else
-			UIScrollBar.drawLeftArrow(g, (int)(x-w/2f-10), y, 6);
+			UIArrowButton.drawLeftArrow(g, (int)(x-w/2f-10), y, 6);
 	}
 	
 	private UIListBoxBase<ResourceListItem> list;
@@ -183,12 +185,20 @@ public class SetupTradeDialog extends OverlayDialog {
 		
 		list = new UIListBoxBase<ResourceListItem>(box, resList.toArray(new ResourcePile.Entry[resList.size()])) {
 			@Override
+			protected UIScrollBar createScroll() {
+				return UIScrollContainer.createScroll(this);
+			}
+			@Override
 			protected ResourceListItem createItem(int index, Object object) {
 				return new ResourceListItem(this.getView(), (ResourcePile.Entry)object);
 			}
 			@Override
 			protected void paintSelf(GraphAssist g) {
 				g.fill(this, UIListBox.colorBackground);
+			}
+			@Override
+			protected void paintBorder(GraphAssist g) {
+				g.border(this, UIListBox.colorBorder);
 			}
 			@Override
 			protected void paintChildren(GraphAssist g) {

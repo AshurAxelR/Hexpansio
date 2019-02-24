@@ -9,7 +9,7 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIHoverElement;
+import com.xrbpowered.zoomui.base.UIHoverElement;
 
 public class ClickButton extends UIHoverElement {
 

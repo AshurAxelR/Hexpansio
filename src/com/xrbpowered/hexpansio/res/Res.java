@@ -15,6 +15,7 @@ import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.utils.MathUtils;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.std.UIArrowButton;
 import com.xrbpowered.zoomui.std.UIButton;
 import com.xrbpowered.zoomui.std.UIListBox;
 import com.xrbpowered.zoomui.std.UIScrollBar;
@@ -78,9 +79,11 @@ public class Res {
 
 	public static void restyleStdControls() {
 		UIListBox.colorBackground = Color.BLACK;
+		UIListBox.colorBorder = uiBorderDark;
 		UIScrollContainer.colorBorder = uiBorderDark;
-		UIScrollBar.colorArrow = Color.WHITE;
-		UIScrollBar.colorArrowDisabled = Color.GRAY;
+		UIArrowButton.colorArrow = Color.WHITE;
+		UIArrowButton.colorArrowDisabled = Color.GRAY;
+		UIArrowButton.colorHover = uiBorderDark;
 		UIScrollBar.colorBg = uiBgMid;
 		UIScrollBar.colorBorder = uiBorderDark;
 		UIButton.colorGradTop = uiButtonTop;

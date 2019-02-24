@@ -22,7 +22,7 @@ import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIZoomView;
+import com.xrbpowered.zoomui.base.UIZoomView;
 
 public class MapView extends UIElement {
 

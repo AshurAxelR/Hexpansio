@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
-import com.xrbpowered.zoomui.std.UIScrollBar;
+import com.xrbpowered.zoomui.std.UIArrowButton;
 
 public class ArrowButton extends ClickButton {
 
@@ -19,9 +19,9 @@ public class ArrowButton extends ClickButton {
 	protected void paintLabel(GraphAssist g, boolean enabled, String label) {
 		g.setColor(enabled ? Color.WHITE : Color.GRAY);
 		if(delta>0)
-			UIScrollBar.drawRightArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
+			UIArrowButton.drawRightArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
 		else
-			UIScrollBar.drawLeftArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
+			UIArrowButton.drawLeftArrow(g, (int)getWidth()/2, (int)getHeight()/2, 6);
 	}
 	
 }
