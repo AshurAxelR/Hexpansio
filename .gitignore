@@ -1,7 +1,10 @@
 img_src/
+save/
 *.save
 *.cfg
 /*.html
+
+lib/
 
 # Compiled class file
 *.class

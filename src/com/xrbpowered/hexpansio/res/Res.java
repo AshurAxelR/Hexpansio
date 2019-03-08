@@ -84,7 +84,7 @@ public class Res {
 		UIArrowButton.colorArrow = Color.WHITE;
 		UIArrowButton.colorArrowDisabled = Color.GRAY;
 		UIArrowButton.colorHover = uiBorderDark;
-		UIScrollBar.colorBg = uiBgMid;
+		UIScrollBar.colorBackground = uiBgMid;
 		UIScrollBar.colorBorder = uiBorderDark;
 		UIButton.colorGradTop = uiButtonTop;
 		UIButton.colorGradBottom = uiBgBright;
