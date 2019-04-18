@@ -29,14 +29,17 @@ public abstract class CityUpgrades {
 	public static final Improvement migrationCentre = new Improvement("city.migration", cityCenter, "Migration Centre", 50, 0).maintenance(3).yield(0, 0, 0, -1)
 			.effects(CityEffect.dummy("Allows migration to and from this city"));
 	
+	public static Improvement utopia = null;
 	public static Improvement highrise = null;
 	public static Improvement resort = null;
 
 	public static void init() {
 		new Improvement("city.farm", cityCenter, "Food Reserve", 30, 1).maintenance(1).yield(2, 0, 0, 0);
-		new Improvement("city.utopia", townHall, "Utopia", 200, 1).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
 		new Improvement("city.treasury", townHall, "Treasury", 150, 1).yield(0, 0, 2, 0).effects(CityEffect.add(EffectTarget.maxGold, 100));
-		
+
+		utopia = new Improvement("city.utopia", townHall, "Utopia", 200, 1).requirePopulation(5).cannotHurry().maintenance(5).effects(CityEffect.add(EffectTarget.baseHappiness, 1));
+		utopia.keyUpgrade = true;
+
 		new Improvement("city.harbour", cityCenter, "Harbour", 60, 1).maintenance(2).requireCoastalCity()
 			.effects(new YieldEffect.Tile(1, 0, 1, 0) {
 				@Override

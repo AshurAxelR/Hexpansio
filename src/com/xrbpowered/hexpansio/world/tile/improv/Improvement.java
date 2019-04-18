@@ -46,6 +46,7 @@ public class Improvement implements Comparable<Improvement> {
 	public boolean cityUnique = false;
 	public boolean canHurry = true;
 	public boolean voidUnlock = false;
+	public boolean keyUpgrade = false;
 	
 	public Improvement(String id, Improvement prerequisite, String name, int buildCost, int upgPoints) {
 		this.id = id;
@@ -229,12 +230,15 @@ public class Improvement implements Comparable<Improvement> {
 	
 	public boolean isRecommendedFor(Tile tile) {
 		return canBuildOn(tile) &&
-				(tile.resource!=null && tile.resource.improvement==this);
+				(tile.resource!=null && tile.resource.improvement==this || keyUpgrade);
 	}
 	
 	public String recommendationExplained(Tile tile) {
 		if(tile.resource!=null && tile.resource.improvement==this) {
 			return "Will produce "+tile.resource.name;
+		}
+		else if(keyUpgrade) {
+			return "Key upgrade";
 		}
 		else
 			return null;

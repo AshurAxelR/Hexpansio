@@ -254,7 +254,7 @@ public class TileInfoPane extends UIContainer {
 					g.setColor(Color.GRAY);
 					g.setFont(Res.font);
 					g.drawString(Integer.toString(upg.upgPoints), x+10, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-					g.setColor(Color.WHITE);
+					g.setColor(upg.keyUpgrade ? Color.YELLOW : Color.WHITE);
 					g.setFont(Res.fontBold);
 					g.drawString(upg.name, x+25, y);
 				}

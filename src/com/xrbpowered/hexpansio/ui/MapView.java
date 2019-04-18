@@ -19,6 +19,8 @@ import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
+import com.xrbpowered.hexpansio.world.tile.improv.CityUpgrades;
+import com.xrbpowered.hexpansio.world.tile.improv.ImprovementStack;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
@@ -324,7 +326,7 @@ public class MapView extends UIElement {
 			int y0 = (-city.tile.wx+2*city.tile.wy)*h;
 			g.translate(x0, y0);
 			
-			g.setColor(Color.DARK_GRAY);
+			g.setColor(ImprovementStack.tileContains(city.tile, CityUpgrades.utopia) ? Color.WHITE : Color.DARK_GRAY);
 			Res.paintToken(g, getScale(), Res.imgHappiness, city.happiness.ordinal());
 			
 			if(getScale()>0.75f) {
