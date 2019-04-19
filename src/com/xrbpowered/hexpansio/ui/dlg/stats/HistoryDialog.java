@@ -3,6 +3,9 @@ package com.xrbpowered.hexpansio.ui.dlg.stats;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -12,6 +15,7 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.ui.OptionBox;
 import com.xrbpowered.hexpansio.ui.dlg.OverlayDialog;
+import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
 import com.xrbpowered.hexpansio.world.TurnStatistics;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -24,7 +28,7 @@ public class HistoryDialog extends OverlayDialog {
 	public final World world;
 	
 	private static final Diagram[] diagramOptions = {
-			Diagram.cities, Diagram.populationDensity, Diagram.happiness, Diagram.goldAndGoods, Diagram.yield, Diagram.resources, Diagram.voidStorms
+			Diagram.cities, Diagram.populationDensity, Diagram.happiness, Diagram.gold, Diagram.goods, Diagram.yield, Diagram.resources, Diagram.voidStorms
 		};
 
 	private static Diagram diagram = null;
@@ -32,6 +36,7 @@ public class HistoryDialog extends OverlayDialog {
 	private final OptionBox diagramOption;
 
 	private final ClickButton closeButton;
+	private final ClickButton seedButton;
 	
 	public HistoryDialog() {
 		super(Hexpansio.instance.getBase(), 1020, 520, "STATISTICS AND HISTORY");
@@ -44,7 +49,26 @@ public class HistoryDialog extends OverlayDialog {
 			}
 		};
 		closeButton.setLocation(10, box.getHeight()-closeButton.getHeight()-10);
-		
+
+		seedButton = new ClickButton(box, "Seed", 100) {
+			@Override
+			public void onClick() {
+				if(world.settings.seedString!=null) {
+					new ConfirmationDialog(0, "WORLD SEED", world.settings.seedString, "COPY", "CLOSE") {
+						@Override
+						public void onEnter() {
+							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+							StringSelection con = new StringSelection(world.settings.seedString);
+							clipboard.setContents(con, con);
+							super.onEnter();
+						}
+					}.repaint();
+				}
+			}
+		};
+		seedButton.setLocation(closeButton.getX()+closeButton.getWidth()+5, closeButton.getY());
+		seedButton.setVisible(world.settings.seedString!=null);
+
 		diagramOption = new OptionBox(box, "Show:", diagramOptions.length, null) {
 			@Override
 			protected void selectOption(int value) {
@@ -146,8 +170,6 @@ public class HistoryDialog extends OverlayDialog {
 		g.popPureStroke();
 		g.popAntialiasing();
 		g.popTx();
-		
-		// TODO display world settings (seed), copy to clipboard 
 		
 		super.paintBoxContents(g);
 	}

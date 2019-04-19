@@ -86,16 +86,27 @@ public abstract class Diagram {
 		}
 	};
 
-	public static final Diagram goldAndGoods = new Diagram("Gold and goods",
-			new String[] {"Gold", "Gold limit", "Goods", "Goods limit"},
-			new Color[] {YieldResource.gold.fill, YieldResource.gold.dark, YieldResource.production.dark, YieldResource.production.border}) {
+	public static final Diagram gold = new Diagram("Gold",
+			new String[] {"Gold income", "Gold limit", "Gold"},
+			new Color[] {YieldResource.gold.fill, YieldResource.gold.dark, YieldResource.gold.border}) {
 		@Override
 		public int getValue(TurnStatistics s, int plot) {
 			switch(plot) {
-				case 3: return s.maxGoods;
-				case 2: return s.goods;
+				case 2: return s.gold;
 				case 1: return s.maxGold;
-				default: return s.gold;
+				default: return s.yield.get(YieldResource.gold);
+			}
+		}
+	};
+
+	public static final Diagram goods = new Diagram("Goods",
+			new String[] {"Goods limit", "Goods"},
+			new Color[] {YieldResource.production.fill, YieldResource.production.border}) {
+		@Override
+		public int getValue(TurnStatistics s, int plot) {
+			switch(plot) {
+				case 1: return s.goods;
+				default: return s.maxGoods;
 			}
 		}
 	};
