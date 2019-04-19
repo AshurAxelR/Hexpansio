@@ -104,7 +104,7 @@ public class CityTradesDialog extends OverlayDialog {
 	private final ClickButton closeButton;
 
 	public CityTradesDialog(final City city) {
-		super(Hexpansio.instance.getBase(), 1020, 600, "CITY TRADES: "+city.name.toUpperCase());
+		super(Hexpansio.instance.getBase(), 1020, 620, "CITY TRADES: "+city.name.toUpperCase());
 		this.city = city;
 		
 		ArrayList<City> cityList = new ArrayList<>(city.getNeighbours(TradeMode.cityRange));
@@ -153,7 +153,7 @@ public class CityTradesDialog extends OverlayDialog {
 				}
 			}
 		};
-		list.setSize(1000, 600-100-60);
+		list.setSize(1000, 620-80-60);
 		list.setLocation(10, 70);
 		
 		closeButton = new ClickButton(box, "Close", 100) {

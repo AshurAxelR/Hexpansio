@@ -57,13 +57,13 @@ public class SetupTradeDialog extends OverlayDialog {
 		
 		@Override
 		public void onMouseIn() {
-			((ResourceListItem) getParent()).hover = true;
+			((ResourceListItem) getParent()).setHover(true);
 			super.onMouseIn();
 		}
 		
 		@Override
 		public void onMouseOut() {
-			((ResourceListItem) getParent()).hover = false;
+			((ResourceListItem) getParent()).setHover(false);
 			super.onMouseOut();
 		}
 	}
@@ -144,15 +144,20 @@ public class SetupTradeDialog extends OverlayDialog {
 				paintBalanceCounter(g, e.count, (int)getWidth()/2, y);
 		}
 		
+		public void setHover(boolean hover) {
+			this.hover = hover;
+			hoverResource = hover ? this.e.resource : null;
+		}
+		
 		@Override
 		public void onMouseIn() {
-			hover = true;
+			setHover(true);
 			repaint();
 		}
 		
 		@Override
 		public void onMouseOut() {
-			hover = false;
+			setHover(false);
 			repaint();
 		}
 	}
@@ -174,8 +179,10 @@ public class SetupTradeDialog extends OverlayDialog {
 	private final ClickButton closeButton;
 	private final ClickButton revertButton, resetButton, acceptButton;
 	
+	private TokenResource hoverResource = null;
+	
 	public SetupTradeDialog(City city, City otherCity) {
-		super(Hexpansio.instance.getBase(), 1020, 600, "SET UP TRADE ROUTE");
+		super(Hexpansio.instance.getBase(), 1020, 620, "SET UP TRADE ROUTE");
 		this.city = city;
 		this.otherCity = otherCity;
 		resourcePool.add(city.resourcesProduced);
@@ -218,7 +225,7 @@ public class SetupTradeDialog extends OverlayDialog {
 				g.drawString("Trade", getView().getWidth()/2, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
 			}
 		};
-		list.setSize(1000, 600-70-110-60);
+		list.setSize(1000, 600-70-110-100);
 		list.setLocation(10, 110);
 		
 		closeButton = new ClickButton(box, "Close", 100) {
@@ -348,8 +355,48 @@ public class SetupTradeDialog extends OverlayDialog {
 		g.drawString(city.name.toUpperCase(), 20, 60, GraphAssist.LEFT, GraphAssist.CENTER);
 		g.drawString(otherCity.name.toUpperCase(), box.getWidth()-20, 60, GraphAssist.RIGHT, GraphAssist.CENTER);
 
-		int y0 = (int)box.getHeight()-50-70;
-		int y = y0;
+		int y0 = (int)box.getHeight()-110-70;
+		g.resetStroke();
+		g.drawRect(10, y0-10, box.getWidth()-20, 90, Res.uiBorderDark);
+		
+		int y = y0+85+20;
+		if(hoverResource!=null) {
+			g.fillRect(10, y0+85, box.getWidth()-20, 40, Color.BLACK);
+			g.drawRect(10, y0+85, box.getWidth()-20, 40, Res.uiBorderDark);
+			
+			int x = 20;
+			hoverResource.paint(g, x, y-15, null);
+			x += 40;
+			g.setColor(Color.WHITE);
+			g.setFont(Res.fontBold);
+			g.drawString(hoverResource.name, x, y, GraphAssist.LEFT, GraphAssist.CENTER);
+			
+			x = 230;
+			g.setFont(Res.font);
+			FontMetrics fm = g.graph.getFontMetrics();
+			float h = fm.getAscent() - fm.getDescent();
+			float ty = y + h/2f;
+			String sep = ", ";
+			float sepw = fm.stringWidth(sep);
+			boolean first = true;
+			for(YieldResource res : YieldResource.values()) {
+				int base = hoverResource.yield.get(res);
+				if(base!=0) {
+					if(!first) {
+						g.setColor(Color.LIGHT_GRAY);
+						g.graph.drawString(sep, x, ty);
+						x += sepw;
+					}
+					g.setColor(res.fill);
+					String str = String.format("%+d %s", base, res.name);
+					g.graph.drawString(str, x, ty);
+					x += fm.stringWidth(str);
+					first = false;
+				}
+			}
+		}
+		
+		y = y0;
 		g.setFont(Res.font);
 		for(YieldResource res : YieldResource.values()) {
 			y += 15;
