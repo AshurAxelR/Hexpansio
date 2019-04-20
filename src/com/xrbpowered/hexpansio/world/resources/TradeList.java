@@ -46,20 +46,33 @@ public class TradeList {
 		return count;
 	}
 	
+	public int getTotaInExcluding(TokenResource res, City otherCity) {
+		int count = 0;
+		for(Trade t : trades.values()) {
+			if(t.otherCity!=otherCity)
+				count += t.in.count(res);
+		}
+		return count;
+	}
+
+	public int getCityProfitExcluding(City otherCity) {
+		int profit = 0;
+		for(Trade t : trades.values()) {
+			if(t.otherCity!=otherCity) {
+				profit += t.countOut;
+				if(t.countIn>t.countOut)
+					profit -= (t.countIn - t.countOut)*3;
+			}
+		}
+		return profit;
+	}
+
 	public Collection<Trade> getAll() {
 		return trades.values();
 	}
 	
 	public Trade get(City otherCity) {
 		return trades.get(otherCity.id);
-	}
-
-	public Trade getCopy(City otherCity) {
-		Trade t = trades.get(otherCity.id);
-		if(t==null)
-			return new Trade(city, otherCity);
-		else
-			return t.copy();
 	}
 
 	public void accept(Trade trade) {

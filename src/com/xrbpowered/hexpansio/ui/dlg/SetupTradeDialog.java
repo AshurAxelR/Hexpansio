@@ -9,6 +9,7 @@ import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.ArrowButton;
 import com.xrbpowered.hexpansio.ui.ClickButton;
 import com.xrbpowered.hexpansio.world.city.City;
+import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.ResourcePile;
 import com.xrbpowered.hexpansio.world.resources.TokenResource;
 import com.xrbpowered.hexpansio.world.resources.Trade;
@@ -266,33 +267,53 @@ public class SetupTradeDialog extends OverlayDialog {
 		revert();
 	}
 	
-	public void updateStats() {
+	public void updateCityStats(City city, Yield.Cache cityYield, City otherCity, int dir) {
 		cityYield.clear();
 		cityYield.add(YieldResource.happiness, city.world.baseHappiness);
 		cityYield.add(city.incomeTiles);
 		cityYield.subtract(city.expences);
 		
-		otherCityYield.clear();
-		otherCityYield.add(YieldResource.happiness, city.world.baseHappiness);
-		otherCityYield.add(otherCity.incomeTiles);
-		otherCityYield.subtract(otherCity.expences);
+		ResourcePile cityRes = new ResourcePile();
+		cityRes.add(city.resourcesProduced);
+		cityRes.remove(city.trades.totalOut);
+		cityRes.add(city.trades.totalIn);
 		
-		// FIXME include trade income/expenses in the calculation
+		Trade trade = city.trades.get(otherCity);
+		if(trade!=null) {
+			cityRes.add(trade.out);
+			cityRes.remove(trade.in);
+		}
+		
+		for(ResourcePile.Entry e : cityRes.getUnsorted()) {
+			for(YieldResource res : YieldResource.values()) {
+				cityYield.add(res, cityRes.count(e.resource) *
+						(e.resource.yield.get(res) + city.effects.addResourceBonusYield(e.resource, res)));
+			}
+		}
+		
+		for(ResourcePile.Entry e : resourcePool.getUnsorted()) {
+			for(YieldResource res : YieldResource.values()) {
+				cityYield.add(res, e.count*dir *
+						(e.resource.yield.get(res) + city.effects.addResourceBonusYield(e.resource, res)));
+			}
+		}
+		cityYield.add(YieldResource.gold, city.trades.getCityProfitExcluding(otherCity));
+		
+		Happiness happiness = Happiness.get(cityYield.get(YieldResource.happiness), city.population);
+		cityYield.set(YieldResource.production, cityYield.get(YieldResource.production)*(100-happiness.prodPenalty)/100);
+	}
+	
+	public void updateStats() {
+		updateCityStats(city, cityYield, otherCity, -1);
+		updateCityStats(otherCity, otherCityYield, city, 1);
 		
 		countIn = 0;
 		countOut = 0;
-		
 		for(ResourcePile.Entry e : resourcePool.getUnsorted()) {
 			if(e.count>0)
 				countOut += e.count;
 			else
 				countIn += -e.count;
-			for(YieldResource res : YieldResource.values()) {
-				cityYield.add(res, getAvailOut(e.resource, true) *
-						(e.resource.yield.get(res) + city.effects.addResourceBonusYield(e.resource, res)));
-				otherCityYield.add(res, getAvailIn(e.resource, true) *
-						(e.resource.yield.get(res) + otherCity.effects.addResourceBonusYield(e.resource, res)));
-			}
 		}
 	}
 	

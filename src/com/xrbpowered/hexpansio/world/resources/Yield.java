@@ -54,6 +54,9 @@ public abstract class Yield {
 		public void add(YieldResource res, int add) {
 			yield[res.ordinal()] += add;
 		}
+		public void set(YieldResource res, int count) {
+			yield[res.ordinal()] = count;
+		}
 	}
 
 }

@@ -10,6 +10,9 @@ public class Trade {
 	public final ResourcePile out;
 	
 	public final Trade reverse;
+	
+	public int countIn;
+	public int countOut;
 
 	private Trade(Trade reverse) {
 		this.city = reverse.otherCity;
@@ -17,6 +20,7 @@ public class Trade {
 		this.in = reverse.out;
 		this.out = reverse.in;
 		this.reverse = reverse;
+		updateCounts();
 	}
 
 	public Trade(City city, City otherCity, ResourcePile in, ResourcePile out) {
@@ -25,6 +29,7 @@ public class Trade {
 		this.in = in;
 		this.out = out;
 		this.reverse = new Trade(this);
+		updateCounts();
 	}
 	
 	public Trade(City city, City otherCity) {
@@ -33,15 +38,19 @@ public class Trade {
 		this.in = new ResourcePile();
 		this.out = new ResourcePile();
 		this.reverse = new Trade(this);
+		updateCounts();
 	}
 	
 	public Trade copy() {
 		return new Trade(city, otherCity, in.copy(), out.copy());
 	}
 	
+	public void updateCounts() {
+		countIn = in.totalCount();
+		countOut = out.totalCount();
+	}
+	
 	public int getProfit() {
-		int countIn = in.totalCount();
-		int countOut = out.totalCount();
 		return countIn+countOut-Math.abs(countIn-countOut)*3;
 	}
 
