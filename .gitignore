@@ -3,6 +3,7 @@ save/
 *.save
 *.cfg
 /*.html
+*.bat
 
 lib/
 

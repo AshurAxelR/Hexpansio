@@ -133,7 +133,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 		openMessageLogCheckBox.setLocation(10, y);
 		y += openMessageLogCheckBox.getHeight()+5;
 
-		warnNextTurnCheckBox = new CheckBox(box, "Warn if ending turn with unresolved problems") {
+		warnNextTurnCheckBox = new CheckBox(box, "Confirm ending turn with unresolved problems") {
 			@Override
 			public boolean isSelected() {
 				return settings.warnNextTurn;

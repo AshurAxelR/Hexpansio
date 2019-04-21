@@ -170,7 +170,7 @@ public class ImpManual {
 			out.println("</td><td>");
 			
 			if(imp==Improvement.cityCenter) {
-				out.printf("<p style=\"margin-top:0\">Use Settler to build for <span title=\"Production/Goods\" style=\"color:%s\">&#11044;</span>&thinsp;%d</p>", color(YieldResource.production.fill), BuildSettlement.cost);
+				out.printf("<p style=\"margin-top:0\">Use Settle Mode to build for <span title=\"Production/Goods\" style=\"color:%s\">&#11044;</span>&thinsp;%d</p>", color(YieldResource.production.fill), BuildSettlement.cost);
 			}
 			else {
 				out.printf("<p style=\"margin-top:0\">Build cost: <span title=\"Production/Goods\" style=\"color:%s\">&#11044;</span>&thinsp;%d", color(YieldResource.production.fill), imp.buildCost);
