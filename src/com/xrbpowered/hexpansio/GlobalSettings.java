@@ -20,6 +20,7 @@ public class GlobalSettings {
 	public int windowWidth = minWindowWidth;
 	public int windowHeight = minWindowHeight;
 	public boolean hotkeyTooltips = true;
+	public boolean tutorial = true;
 	
 	public boolean autosave = false;
 	public boolean saveOnExit = false;
@@ -37,6 +38,7 @@ public class GlobalSettings {
 		s.windowWidth = windowWidth;
 		s.windowHeight = windowHeight;
 		s.hotkeyTooltips = hotkeyTooltips;
+		s.tutorial = tutorial;
 		s.autosave = autosave;
 		s.saveOnExit = saveOnExit;
 		s.confirmHurry = confirmHurry;
@@ -100,6 +102,7 @@ public class GlobalSettings {
 		values.put("windowWidth", Integer.toString(s.windowWidth));
 		values.put("windowHeight", Integer.toString(s.windowHeight));
 		values.put("hotkeyTooltips", Boolean.toString(s.hotkeyTooltips));
+		values.put("tutorial", Boolean.toString(s.tutorial));
 		values.put("autosave", Boolean.toString(s.autosave));
 		values.put("saveOnExit", Boolean.toString(s.saveOnExit));
 		values.put("confirmHurry", Boolean.toString(s.confirmHurry));
@@ -146,6 +149,7 @@ public class GlobalSettings {
 		s.windowWidth = getInt(values.get("windowWidth"), minWindowWidth, Integer.MAX_VALUE, s.windowWidth);
 		s.windowHeight = getInt(values.get("windowHeight"), minWindowHeight, Integer.MAX_VALUE, s.windowHeight);
 		s.hotkeyTooltips = getBoolean(values.get("hotkeyTooltips"), s.hotkeyTooltips);
+		s.tutorial = getBoolean(values.get("tutorial"), s.tutorial);
 		s.autosave = getBoolean(values.get("autosave"), s.autosave);
 		s.saveOnExit = getBoolean(values.get("saveOnExit"), s.saveOnExit);
 		s.confirmHurry = getBoolean(values.get("confirmHurry"), s.confirmHurry);

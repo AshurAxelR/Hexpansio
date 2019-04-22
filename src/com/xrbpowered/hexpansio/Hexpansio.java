@@ -14,6 +14,7 @@ import com.xrbpowered.hexpansio.ui.TopPane;
 import com.xrbpowered.hexpansio.ui.dlg.CityListDialog;
 import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.dlg.QuickExitDialog;
+import com.xrbpowered.hexpansio.ui.dlg.TutorialDialog;
 import com.xrbpowered.hexpansio.ui.dlg.menu.GameMenu;
 import com.xrbpowered.hexpansio.ui.dlg.popup.ConfirmationDialog;
 import com.xrbpowered.hexpansio.ui.dlg.popup.InformationDialog;
@@ -92,6 +93,8 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		Hexpansio.world = world;
 		if(world!=null) {
 			view.view.setWorld(world);
+			if(settings.tutorial)
+				TutorialDialog.startTutorial(this);
 			setVisible(true);
 		}
 		else {
