@@ -54,6 +54,8 @@ public class World {
 	
 	public ArrayList<Tile> newCities = new ArrayList<>();
 
+	private long lastUpdate = 0L;
+	
 	public World(long started, WorldSettings settings, TerrainGenerator terrain) {
 		this.gameStarted = started;
 		this.settings = settings;
@@ -74,6 +76,14 @@ public class World {
 		updateWorldTotals();
 		
 		return this;
+	}
+	
+	public long getLastUpdate() {
+		return lastUpdate;
+	}
+	
+	private void pushLastUpdate() {
+		lastUpdate = System.currentTimeMillis();
 	}
 	
 	public void debugDiscover(int range) {
@@ -298,6 +308,7 @@ public class World {
 		for(City city : cities) {
 			city.updateStats();
 		}
+		pushLastUpdate();
 	}
 	
 	public void updateWorldTotals() {
@@ -334,6 +345,7 @@ public class World {
 			events.add(new TurnEventMessage(null, "reached Goods limit", null).setColor(YieldResource.production.fill));
 		}
 		history.stats().update(this);
+		pushLastUpdate();
 	}
 	
 	public boolean hasVoid() {

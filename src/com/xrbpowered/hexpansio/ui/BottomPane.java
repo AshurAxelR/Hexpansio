@@ -7,7 +7,6 @@ import java.util.Date;
 
 import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
-import com.xrbpowered.hexpansio.ui.dlg.MessageLogDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -141,11 +140,11 @@ public class BottomPane extends UIContainer {
 			}
 			@Override
 			public boolean isModeActive() {
-				return MessageLogDialog.active;
+				return Hexpansio.instance.messageLog.isVisible();
 			}
 			@Override
 			public boolean isEnabled() {
-				return MessageLogDialog.isEnabled();
+				return !Hexpansio.instance.messageLog.isEmpty();
 			}
 			@Override
 			protected void paintFrame(GraphAssist g, boolean enabled, boolean hot) {
@@ -163,7 +162,7 @@ public class BottomPane extends UIContainer {
 				super.paintFrame(g, enabled, hot);
 			}
 			public void onClick() {
-				Hexpansio.instance.showMessageLog(); // TODO toggle, not an overlay dialog
+				Hexpansio.instance.toggleMessageLog();
 				repaint();
 			}
 		};

@@ -32,7 +32,7 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class Hexpansio extends UIContainer implements KeyInputHandler {
 
-	public static final String version = "B.1.1.pre-5";
+	public static final String version = "B.1.1.pre-6";
 	
 	public static GlobalSettings settings = new GlobalSettings();
 	public static boolean cheatsEnabled = false;
@@ -52,6 +52,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 	public final MapView.Zoom view;
 	public final CityInfoPane cityInfo; 
 	public final TileInfoPane tileInfo;
+	public final MessageLogDialog messageLog;
 	
 	public Hexpansio(UIContainer parent) {
 		super(parent);
@@ -67,6 +68,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		tileInfo = new TileInfoPane(this);
 		top = new TopPane(this);
 		bottom = new BottomPane(this, view.view);
+		messageLog = new MessageLogDialog(this);
 		
 		getBase().setFocus(this);
 	}
@@ -95,6 +97,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			view.view.setWorld(world);
 			if(settings.tutorial)
 				TutorialDialog.startTutorial(this);
+			showMessageLog();
 			setVisible(true);
 		}
 		else {
@@ -181,10 +184,14 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 			showMessageLog();
 		repaint();
 	}
-	
+
 	public void showMessageLog() {
-		if(MessageLogDialog.isEnabled())
-			new MessageLogDialog();
+		if(messageLog.checkUpdate())
+			messageLog.setVisible(true);
+	}
+
+	public void toggleMessageLog() {
+		messageLog.setVisible(!messageLog.isVisible());
 	}
 	
 	public void browseCity(int delta) {
@@ -208,7 +215,7 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 				safeNextTurn();
 				return true;
 			case KeyEvent.VK_TAB:
-				showMessageLog();
+				toggleMessageLog();
 				repaint();
 				return true;
 			case KeyEvent.VK_F1:
