@@ -10,10 +10,15 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class GlobalSettings {
 
+	public static final int minWindowWidth = 1400;
+	public static final int minWindowHeight = 800;
+	
 	public static final String path = "./hexpansio.cfg";
 	
 	public int uiScaling = 0;
 	public boolean windowed = false;
+	public int windowWidth = minWindowWidth;
+	public int windowHeight = minWindowHeight;
 	public boolean hotkeyTooltips = true;
 	
 	public boolean autosave = false;
@@ -29,6 +34,8 @@ public class GlobalSettings {
 		GlobalSettings s = new GlobalSettings();
 		s.uiScaling = uiScaling;
 		s.windowed = windowed;
+		s.windowWidth = windowWidth;
+		s.windowHeight = windowHeight;
 		s.hotkeyTooltips = hotkeyTooltips;
 		s.autosave = autosave;
 		s.saveOnExit = saveOnExit;
@@ -42,6 +49,8 @@ public class GlobalSettings {
 	
 	public boolean apply(GlobalSettings prev) {
 		float scale = uiScaling==0 ? SwingWindowFactory.getSystemScale() : uiScaling/100f;
+		windowWidth = Math.max(windowWidth, minWindowWidth);
+		windowHeight = Math.max(windowHeight, minWindowHeight);
 		if(prev==null || windowed!=prev.windowed) {
 			SwingWindowFactory.use().setBaseScale(scale);
 			Hexpansio.createWindow();
@@ -88,6 +97,8 @@ public class GlobalSettings {
 		HashMap<String, String> values = new HashMap<>();
 		values.put("uiScaling", Integer.toString(s.uiScaling));
 		values.put("windowed", Boolean.toString(s.windowed));
+		values.put("windowWidth", Integer.toString(s.windowWidth));
+		values.put("windowHeight", Integer.toString(s.windowHeight));
 		values.put("hotkeyTooltips", Boolean.toString(s.hotkeyTooltips));
 		values.put("autosave", Boolean.toString(s.autosave));
 		values.put("saveOnExit", Boolean.toString(s.saveOnExit));
@@ -132,6 +143,8 @@ public class GlobalSettings {
 			return s;
 		s.uiScaling = getInt(values.get("uiScaling"), 0, 200, s.uiScaling);
 		s.windowed = getBoolean(values.get("windowed"), s.windowed);
+		s.windowWidth = getInt(values.get("windowWidth"), minWindowWidth, Integer.MAX_VALUE, s.windowWidth);
+		s.windowHeight = getInt(values.get("windowHeight"), minWindowHeight, Integer.MAX_VALUE, s.windowHeight);
 		s.hotkeyTooltips = getBoolean(values.get("hotkeyTooltips"), s.hotkeyTooltips);
 		s.autosave = getBoolean(values.get("autosave"), s.autosave);
 		s.saveOnExit = getBoolean(values.get("saveOnExit"), s.saveOnExit);

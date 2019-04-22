@@ -16,6 +16,6 @@ public class QuickExitDialog extends ConfirmationDialog {
 	public void onEnter() {
 		if(Hexpansio.settings.saveOnExit)
 			Hexpansio.instance.autosave();
-		System.exit(0);
+		Hexpansio.exit();
 	}
 }

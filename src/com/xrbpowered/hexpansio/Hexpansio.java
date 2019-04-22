@@ -31,7 +31,7 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class Hexpansio extends UIContainer implements KeyInputHandler {
 
-	public static final String version = "B.1.1.pre-3";
+	public static final String version = "B.1.1.pre-5";
 	
 	public static GlobalSettings settings = new GlobalSettings();
 	public static boolean cheatsEnabled = false;
@@ -270,18 +270,34 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		}
 	}
 	
+	public static void exit() {
+		if(settings.windowed) {
+			int w = (int)(frame.getClientWidth() / frame.getContainer().getBaseScale());
+			int h = (int)(frame.getClientHeight() / frame.getContainer().getBaseScale());
+			if(w!=settings.windowWidth || h!=settings.windowHeight) {
+				settings.windowWidth = w;
+				settings.windowHeight = h;
+				GlobalSettings.save(settings);
+			}
+		}
+		System.exit(0);
+	}
+	
 	public static void createWindow() {
 		if(frame!=null)
 			frame.frame.dispose();
 		
-		frame = new SwingFrame(SwingWindowFactory.use(), "Hexpansio", 1600, 900, settings.windowed, !settings.windowed) {
+		frame = new SwingFrame(SwingWindowFactory.use(), "Hexpansio", settings.windowWidth, settings.windowHeight, settings.windowed, !settings.windowed) {
 			@Override
 			public boolean onClosing() {
 				new QuickExitDialog().repaint();
 				return false;
 			}
 		};
-		frame.frame.setMinimumSize(new Dimension(1600, 900));
+		frame.frame.setMinimumSize(new Dimension(
+				(int)(GlobalSettings.minWindowWidth*frame.getContainer().getBaseScale()),
+				(int)(GlobalSettings.minWindowHeight*frame.getContainer().getBaseScale())
+			));
 		if(!settings.windowed)
 			frame.maximize();
 		new UIElement(frame.getContainer()) {
