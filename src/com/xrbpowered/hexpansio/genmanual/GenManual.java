@@ -58,6 +58,7 @@ public class GenManual {
 			TerrainManual.generate();
 			TokenResManual.generate();
 			ImpManual.generate();
+			HotkeysManual.generate();
 			System.out.println("Done.");
 		}
 		catch(IOException e) {

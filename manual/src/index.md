@@ -52,8 +52,14 @@ Create new settlements in **Settle Mode (S)**.
 
 ...
 
+There are two types of Void terrain:
+
+* [**Void storm**](terrain.html#void.edge) spreads to adjacent tiles. The speed is set in the new game settings.
+* [**Deep void**](terrain.html#void.deep) has all negative effects of the void but does not spread.
+
 ### Learn More
 
 * [List of Tile Improvements](improvements.html)
 * [List of Resources](resources.html)
 * [List of Terrain Types](terrain.html)
+* [List of Hotkeys](hotkeys.html)
