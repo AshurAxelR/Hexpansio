@@ -69,6 +69,15 @@ public class TradeMode extends MapMode {
 	}
 	
 	@Override
+	public String explainNoAction() {
+		if(view.hoverTile==null || !view.hoverTile.isCityCenter())
+			return "Select a city to trade with.";
+		else if(view.selectedCity.tile.distTo(view.hoverTile)>cityRange)
+			return String.format("%s is too far from %s.", view.hoverTile.city.name, view.selectedCity.name);
+		return null;
+	}
+	
+	@Override
 	public boolean showCityRange() {
 		return true;
 	}

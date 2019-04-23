@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
+import com.xrbpowered.hexpansio.world.city.City;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -55,39 +56,31 @@ public class ExpandMode extends MapMode {
 		return "Spend gold to expand city borders.";
 	}
 	
-	/*@Override
-	public int paintHoverTileHint(GraphAssist g, int x, int y) {
-		String s;
-		Color c = Color.GRAY;
+	@Override
+	public String explainNoAction() {
 		if(view.hoverTile==null || !view.hoverTile.discovered)
-			s = "Undiscovered area";
+			return "Undiscovered area";
 		else if(view.hoverTile.isCityCenter()) {
-			if(view.hoverTile.city==view.selectedCity)
-				return y;
-			s = "Click to select "+view.hoverTile.city.name;
-			c = Color.WHITE;
+			return null;
 		}
-		else if(!view.selectedCity.availExpand)
-			s = "Out of actions until the next turn";
-		else if(view.hoverTile.city==view.selectedCity)
-			s = "Tile already belongs to "+view.selectedCity.name;
-		else if(view.hoverTile.distTo(view.selectedCity.tile)>City.expandRange)
-			s = "Out of expansion range";
-		else if(view.hoverTile.countAdjCityTiles(view.selectedCity)==0)
-			s = "Tile must be adjacent to the city";
 		else {
-			int cost = view.world.costAddToCity(view.hoverTile, view.selectedCity);
-			if(cost>view.world.gold) {
-				s = String.format("Action requires %d gold", cost);
-				c = Color.RED;
-			}
+			String pre = String.format("Cannot expand %s.\n", view.selectedCity.name);
+			if(!view.selectedCity.availExpand)
+				return pre+"Cities can only expand once per turn.";
+			else if(view.hoverTile.city==view.selectedCity)
+				return String.format("%sTile already belongs to %s.", pre, view.selectedCity.name);
+			else if(view.hoverTile.countAdjCityTiles(view.selectedCity)==0)
+				return pre+"Tile must be adjacent to the city border.";
+			else if(view.hoverTile.distTo(view.selectedCity.tile)>City.expandRange)
+				return String.format("%sMaximum expansion range is %d tiles.", pre, City.expandRange);
 			else {
-				 s = String.format("Click to add tile to %s for %d gold", view.selectedCity.name, cost);
-				 c = Color.WHITE;
+				int cost = view.world.costAddToCity(view.hoverTile, view.selectedCity);
+				if(cost>view.world.gold)
+					return String.format("Action requires %d gold.", cost);
 			}
 		}
-		return paintHoverTileHint(g, s, c, x, y);
-	}*/
+		return null;
+	}
 	
 	@Override
 	public boolean action() {

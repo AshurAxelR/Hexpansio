@@ -10,7 +10,9 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
+import com.xrbpowered.hexpansio.Hexpansio;
 import com.xrbpowered.hexpansio.res.Res;
+import com.xrbpowered.hexpansio.ui.dlg.popup.InformationDialog;
 import com.xrbpowered.hexpansio.ui.modes.MapMode;
 import com.xrbpowered.hexpansio.ui.modes.TileMode;
 import com.xrbpowered.hexpansio.world.Dir;
@@ -167,12 +169,18 @@ public class MapView extends UIElement {
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
 		updateHoverTile(x, y);
 		MapMode mode = MapMode.active;
-		if(button==Button.left && mods==UIElement.modNone && mode.isTileEnabled(hoverTile) && mode.action()) {
+		if(button==Button.left && mods==UIElement.modNone) {
+			if((!mode.isTileEnabled(hoverTile) || !mode.action()) && Hexpansio.settings.explainNoAction) {
+				String explain = mode.explainNoAction();
+				if(explain!=null) {
+					new InformationDialog(0, "NOT AVAILABLE", explain, "OK");
+				}
+			}
 			repaint();
 			return true;
 		}
 		else
-			return false; // TODO explain why action not enabled
+			return false;
 	}
 	
 	@Override

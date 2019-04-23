@@ -63,37 +63,26 @@ public class ScoutMode extends MapMode {
 		return String.format("Spend gold to discover new lands. Cost modifier: %d%%", (int)(view.world.discoverCostMod*100f));
 	}
 	
-	/*@Override
-	public int paintHoverTileHint(GraphAssist g, int x, int y) {
-		String s;
-		Color c = Color.GRAY;
+	@Override
+	public String explainNoAction() {
 		if(view.hoverTile==null || !view.hoverTile.discovered)
-			s = "Scout must be sent to a discovered tile";
+			return "Scout must be sent to a discovered tile.";
 		else if(view.hoverTile.isCityCenter()) {
-			if(view.hoverTile.city==view.selectedCity)
-				return y;
-			s = "Click to select "+view.hoverTile.city.name;
-			c = Color.WHITE;
+			return null;
 		}
 		else if(view.world.discoverThisTurn>=view.world.maxDiscover)
-			s = "Out of actions until the next turn";
-		else if(!inRange(view.selectedCity.tile))
-			s = "Out of range";
+			return "Out of scouts until the next turn.";
+		else if(!inRange(view.hoverTile))
+			return "Out of scouting range.";
 		else if(view.hoverTile.isAreaDiscovered())
-			s = "Area already discovered";
+			return "Area is already discovered.";
 		else {
 			int cost = view.world.costDiscover(view.hoverTile);
-			if(cost>view.world.gold) {
-				s = String.format("Action requires %d gold", cost);
-				c = Color.RED;
-			}
-			else {
-				 s = String.format("Click to discover area for %d gold", cost);
-				 c = Color.WHITE;
-			}
+			if(cost>view.world.gold)
+				return String.format("Action requires %d gold.", cost);
 		}
-		return paintHoverTileHint(g, s, c, x, y);
-	}*/
+		return null;
+	}
 	
 	@Override
 	public boolean showCityRange() {

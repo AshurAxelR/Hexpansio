@@ -1,6 +1,5 @@
 package com.xrbpowered.hexpansio.ui.modes;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.hexpansio.ui.MapView;
@@ -63,12 +62,6 @@ public abstract class MapMode {
 	public void paintTileOverlay(GraphAssist g, int wx, int wy, Tile tile) {
 	}
 
-	public int paintHoverTileHint(GraphAssist g, String s, Color color, int x, int y) {
-		g.setColor(color);
-		g.drawString(s, x, y, GraphAssist.CENTER, GraphAssist.BOTTOM);
-		return y+15;
-	}
-
 	public boolean showCityRange() {
 		return false;
 	}
@@ -79,6 +72,10 @@ public abstract class MapMode {
 	
 	public boolean action() {
 		return false;
+	}
+	
+	public String explainNoAction() {
+		return null;
 	}
 
 	public static MapMode active = null;

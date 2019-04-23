@@ -25,6 +25,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 	private final CheckBox autosaveCheckBox;
 	private final CheckBox saveOnExitCheckBox;
 
+	private final CheckBox explainNoActionCheckBox;
 	private final CheckBox confirmHurryCheckBox;
 	private final CheckBox openMessageLogCheckBox;
 	private final CheckBox warnNextTurnCheckBox;
@@ -32,7 +33,7 @@ public class GlobalSettingsDialog extends OverlayDialog {
 	private final CheckBox warnNoBuildingCheckBox;
 	
 	public GlobalSettingsDialog() {
-		super(Hexpansio.instance.getBase(), 460, 470, "SETTINGS");
+		super(Hexpansio.instance.getBase(), 460, 490, "SETTINGS");
 		
 		float y = 60f;
 		float cx = box.getWidth() - OptionBox.defaultWidth - 30;
@@ -119,6 +120,20 @@ public class GlobalSettingsDialog extends OverlayDialog {
 		};
 		saveOnExitCheckBox.setLocation(10, y);
 		y += saveOnExitCheckBox.getHeight()+30;
+
+		explainNoActionCheckBox = new CheckBox(box, "Explain why action is unavailable") {
+			@Override
+			public boolean isSelected() {
+				return settings.explainNoAction;
+			}
+			@Override
+			public void onClick() {
+				settings.explainNoAction = !settings.explainNoAction;
+				repaint();
+			}
+		};
+		explainNoActionCheckBox.setLocation(10, y);
+		y += explainNoActionCheckBox.getHeight()+5;
 
 		confirmHurryCheckBox = new CheckBox(box, "Confirm hurry production") {
 			@Override

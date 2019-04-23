@@ -64,38 +64,12 @@ public class TileMode extends MapMode {
 		return "Change selected city or tile. Toggle workers in the selected tile.";
 	}
 	
-	/*@Override
-	public int paintHoverTileHint(GraphAssist g, int x, int y) {
-		String s;
-		Color c = Color.GRAY;
+	@Override
+	public String explainNoAction() {
 		if(view.hoverTile==null || !view.hoverTile.discovered)
-			s = "Undiscovered area";
-		else if(view.hoverTile.isCityCenter()) {
-			if(view.hoverTile.city==view.selectedCity)
-				return y;
-			s = "Click to select "+view.hoverTile.city.name;
-			c = Color.WHITE;
-		}
-		else if(view.hoverTile.city!=view.selectedCity)
-			return y;
-		else if(view.hoverTile!=view.selectedTile) {
-			s = "Click to select tile";
-			c = Color.WHITE;
-		}
-		else if(view.hoverTile.isCityCenter())
-			return y;
-		else if(view.hoverTile.workers>0) {
-			s = "Click to unassign workers";
-			c = Color.WHITE;
-		}
-		else if(view.selectedCity.unemployed==0)
-			s = "Requires 1 unemployed worker";
-		else {
-			 s = "Click to assign a worker";
-			 c = Color.WHITE;
-		}
-		return paintHoverTileHint(g, s, c, x, y);
-	}*/
+			return "Undiscovered area.";
+		return null;
+	}
 
 	public void selectTile(Tile tile, boolean pan) {
 		if(tile!=null && tile.discovered) {

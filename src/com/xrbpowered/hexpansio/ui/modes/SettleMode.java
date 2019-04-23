@@ -73,42 +73,31 @@ public class SettleMode extends MapMode {
 		return "Build new settlements or migrate population between cities.";
 	}
 	
-	/*@Override
-	public int paintHoverTileHint(GraphAssist g, int x, int y) {
-		String s;
-		Color c = Color.GRAY;
+	@Override
+	public String explainNoAction() {
 		if(view.hoverTile==null || !view.hoverTile.discovered)
-			s = "Undiscovered area";
+			return "Undiscovered area.";
 		else if(view.hoverTile.isCityCenter()) {
-			if(view.hoverTile.city==view.selectedCity)
-				return y;
-			s = "Click to select "+view.hoverTile.city.name;
-			c = Color.WHITE;
+			return null;
 		}
 		else if(view.hoverTile!=null && view.hoverTile.settlement!=null) {
-			s = String.format("Click to cancel this settlement (lose %d production)", view.hoverTile.settlement.progress);
-			c = Color.YELLOW;
+			return null;
 		}
-		else if(view.selectedCity.population<=1)
-			s = "The city must have at least 2 population";
-		else if(view.selectedCity.unemployed==0)
-			s = "Requires 1 unemployed worker";
-		else if(view.selectedCity.tile.distTo(view.hoverTile)>cityRange)
-			s = "Out of city range";
-		else if(view.world.distToNearestCityOrSettler(view.hoverTile.wx, view.hoverTile.wy)<minCityDist)
-			s = "Too close to other cities";
-		else if(!view.hoverTile.terrain.canSettleOn())
-			s = "Cannot build a settlement on this terrain";
 		else {
-			y = paintHoverTileHint(g, "Click to start new settlement", Color.WHITE, x, y);
-			if(view.selectedCity.buildingProgress!=null)
-				return paintHoverTileHint(g, String.format("Will cancel current construction (lose %d production)", view.selectedCity.buildingProgress.progress), Color.YELLOW, x, y);
-			else
-				return y;
-
+			String pre = String.format("%s cannot start a settlement.\n", view.selectedCity.name);
+			if(view.selectedCity.population<=1)
+				return pre+"The city must have at least 2 population.";
+			else if(view.selectedCity.unemployed==0)
+				return pre+"Requires 1 unemployed worker.";
+			else if(view.selectedCity.tile.distTo(view.hoverTile)>cityRange)
+				return "Out of range.";
+			else if(view.world.distToNearestCityOrSettler(view.hoverTile.wx, view.hoverTile.wy)<minCityDist)
+				return String.format("Must be at least %d tiles away from any other city.", minCityDist);
+			else if(!view.hoverTile.terrain.canSettleOn())
+				return "Cannot build a settlement on this terrain.";
 		}
-		return paintHoverTileHint(g, s, c, x, y);
-	}*/
+		return null;
+	}
 	
 	@Override
 	public boolean showCityRange() {

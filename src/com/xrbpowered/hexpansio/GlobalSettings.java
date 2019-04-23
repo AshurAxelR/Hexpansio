@@ -25,6 +25,7 @@ public class GlobalSettings {
 	public boolean autosave = false;
 	public boolean saveOnExit = false;
 	
+	public boolean explainNoAction = true;
 	public boolean confirmHurry = true;
 	public boolean openMessageLog = true;
 	public boolean warnNextTurn = true;
@@ -41,6 +42,7 @@ public class GlobalSettings {
 		s.tutorial = tutorial;
 		s.autosave = autosave;
 		s.saveOnExit = saveOnExit;
+		s.explainNoAction = explainNoAction;
 		s.confirmHurry = confirmHurry;
 		s.openMessageLog = openMessageLog;
 		s.warnNextTurn = warnNextTurn;
@@ -105,6 +107,7 @@ public class GlobalSettings {
 		values.put("tutorial", Boolean.toString(s.tutorial));
 		values.put("autosave", Boolean.toString(s.autosave));
 		values.put("saveOnExit", Boolean.toString(s.saveOnExit));
+		values.put("explainNoAction", Boolean.toString(s.explainNoAction));
 		values.put("confirmHurry", Boolean.toString(s.confirmHurry));
 		values.put("openMessageLog", Boolean.toString(s.openMessageLog));
 		values.put("warnNextTurn", Boolean.toString(s.warnNextTurn));
@@ -152,6 +155,7 @@ public class GlobalSettings {
 		s.tutorial = getBoolean(values.get("tutorial"), s.tutorial);
 		s.autosave = getBoolean(values.get("autosave"), s.autosave);
 		s.saveOnExit = getBoolean(values.get("saveOnExit"), s.saveOnExit);
+		s.explainNoAction = getBoolean(values.get("explainNoAction"), s.explainNoAction);
 		s.confirmHurry = getBoolean(values.get("confirmHurry"), s.confirmHurry);
 		s.openMessageLog = getBoolean(values.get("openMessageLog"), s.openMessageLog);
 		s.warnNextTurn = getBoolean(values.get("warnNextTurn"), s.warnNextTurn);
