@@ -3,6 +3,8 @@
 
 **Download:** [hexpansio.jar](https://github.com/ashurrafiev/Hexpansio/releases/download/B.1.1/hexpansio.jar) (1.04 MB)
 
+**Note:** The program will store the saves and configs in the same folder with the JAR file.
+
 ## About this game
 
 _4X game on a virtually infinite map._
