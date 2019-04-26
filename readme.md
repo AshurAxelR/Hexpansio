@@ -27,12 +27,12 @@ _Let not the Void consume your spirit._
 
 ## Screenshots
 
-[![1](screenshots/thumbs/1.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/1.png)
-[![1](screenshots/thumbs/2.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/2.png)
-[![1](screenshots/thumbs/3.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/3.png)
-[![1](screenshots/thumbs/4.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/4.png)
-[![1](screenshots/thumbs/5.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/5.png)
-[![1](screenshots/thumbs/6.png)](https://ashurrafiev.github.io/Hexpansioscreenshots/6.png)
+[![1](screenshots/thumbs/1.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/1.png)
+[![1](screenshots/thumbs/2.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/2.png)
+[![1](screenshots/thumbs/3.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/3.png)
+[![1](screenshots/thumbs/4.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/4.png)
+[![1](screenshots/thumbs/5.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/5.png)
+[![1](screenshots/thumbs/6.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/6.png)
 
 ## How to play
 
