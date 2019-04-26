@@ -101,7 +101,7 @@ public class SaveDialog extends OverlayDialog {
 		acceptButton = new ClickButton(box, save ? "SAVE" : "LOAD", 140) {
 			@Override
 			public boolean isEnabled() {
-				return selectedSave()!=null;
+				return save || selectedSave()!=null;
 			}
 			@Override
 			public void onClick() {

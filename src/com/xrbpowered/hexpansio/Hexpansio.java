@@ -67,8 +67,8 @@ public class Hexpansio extends UIContainer implements KeyInputHandler {
 		cityInfo = new CityInfoPane(this);
 		tileInfo = new TileInfoPane(this);
 		top = new TopPane(this);
-		bottom = new BottomPane(this, view.view);
 		messageLog = new MessageLogDialog(this);
+		bottom = new BottomPane(this, view.view);
 		
 		getBase().setFocus(this);
 	}
