@@ -50,6 +50,9 @@ public class MessageLogDialog extends PinDialog {
 			y += 15;
 			g.setFont(Res.font);
 			g.drawString(msg.message, 30, y);
+			
+			if(msg==sepMsg)
+				g.line(0, 0, getWidth(), 0, Res.uiBorderDark);
 		}
 		
 		@Override
@@ -81,6 +84,7 @@ public class MessageLogDialog extends PinDialog {
 	private UIListBox list = null;
 	private long lastUpdate = 0L;
 	private boolean empty = true;
+	private TurnEventMessage sepMsg = null;
 	
 	public MessageLogDialog(UIContainer parent) {
 		super(parent, 400, 540, "MESSAGES");
@@ -100,10 +104,16 @@ public class MessageLogDialog extends PinDialog {
 		}
 		empty = false;
 		
-		ArrayList<TurnEventMessage> msgList = new ArrayList<TurnEventMessage>(world.events);
+		ArrayList<TurnEventMessage> msgList = new ArrayList<TurnEventMessage>();
 		for(City city : world.cities)
 			city.addPinnedMessages(msgList);
-		
+		int pinCount = msgList.size();
+		msgList.addAll(world.events);
+		if(pinCount>0 && msgList.size()>pinCount)
+			sepMsg = msgList.get(pinCount);
+		else
+			sepMsg = null;
+
 		list = new UIListBox(this,  msgList.toArray(new TurnEventMessage[msgList.size()])) {
 			@Override
 			protected UIListItem createItem(int index, Object object) {
