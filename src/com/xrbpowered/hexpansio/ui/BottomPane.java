@@ -66,7 +66,7 @@ public class BottomPane extends UIContainer {
 			mode.activate();
 			repaint();
 		}
-	};
+	}
 	
 	public class NextTurnButton extends ClickButton {
 		public NextTurnButton() {

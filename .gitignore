@@ -1,5 +1,6 @@
 img_src/
 save/
+hexpansio/
 *.save
 *.cfg
 /*.html

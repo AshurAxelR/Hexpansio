@@ -33,7 +33,7 @@ public class TerrainType {
 		private Feature(String name) {
 			this(name, Color.LIGHT_GRAY);
 		}
-	};
+	}
 	
 	private static Feature[] rejectSettler = {
 		Feature.thevoid, Feature.ruins, Feature.water, Feature.swamp, Feature.mountain, Feature.peak, Feature.volcano

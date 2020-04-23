@@ -86,7 +86,7 @@ public class BuildDialog extends OverlayDialog {
 			}
 			return res;
 		}
-	};
+	}
 
 	private UIListBox list;
 	

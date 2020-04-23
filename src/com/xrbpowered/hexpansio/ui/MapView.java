@@ -92,7 +92,7 @@ public class MapView extends UIElement {
 			super.paintChildren(g);
 			g.popAntialiasing();
 		}
-	};
+	}
 	
 	public World world = null;
 	public City selectedCity = null;

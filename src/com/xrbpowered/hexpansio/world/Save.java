@@ -329,7 +329,8 @@ public class Save {
 			readCity(in, city);
 		}
 		
-		while(readTrade(in, world));
+		while(readTrade(in, world)) {
+		}
 		
 		int numRegions = in.readInt();
 		for(int i=0; i<numRegions; i++) {
@@ -480,7 +481,7 @@ public class Save {
 		ArrayList<Save> saves = new ArrayList<>();
 		for(int i=0; i<files.length; i++) {
 			File f = files[i];
-			if(f.getName().toLowerCase().endsWith(".save")); {
+			if(f.getName().toLowerCase().endsWith(".save")) {
 				Save s = new Save(f);
 				if(showAutosave || !s.name.equalsIgnoreCase("autosave"))
 					saves.add(s);
