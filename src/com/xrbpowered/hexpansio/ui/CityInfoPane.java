@@ -1,6 +1,7 @@
 package com.xrbpowered.hexpansio.ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FontMetrics;
 
 import com.xrbpowered.hexpansio.Hexpansio;
@@ -12,17 +13,78 @@ import com.xrbpowered.hexpansio.world.city.build.BuildingProgress;
 import com.xrbpowered.hexpansio.world.resources.Happiness;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.TerrainType;
+import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
+import com.xrbpowered.zoomui.UIElement;
 
 public class CityInfoPane extends UIContainer {
 
 	private static final int margin = 10;
 	
+	private class FinishedBuildingButton extends UIElement {
+		public FinishedBuildingButton() {
+			super(CityInfoPane.this);
+		}
+		@Override
+		public void paint(GraphAssist g) {
+			if(city==null || city.finishedBuilding==null)
+				return;
+			
+			int x = margin;
+			int y = 0;
+			g.fillRect(0, y, getWidth(), getHeight(), Res.uiBgBright);
+			
+			y += 25;
+			g.setColor(Color.WHITE);
+			g.setFont(Res.font);
+			g.drawString("Finished building:", x, y);
+			y += 15;
+			g.setFont(Res.fontBold);
+			if(city.finishedBuilding.excess>0) {
+				String s = city.finishedBuilding.name;
+				FontMetrics fm = g.graph.getFontMetrics();
+				float w = fm.stringWidth(s);
+				g.drawString(s, x, y);
+				g.setFont(Res.font);
+				Res.paintIncome(g, YieldResource.production, " ", city.finishedBuilding.excess, null, x+w, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
+			}
+			else
+				g.drawString(city.finishedBuilding.name, x, y);
+		}
+		@Override
+		public void onMouseIn() {
+			getBase().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			super.onMouseIn();
+		}
+		@Override
+		public void onMouseOut() {
+			getBase().getWindow().setCursor(Cursor.getDefaultCursor());
+			super.onMouseOut();
+		}
+		@Override
+		public boolean onMouseDown(float x, float y, Button button, int mods) {
+			if(button==Button.left && mods==UIElement.modNone) {
+				if(city==null || city.finishedBuilding==null)
+					return true;
+				Tile tile = city.world.getTile(city.finishedBuilding.wx, city.finishedBuilding.wy);
+				if(tile!=null)
+					TileMode.instance.selectTile(tile, true);
+				repaint();
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+	
 	private final ClickButton hurryButton;
 	private final ClickButton cancelButton;
 	
 	private final FrameButton resFrame;
+	private final FinishedBuildingButton finishedBuildingButton;
+	
+	private City city = null;
 	
 	public CityInfoPane(Hexpansio parent) {
 		super(parent);
@@ -78,6 +140,8 @@ public class CityInfoPane extends UIContainer {
 			}
 		};
 		resFrame.setLocation(0, 0);
+		
+		finishedBuildingButton = new FinishedBuildingButton();
 	}
 	
 	public MapView getMapView() {
@@ -88,7 +152,7 @@ public class CityInfoPane extends UIContainer {
 	protected void paintSelf(GraphAssist g) {
 		g.fill(this, Res.uiBgColor);
 		
-		City city = getMapView().selectedCity;
+		city = getMapView().selectedCity;
 		if(city==null)
 			return;
 
@@ -276,32 +340,22 @@ public class CityInfoPane extends UIContainer {
 
 		if(city.finishedBuilding!=null) {
 			y += 15;
-			g.fillRect(0, y, getWidth(), 55, Res.uiBgBright);
-			g.resetStroke();
-			g.line(0, y, getWidth(), y, Res.uiBorderDark);
-			
-			y += 25;
-			g.setColor(Color.WHITE);
-			g.setFont(Res.font);
-			g.drawString("Finished building:", x, y);
-			y += 15;
-			g.setFont(Res.fontBold);
-			if(city.finishedBuilding.excess>0) {
-				String s = city.finishedBuilding.name;
-				FontMetrics fm = g.graph.getFontMetrics();
-				float w = fm.stringWidth(s);
-				g.drawString(s, x, y);
-				g.setFont(Res.font);
-				Res.paintIncome(g, YieldResource.production, " ", city.finishedBuilding.excess, null, x+w, y, GraphAssist.LEFT, GraphAssist.BOTTOM);
-			}
-			else
-				g.drawString(city.finishedBuilding.name, x, y);
+			finishedBuildingButton.setLocation(0, y);
+			finishedBuildingButton.setSize(getWidth(), 55);
+			finishedBuildingButton.setVisible(true);
+		}
+		else {
+			finishedBuildingButton.setVisible(false);
 		}
 		
 		y += 15;
 		g.resetStroke();
 		g.line(0, y, getWidth(), y, Res.uiBorderDark);
-
+	}
+	
+	@Override
+	protected void paintChildren(GraphAssist g) {
+		super.paintChildren(g);
 		g.resetStroke();
 		g.vborder(this, GraphAssist.RIGHT, Color.WHITE);
 	}
