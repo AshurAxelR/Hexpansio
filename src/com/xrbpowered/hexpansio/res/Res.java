@@ -190,21 +190,23 @@ public class Res {
 		g.graph.drawOval(x-r, y-r, size, size);
 	}
 
-	public static void paintWorkerBubbles(GraphAssist g, int x, int y, int size, int count, int total, boolean employed, int halign) {
+	public static void paintWorkerBubbles(GraphAssist g, float x, float y, int size, int count, int total, boolean employed, int halign, float boxWidth) {
 		g.pushPureStroke(true);
-		int dx = size*2/3;
-		int w = size+dx*(total-1);
-		int tx = x - (int)GraphAssist.align(w, halign) + size/2;
+		float dx = size*2/3;
+		if(boxWidth>0 && count>0)
+			dx = Math.min(dx, (boxWidth-size)/(count-1f));
+		float w = size+dx*(total-1);
+		float tx = x - (int)GraphAssist.align(w, halign) + size/2;
 		Color fill = employed ? new Color(0x88ddbb) : new Color(0xdd0000);
 		Color border = employed ? new Color(0xaaffdd) : new Color(0xeeaaaa);
 		Color fillEmpty = new Color(0x333333);
 		Color borderEmpty = new Color(0x555555);
 		for(int i=total-1; i>=0; i--) {
-			paintWorkerBubble(g, tx+i*dx, y, size, (i<count) ? fill : fillEmpty, (i<count) ? border : borderEmpty);
+			paintWorkerBubble(g, (int)(tx+i*dx), (int)y, size, (i<count) ? fill : fillEmpty, (i<count) ? border : borderEmpty);
 		}
 		g.popPureStroke();
 	}
-	
+
 	public static void paintTooltip(GraphAssist g, float x, float y, String s, int valign) {
 		g.setFont(Res.font);
 		FontMetrics fm = g.graph.getFontMetrics();

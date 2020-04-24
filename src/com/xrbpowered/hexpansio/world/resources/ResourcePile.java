@@ -117,12 +117,15 @@ public class ResourcePile {
 		return sortedList;
 	}
 	
-	public void paint(GraphAssist g, int x, int y, String format) {
+	public void paint(GraphAssist g, float x, float y, String format, float boxWidth) {
+		if(isEmpty())
+			return;
 		ArrayList<Entry> list = getSortedList();
+		float dx = Math.min(20, (boxWidth-30f) / (list.size()-1f));
 		for(Entry e : list) {
 			g.setColor(e.count>=0 ? Color.WHITE : Color.RED);
-			e.resource.paint(g, x, y, format==null ? null : String.format(format, e.count));
-			x += 20;
+			e.resource.paint(g, (int)x, (int)y, format==null ? null : String.format(format, e.count));
+			x += dx;
 		}
 	}
 	

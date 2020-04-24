@@ -245,7 +245,7 @@ public class CityInfoPane extends UIContainer {
 		if(city.unemployed>0) {
 			y += 35;
 			g.setStroke(1.25f);
-			Res.paintWorkerBubbles(g, x, y-25, 15, city.unemployed, city.unemployed, false, GraphAssist.LEFT);
+			Res.paintWorkerBubbles(g, x, y-25, 15, city.unemployed, city.unemployed, false, GraphAssist.LEFT, getWidth()-x*2);
 			g.setColor(Color.RED);
 			g.drawString(String.format("Unemployed: %d", city.unemployed), x, y);
 			g.setColor(Color.WHITE);
@@ -282,11 +282,11 @@ public class CityInfoPane extends UIContainer {
 		
 		if(!city.resourcesAvail.isEmpty()) {
 			y += 15;
-			city.resourcesAvail.paint(g, x, y, "%d");
+			city.resourcesAvail.paint(g, x, y, "%d", getWidth()-x*2);
 			y += 40;
 		}
 
-		y += 15;
+		y += 20;
 		g.setColor(Color.WHITE);
 		g.drawString("Details...", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 

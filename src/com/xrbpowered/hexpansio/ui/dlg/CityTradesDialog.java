@@ -49,7 +49,7 @@ public class CityTradesDialog extends OverlayDialog {
 			
 			x += 80;
 			if(trade!=null && !trade.in.isEmpty()) {
-				trade.in.paint(g, x, 5, "%d");
+				trade.in.paint(g, x, 5, "%d", 200);
 			}
 			else {
 				g.setColor(Color.GRAY);
@@ -57,7 +57,7 @@ public class CityTradesDialog extends OverlayDialog {
 			}
 			x += 220;
 			if(trade!=null && !trade.out.isEmpty()) {
-				trade.out.paint(g, x, 5, "%d");
+				trade.out.paint(g, x, 5, "%d", 200);
 			}
 			else {
 				g.setColor(Color.GRAY);
@@ -68,7 +68,7 @@ public class CityTradesDialog extends OverlayDialog {
 			avail.add(otherCity.resourcesProduced);
 			avail.remove(otherCity.trades.totalOut);
 			if(!avail.isEmpty()) {
-				avail.paint(g, x, 5, "%d");
+				avail.paint(g, x, 5, "%d", 200);
 			}
 			else {
 				g.setColor(Color.GRAY);
@@ -145,7 +145,7 @@ public class CityTradesDialog extends OverlayDialog {
 				avail.add(city.resourcesProduced);
 				avail.remove(city.trades.totalOut);
 				if(!avail.isEmpty()) {
-					avail.paint(g, x, y, "%d");
+					avail.paint(g, x, y, "%d", 200);
 				}
 				else {
 					g.setColor(Color.GRAY);

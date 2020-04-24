@@ -49,7 +49,7 @@ public class TileMode extends MapMode {
 
 	public static void paintWorkerBubbles(GraphAssist g, int count, int total, boolean employed) {
 		g.resetStroke();
-		Res.paintWorkerBubbles(g, 0, -MapView.h*2/3, 10, count, total, employed, GraphAssist.CENTER);
+		Res.paintWorkerBubbles(g, 0, -MapView.h*2/3, 10, count, total, employed, GraphAssist.CENTER, 0);
 	}
 	
 	@Override

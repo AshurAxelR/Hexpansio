@@ -176,7 +176,7 @@ public class TileInfoPane extends UIContainer {
 			if(wp>0) {
 				y += 40;
 				g.setStroke(1.25f);
-				Res.paintWorkerBubbles(g, x, y-30, 15, tile.workers, wp, true, GraphAssist.LEFT);
+				Res.paintWorkerBubbles(g, x, y-30, 15, tile.workers, wp, true, GraphAssist.LEFT, getWidth()-x*2);
 				g.setColor(Color.WHITE);
 				g.drawString(String.format("Workers: %d / %d", tile.workers, wp), x, y);
 			}
@@ -261,7 +261,7 @@ public class TileInfoPane extends UIContainer {
 				g.setFont(Res.font);
 			}
 			
-			y += 15;
+			y += 20;
 			g.setColor(Color.WHITE);
 			g.drawString("Details...", getWidth()-x, y, GraphAssist.RIGHT, GraphAssist.BOTTOM);
 
