@@ -32,6 +32,7 @@ public class MapView extends UIElement {
 
 	public static final Color cityColor = new Color(0x666666);
 	public static final Color playerColor = new Color(0x990000);
+	public static final Color upgImpColor = new Color(0xdadada);
 	
 	public static Stroke borderStroke = new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10f);
 	public static Stroke borderStrokeThick = new BasicStroke(4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10f);
@@ -276,7 +277,7 @@ public class MapView extends UIElement {
 					}
 
 					if(tile.city==selectedCity && !tile.isCityCenter() && tile.improvement!=null) {
-						g.setColor(Color.WHITE);
+						g.setColor(tile.improvement.upgPoints<tile.city.maxUpgPointsForTile(tile) ? upgImpColor : Color.WHITE);
 						g.setFont(Res.font);
 						g.drawString(tile.improvement.getGlyph(), 0, h-3, GraphAssist.CENTER, GraphAssist.BOTTOM);
 					}
