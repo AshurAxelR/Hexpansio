@@ -129,7 +129,6 @@ public class City {
 		tile.city = this;
 		if(tile.improvement==null)
 			tile.improvement = new ImprovementStack(Improvement.cityCenter);
-		coastalCity = tile.countAdjTerrain(Feature.water)>0;
 	}
 	
 	public void destroyCity() {
@@ -394,6 +393,7 @@ public class City {
 	}
 	
 	public void updateStats() {
+		coastalCity = tile.countAdjTerrain(Feature.water)>0;
 		collectEffects();
 		updateIncomeTiles();
 		if(updateTrade()) {
