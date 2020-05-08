@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import com.xrbpowered.hexpansio.res.Res;
 import com.xrbpowered.hexpansio.ui.MapView;
 import com.xrbpowered.hexpansio.world.Dir;
+import com.xrbpowered.hexpansio.world.World;
 import com.xrbpowered.hexpansio.world.resources.YieldResource;
 import com.xrbpowered.hexpansio.world.tile.Tile;
 import com.xrbpowered.zoomui.GraphAssist;
@@ -60,7 +61,14 @@ public class ScoutMode extends MapMode {
 	
 	@Override
 	public String getDescription() {
-		return String.format("Spend gold to discover new lands. Cost modifier: %d%%", (int)(view.world.discoverCostMod*100f));
+		String modFmt;
+		if(view.world.discoverCostMod<World.minDiscoverCostMod+0.1f)
+			modFmt = "%.2f";
+		else if(view.world.discoverCostMod<World.minDiscoverCostMod+1f)
+			modFmt = "%.1f";
+		else
+			modFmt = "%.0f";
+		return String.format("Spend gold to discover new lands. Cost modifier: %s%%", String.format(modFmt, view.world.discoverCostMod*100f));
 	}
 	
 	@Override

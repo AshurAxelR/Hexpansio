@@ -19,6 +19,8 @@ public class World {
 	public static final int originwy = Region.size/2;
 	public static final TerrainType originTerrain = TerrainType.fertileValley;
 	
+	public static final float minDiscoverCostMod = 0.1f;
+	
 	public final long gameStarted;
 	public final WorldSettings settings;
 	public final long seed;
@@ -332,6 +334,7 @@ public class World {
 				pinnedMessages += pm;
 			}
 		}
+		discoverCostMod = minDiscoverCostMod + (1f-minDiscoverCostMod)*discoverCostMod;
 		if(prevBH!=baseHappiness) {
 			updateCities();
 			updateWorldTotals();

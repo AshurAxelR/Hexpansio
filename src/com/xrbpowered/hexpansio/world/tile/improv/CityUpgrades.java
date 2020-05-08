@@ -11,7 +11,7 @@ import com.xrbpowered.hexpansio.world.tile.TerrainType.Feature;
 
 public abstract class CityUpgrades {
 
-	public static final float beaconOfHopeEffect = 0.8f;
+	public static final float beaconOfHopeEffect = 0.5f;
 	public static final float highriseEffect = 0.5f;
 
 	public static final Improvement townHall = new Improvement("city.hall", cityCenter, "Town Hall", 100, 0).requirePopulation(5).maintenance(5).yield(0, 0, 0, 2).cannotHurry()
