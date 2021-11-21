@@ -1,7 +1,7 @@
 
 # Hexpansio
 
-**Download:** [hexpansio.jar](https://github.com/ashurrafiev/Hexpansio/releases/download/B.1.1/hexpansio.jar) (1.04 MB)
+**Download:** [hexpansio.jar](https://github.com/AshurAxelR/Hexpansio/releases/download/B.1.1/hexpansio.jar) (1.04 MB)
 
 **Note:** The program will store the saves and configs in the same folder with the JAR file.
 
@@ -27,13 +27,13 @@ _Let not the Void consume your spirit._
 
 ## Screenshots
 
-[![1](screenshots/thumbs/1.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/1.png)
-[![1](screenshots/thumbs/2.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/2.png)
-[![1](screenshots/thumbs/3.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/3.png)
-[![1](screenshots/thumbs/4.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/4.png)
-[![1](screenshots/thumbs/5.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/5.png)
-[![1](screenshots/thumbs/6.png)](https://ashurrafiev.github.io/Hexpansio/screenshots/6.png)
+[![1](screenshots/thumbs/1.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/1.png)
+[![1](screenshots/thumbs/2.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/2.png)
+[![1](screenshots/thumbs/3.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/3.png)
+[![1](screenshots/thumbs/4.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/4.png)
+[![1](screenshots/thumbs/5.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/5.png)
+[![1](screenshots/thumbs/6.png)](https://AshurAxelR.github.io/Hexpansio/screenshots/6.png)
 
 ## How to play
 
-See the [manual](https://ashurrafiev.github.io/Hexpansio/manual) (WIP)
+See the [manual](https://AshurAxelR.github.io/Hexpansio/manual) (WIP)
